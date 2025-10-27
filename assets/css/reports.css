@@ -1,0 +1,628 @@
+/* Reports Page Layout */
+.reports-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+    height: calc(100vh - 140px);
+}
+
+.reports-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+}
+
+/* Students Sidebar */
+.reports-students-sidebar {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--hover-color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.reports-sidebar-header {
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--hover-color);
+    background: var(--gray);
+}
+
+.reports-sidebar-header h3 {
+    margin: 0 0 1rem 0;
+    color: var(--dark);
+    font-size: 1.1rem;
+}
+
+.reports-search-box {
+    position: relative;
+}
+
+.reports-search-box ion-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--black2);
+}
+
+.reports-search-box input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid var(--black2);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--dark);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.reports-search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(3, 139, 210, 0.1);
+}
+
+.reports-students-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.reports-student-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 0.25rem;
+}
+
+.reports-student-item:hover {
+    background: var(--hover-color);
+}
+
+.reports-student-item.reports-active {
+    background: var(--bg-blue);
+    border: 1px solid var(--primary);
+}
+
+.reports-student-avatar-small {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.reports-student-info-small {
+    flex: 1;
+    min-width: 0;
+}
+
+.reports-student-name {
+    font-weight: 500;
+    color: var(--dark);
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reports-student-course {
+    color: var(--black2);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reports-status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.reports-status-active {
+    background: var(--success);
+}
+
+.reports-status-inactive {
+    background: var(--black2);
+}
+
+.reports-no-students {
+    text-align: center;
+    padding: 2rem;
+    color: var(--black2);
+}
+
+.reports-no-students ion-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--black2);
+}
+
+/* Student Header */
+.reports-student-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+    padding: 1.25rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--hover-color);
+}
+
+.reports-student-basic {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reports-student-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.reports-student-info-compact h2 {
+    margin: 0 0 0.5rem 0;
+    color: var(--dark);
+    font-size: 1.4rem;
+}
+
+.reports-student-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.reports-status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.reports-status-active {
+    background: rgba(39, 174, 96, 0.1);
+    color: var(--success);
+}
+
+.reports-status-inactive {
+    background: rgba(108, 117, 125, 0.1);
+    color: var(--black2);
+}
+
+.reports-course, .reports-institution {
+    color: var(--black2);
+    font-size: 0.9rem;
+}
+
+.reports-student-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Stats Overview */
+.reports-stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.reports-stat-card {
+    background: var(--white);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--hover-color);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: var(--transition);
+}
+
+.reports-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.reports-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--bg-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 1.25rem;
+}
+
+.reports-stat-content .reports-stat-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+}
+
+.reports-stat-content .reports-stat-label {
+    font-size: 0.75rem;
+    color: var(--black2);
+    font-weight: 500;
+}
+
+/* Reports Sections */
+.reports-section {
+    background: var(--white);
+    padding: 1.25rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--hover-color);
+}
+
+.reports-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.reports-section-header h3 {
+    margin: 0;
+    color: var(--dark);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.reports-last-evaluated {
+    color: var(--black2);
+    font-size: 0.8rem;
+}
+
+/* Information Grid */
+.reports-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.75rem;
+}
+
+.reports-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--gray);
+    border-radius: 8px;
+    border: 1px solid var(--hover-color);
+    transition: var(--transition);
+}
+
+.reports-info-item:hover {
+    background: var(--hover-color);
+}
+
+.reports-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--bg-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.reports-info-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.reports-info-details label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--black2);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.reports-info-details span {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--dark);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Performance Grid */
+.reports-performance-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.reports-performance-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.reports-metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reports-metric-label {
+    font-weight: 500;
+    color: var(--dark);
+    font-size: 0.85rem;
+}
+
+.reports-metric-value {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.85rem;
+}
+
+.reports-progress-bar {
+    height: 6px;
+    background: var(--hover-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.reports-progress-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.reports-performance-comments {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--hover-color);
+}
+
+.reports-performance-comments strong {
+    color: var(--dark);
+    font-size: 0.85rem;
+}
+
+.reports-performance-comments p {
+    margin: 0.5rem 0 0 0;
+    color: var(--black2);
+    line-height: 1.4;
+    font-size: 0.85rem;
+}
+
+/* Compact Evaluation Form */
+.reports-compact-form {
+    padding: 1rem 1.25rem;
+}
+
+.reports-performance-form-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.reports-evaluation-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.reports-eval-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.reports-eval-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--dark);
+    text-align: center;
+}
+
+.reports-eval-range {
+    width: 100%;
+    margin: 0;
+}
+
+.reports-eval-value {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.reports-eval-comments {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    align-items: end;
+}
+
+.reports-form-textarea-small {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--black2);
+    border-radius: 6px;
+    background: var(--white);
+    color: var(--dark);
+    font-size: 0.85rem;
+    resize: vertical;
+    min-height: 60px;
+    transition: var(--transition);
+}
+
+.reports-form-textarea-small:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(3, 139, 210, 0.1);
+}
+
+/* Buttons */
+.reports-btn-primary, .reports-btn-outline {
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+}
+
+.reports-btn-primary {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.reports-btn-primary:hover {
+    background: var(--blue);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(3, 139, 210, 0.3);
+}
+
+.reports-btn-outline {
+    background: transparent;
+    color: var(--dark);
+    border: 1px solid var(--black2);
+}
+
+.reports-btn-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.reports-btn-compact {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    height: fit-content;
+}
+
+/* Alerts */
+.reports-alert {
+    padding: 1rem 1.25rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+
+.reports-alert-success {
+    background: rgba(39, 174, 96, 0.1);
+    color: var(--success);
+    border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.reports-alert-error {
+    background: rgba(231, 76, 60, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+/* Empty States */
+.reports-no-data, .reports-no-student-selected {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--black2);
+}
+
+.reports-no-data ion-icon, .reports-no-student-selected ion-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--black2);
+    opacity: 0.5;
+}
+
+.reports-no-data p, .reports-no-student-selected p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.reports-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .reports-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+    
+    .reports-students-sidebar {
+        order: -1;
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .reports-student-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .reports-student-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .reports-evaluation-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .reports-eval-comments {
+        grid-template-columns: 1fr;
+    }
+    
+    .reports-info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .reports-stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .reports-stats-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .reports-student-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}

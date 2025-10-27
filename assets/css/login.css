@@ -1,0 +1,271 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Comfortaa:wght@300..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+* {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background: url('https://picsum.photos/id/122/3888/2592');
+  min-height:100vh;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  
+}
+ion-icon{
+  pointer-events: none;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20 100px;
+  box-sizing: border-box;
+  z-index: 99;
+  
+}
+.background{
+  width: 100%;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  background: url("https://picsum.photos/id/122/3888/2592") no-repeat;
+  background-position: center;
+  background-size: cover;
+  filter: blur(5px);
+  
+  
+}
+.navbar{
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+}
+.nav-item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  flex: 1;
+  max-width: 120px;
+}
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 40px;
+  font-size:25px;
+  transition: 0.3s;
+  position: relative;
+}
+.nav-item span{
+  font-size: medium;
+}
+
+.navbar a::after{
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: #f2f2f2;
+  left: 0;
+  bottom: -6px;
+  border-radius: 8px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+.navbar a:hover::after{
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.container{
+  position: absolute;
+  width: 75%;
+  height: 550px;
+  box-shadow: 0 0 5px rgba(176, 158, 158, 0.328);
+  border-radius: 15px;
+  background: url("https://picsum.photos/id/122/3888/2592") no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.container .content{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 58%;
+  height: 100%;
+  
+}
+.texts{
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  color: #f2f2f2;
+  justify-content: space-between;
+}
+
+.logo{
+  margin-bottom: 7rem;
+}
+.welcome h2{
+  font-size: 40px;
+}
+
+.welcome h2 span{
+  font-size: 25px;
+}
+.welcome p{
+  font-size: 16px;
+  margin: 20px 0;
+}
+.container .log-box{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: calc(100% - 58%);
+  height: 100%;
+  overflow: hidden;
+}
+.log-box .form-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  backdrop-filter: blur(20px);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  color: #f2f2f2;
+ 
+}
+
+.form-box h2{
+  text-align: center;
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #fff;
+}
+.form-box .input-box{
+  position: relative;
+  width: 350px;
+  margin: 30px 0;
+  height: 50px;   
+  border-bottom: 2px solid #fff;
+}
+.form-box .input-box label{
+  position: absolute;
+  top:50%;
+  left: 5px;
+  color: #fff;
+  font-size: 1em;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: .5s;
+  font-weight: 400;
+}
+.form-box .input-box input{
+  min-width: 93%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-weight: 600;
+}
+.form-box .input-box .icon{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #fff;
+  line-height: 57px;
+} 
+.form-box .input-box input:focus ~ label,
+.form-box .input-box input:valid ~ label{
+  top: -5px;
+}               
+
+.form-box .remember-forgot{
+  font-size: 14px;
+  font-weight: 400;
+  color: #ffffff;
+  margin: -15px 2 15px;
+  display: flex;
+  justify-content: space-between;
+}
+.form-box .remember-forgot label input{
+  margin-right: 3px;
+}
+.form-box .remember-forgot a{
+  color: #000000;
+  text-decoration: none;
+}
+.form-box .remember-forgot a:hover{
+  text-decoration: underline;
+}
+.form-box .btn{
+  width: 100%;
+  height: 50px;
+  background: #ffffffbe;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  font-size: 1.2em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+  margin-top: 20px;
+}
+.form-box .btn:hover{
+  background: #fffdfa;
+
+}
+.form-box .login-register{
+  font-size: 14px;
+  color: #1f0909;
+  text-align: center;
+  margin: 20px 0 0;
+}
+.form-box .login-register a{
+  color: #552c00;
+  text-decoration: none;
+  font-weight: 600;
+}
+.form-box .login-register a:hover{
+  text-decoration: underline;
+}
+.log-box .register{
+  transition: transform .5s ease;
+  transform: translate(700px, -550px);
+  transition-delay: 0s;
+
+
+}
+.log-box .form-box.login{
+  transform: translateX(0);
+  transition: transform .6s ease;
+  transition-delay: .5s;
+}
+.log-box.active .form-box.login{
+  transform: translateX(550px);
+  transition-delay: 0s;
+}
+.log-box.active .register{
+  transform:translate(0px, -550px);
+  transition-delay: .5s;
+  
+}
+.error { color: red; margin-bottom: 10px; }
+.success { color: green; margin-bottom: 10px; }

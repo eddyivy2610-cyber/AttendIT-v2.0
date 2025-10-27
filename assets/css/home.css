@@ -1,0 +1,519 @@
+*{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #038BD2;
+    --secondary: #F7D00E;
+    --dark: #26242C;
+    --blue: #1d62ec;
+    --blue2: #04009a;
+    --white: #fff;
+    --white2: #ffffffea;
+    --gray: #f9f9f9;
+    --black1: #222;
+    --black2: #999;
+    --hover-color: #f0f0f0;
+    --hover-blue: #0446c8;
+    --active-color: #e0e0e0;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --purple: rgb(180, 10, 180);
+    --green: rgb(0, 147, 140);
+    --yellow: rgb(255, 168, 6);
+    --red2: #ed4431cd;
+    --green2: rgba(0, 147, 140, 0.634);
+    --bg-blue: #e8f4ff;
+    --cyan: rgb(55, 210, 210);
+    --light-blue: #c5e1f8;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+body{
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: var(--bg-blue);
+    
+}
+.container{
+    width: 100%;
+    position: relative;
+    
+}
+.navigation{
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(180deg, var(--blue) 0%, var(--blue2) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 15px 0;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    border-right:3px solid #363636;
+    position: fixed;
+    overflow: hidden;
+    transition: all 0.5s ease;
+    z-index: 100;
+}
+
+.nav-header{
+    padding: 0 20px 20px;
+    border-bottom: 1px solid rgb(158, 154, 154);
+    margin-bottom: 10px;
+}
+.logo{
+    display: flex;
+    text-decoration: none;
+    align-items: center;
+    color: var(--white);
+    font-size: 2rem;
+    font-weight: 700;
+    padding: 1 15px;
+    border-radius: 8px;
+    transition: .3s ease;
+   
+    
+}
+.logo span{
+font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif  !important;
+font-weight: bold;
+}
+.navigation.active .logo span{
+    scale: 0;
+}
+.logo img{
+    height: 40px;
+    width: 40px;
+    margin-right: 8px;
+   
+
+}
+.nav-bar{
+    list-style: none;
+    padding: 0 15px;
+    z-index: 10;
+    transition: all .5s ease; 
+}
+
+.nav-bar li{
+    margin-bottom: 5px;
+}
+.nav-bar li a, .nav-bar li div{
+    display: flex;
+    align-items: center;
+    color: var(--white);
+    text-decoration: none;
+    padding: 15px ;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: -10px;
+    font-weight: 600;
+}
+.nav-bar li a:hover, .nav-bar li div:hover{
+    background: rgba(0, 0, 0, 0.2);
+    transform: translateX(5px);
+}
+.nav-bar li a:active, .nav-bar li div:active{
+    background: rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+}
+.nav-bar li a ion-icon, .nav-bar li div ion-icon  {
+    font-size: 1.6rem;
+    margin-right: 15px;
+    min-width: 24px;
+    text-align: center;
+    margin-left: 10px;
+    pointer-events: none;
+    transition: transform .4s ease;
+}
+
+.nav-bar li a i, .nav-bar li div i{
+    font-size: 1.6rem;
+    margin-right: 14px;
+    width: 24px;
+    text-align: center;
+    margin-left: 9px;
+    transition: transform .4s ease;
+}
+
+.nav-footer{
+    padding: 15px;
+    border-top: 1px solid rgb(158, 154, 154) ;
+    margin-top: 10px;
+    transition: all .5s ease;
+}
+
+/*navigation collapse*/
+.navigation.active{
+    width: 90px;
+}
+.navigation.active .nav-bar span {
+    scale: 0;
+}
+.navigation.active .nav-bar.down li ion-icon, .navigation.active .nav-bar li div i{
+    transform: translateX(-20px);
+}
+
+.main-content{
+    position: absolute;
+    width: calc(100% - 240px);
+    margin-left: 250px;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;    
+    transition: left .5s ease, background .5s ease;
+    padding: 20px;
+    transition: all .5s ease;
+}
+.main-content.active{
+   width: calc(100% - 90px);
+   margin-left: 90px;
+   transition: all .5s ease;
+}
+/*theme toggle*/
+.container.dark .navigation{
+    background: var(--dark);
+    border-right:3px solid #444040;
+}
+.container.dark .main-content{
+    background: var(--dark);
+}
+.container.dark .page-header h1{
+    color: var(--white);
+}
+.page-header{
+    padding: 15px;
+}
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-notification.fade-out {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.toast-notification.toast-info {
+    background-color: #3498db;
+}
+
+.toast-notification.toast-success {
+    background-color: #2ecc71;
+}
+
+.toast-notification.toast-warning {
+    background-color: #f39c12;
+}
+
+.toast-notification.toast-error {
+    background-color: #e74c3c;
+}
+
+.page-content {
+    display: block !important;
+}
+
+#loading-spinner {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Notification Popup Styles */
+#notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    display: none;
+    animation: slideIn 0.3s ease-in-out;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+#notification.show {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#notification button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 15px;
+    opacity: 0.8;
+}
+
+#notification button:hover {
+    opacity: 1;
+}
+
+#notification.info {
+    background-color: #3498db;
+}
+
+#notification.success {
+    background-color: #27ae60;
+}
+
+#notification.error {
+    background-color: #e74c3c;
+}
+
+#notification.warning {
+    background-color: #f39c12;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+.fade-out {
+    animation: slideOut 0.3s ease-in-out forwards;
+}
+.sidebar-tooltip {
+    position: fixed;
+    left: 70px; 
+    top: 0;
+    z-index: 9999;
+    background: #2136f3;
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    box-shadow: 0 2px 8px rgba(33,54,243,0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, top 0.2s;
+    white-space: nowrap;
+}
+.sidebar-tooltip.active {
+    opacity: 1;
+}
+
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: var(--border-radius);
+    background: var(--secondary) !important; 
+    margin: 15px;
+    border: px solid var(--secondary);
+    box-shadow: 0 2px 8px rgba(247, 208, 14, 0.15);
+    transition: var(--transition);
+    min-width: 70px;
+    gap: 12px;
+}
+
+.user-profile:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(3, 139, 210, 0.2);
+    transform: translateY(-1px);
+}
+
+.user-avatar {
+    flex-shrink: 0;
+}
+
+.user-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--secondary);
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.user-profile:hover .user-avatar img {
+    border-color: var(--primary);
+    transform: scale(1.05);
+}
+
+.user-info {
+    flex: 1;
+    min-width: 0;
+    transition: var(--transition);
+}
+
+.user-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--dark) !important;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-role {
+    font-size: 0.8rem;
+    color: var(--black2) !important;
+    margin: 0;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Collapsed state when navigation is active */
+.navigation.active .user-profile {
+    transform: translateX(-10px);
+    padding: 10px 12px;
+    margin: 15px 8px;
+    border-color: var(--hover-color);
+    background: var(--gray);
+}
+
+.navigation.active .user-avatar img {
+    width: 40px;
+    height: 40px;
+    transform: translateX(0);
+    border-color: var(--black2);
+}
+
+.navigation.active .user-info {
+    opacity: 0;
+    transform: scale(0.8);
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Status indicator */
+.user-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    border: 2px solid var(--white);
+}
+
+.user-avatar {
+    position: relative;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .user-profile {
+        padding: 10px 12px;
+        margin: 10px;
+    }
+    
+    .user-avatar img {
+        width: 42px;
+        height: 42px;
+    }
+    
+    .user-name {
+        font-size: 0.9rem;
+    }
+    
+    .user-role {
+        font-size: 0.75rem;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .user-profile {
+        background: var(--dark);
+        border-color: var(--secondary);
+    }
+    
+    .user-name {
+        color: var(--white);
+    }
+    
+    .user-role {
+        color: var(--white2);
+    }
+    
+    .navigation.active .user-profile {
+        background: rgba(38, 36, 44, 0.9);
+    }
+}
+
+/* Focus states for accessibility */
+.user-profile:focus-within {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Loading state */
+.user-profile.loading .user-avatar img {
+    opacity: 0.7;
+}
+
+.user-profile.loading .user-name,
+.user-profile.loading .user-role {
+    background: var(--hover-color);
+    border-radius: 4px;
+    color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.user-profile.loading .user-name::after,
+.user-profile.loading .user-role::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
