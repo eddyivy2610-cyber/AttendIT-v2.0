@@ -761,7 +761,7 @@ function updateUserPreferences($data, $user_id) {
                                 </div>
                                 <div class="info-content">
                                     <h4>Repository</h4>
-                                    <a href="#" class="repo-link">View on GitHub</a>
+                                    <a href="https://github.com/eddyivy2610-cyber/AttendIT-v2.0" class="repo-link">View on GitHub</a>
                                 </div>
                             </div>
                         </div>
