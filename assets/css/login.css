@@ -1,12 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Comfortaa:wght@300..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
-* {
+ * {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   margin: 0;
   padding: 0;
 }
 
 body{
-  background: url('https://picsum.photos/id/122/3888/2592');
+  background: url('https://images.unsplash.com/photo-1760627529541-b7f2a79fa283?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=870');
   min-height:100vh;
   justify-content: center;
   align-items: center;
@@ -28,7 +27,8 @@ header {
   justify-content: center;
   padding: 20 100px;
   box-sizing: border-box;
-  z-index: 99;
+  z-index: 9999;
+  margin-bottom: 40px;
   
 }
 .background{
@@ -37,7 +37,7 @@ header {
   align-items: center;
   justify-content: center;
   display: flex;
-  background: url("https://picsum.photos/id/122/3888/2592") no-repeat;
+  background: url("https://www.freepik.com/free-photo/psychedelic-paper-shapes-different-color-tones_25633747.htm#from_element=cross_selling__photo") no-repeat;
   background-position: center;
   background-size: cover;
   filter: blur(5px);
@@ -48,6 +48,7 @@ header {
   display: flex;
   justify-content: space-around;
   padding: 1rem;
+  
 }
 .nav-item{
   display: flex;
@@ -86,186 +87,223 @@ header {
   transform: scaleX(1);
   transform-origin: left;
 }
-
-.container{
-  position: absolute;
-  width: 75%;
-  height: 550px;
-  box-shadow: 0 0 5px rgba(176, 158, 158, 0.328);
-  border-radius: 15px;
-  background: url("https://picsum.photos/id/122/3888/2592") no-repeat;
-  background-position: center;
-  background-size: cover;
-}
-.container .content{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 58%;
-  height: 100%;
-  
-}
-.texts{
-  padding: 80px;
-  display: flex;
-  flex-direction: column;
-  color: #f2f2f2;
-  justify-content: space-between;
+.registration-container {
+    position: absolute;
+    width: 50%;
+    height: auto;
+    background: transparent;
+    box-shadow: 0 0 5px rgba(176, 158, 158, 0.328);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    overflow: hidden; 
+    transform: scale(1);
+    transition: transform .5s ease, height .2s ease;
+    margin: 80px auto;
+    z-index: 1;
 }
 
-.logo{
-  margin-bottom: 7rem;
-}
-.welcome h2{
-  font-size: 40px;
-}
-
-.welcome h2 span{
-  font-size: 25px;
-}
-.welcome p{
-  font-size: 16px;
-  margin: 20px 0;
-}
-.container .log-box{
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: calc(100% - 58%);
-  height: 100%;
-  overflow: hidden;
-}
-.log-box .form-box{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  backdrop-filter: blur(20px);
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  color: #f2f2f2;
- 
+.registration-body {
+    width: 100%;
+    padding: 20px 60px;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-.form-box h2{
-  text-align: center;
-  font-size: 30px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: #fff;
+.registration-body h2 {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    color: #fff;
 }
-.form-box .input-box{
-  position: relative;
-  width: 350px;
-  margin: 30px 0;
-  height: 50px;   
-  border-bottom: 2px solid #fff;
-}
-.form-box .input-box label{
-  position: absolute;
-  top:50%;
-  left: 5px;
-  color: #fff;
-  font-size: 1em;
-  pointer-events: none;
-  transform: translateY(-50%);
-  transition: .5s;
-  font-weight: 400;
-}
-.form-box .input-box input{
-  min-width: 93%;
-  height: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #ffffff;
-  font-weight: 600;
-}
-.form-box .input-box .icon{
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.2rem;
-  color: #fff;
-  line-height: 57px;
-} 
-.form-box .input-box input:focus ~ label,
-.form-box .input-box input:valid ~ label{
-  top: -5px;
-}               
 
-.form-box .remember-forgot{
-  font-size: 14px;
-  font-weight: 400;
-  color: #ffffff;
-  margin: -15px 2 15px;
-  display: flex;
-  justify-content: space-between;
+.form-row {
+    display: flex;
+    gap: 35px;
+    margin-bottom: 15px;
 }
-.form-box .remember-forgot label input{
-  margin-right: 3px;
-}
-.form-box .remember-forgot a{
-  color: #000000;
-  text-decoration: none;
-}
-.form-box .remember-forgot a:hover{
-  text-decoration: underline;
-}
-.form-box .btn{
-  width: 100%;
-  height: 50px;
-  background: #ffffffbe;
-  border: none;
-  outline: none;
-  border-radius: 6px;
-  font-size: 1.2em;
-  font-weight: 600;
-  cursor: pointer;
-  transition: .3s;
-  margin-top: 20px;
-}
-.form-box .btn:hover{
-  background: #fffdfa;
 
+.form-group {
+    flex: 1;
+    margin-bottom: 20px;
 }
-.form-box .login-register{
-  font-size: 14px;
-  color: #1f0909;
-  text-align: center;
-  margin: 20px 0 0;
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #fff;
+    font-size: 14px;
 }
-.form-box .login-register a{
-  color: #552c00;
-  text-decoration: none;
-  font-weight: 600;
+
+.form-label .required {
+    color: #ff6b6b;
 }
-.form-box .login-register a:hover{
-  text-decoration: underline;
+
+.form-input, .form-select, .form-textarea {
+    appearance: none;
+    width: 100%;
+    padding: 12px 15px;
+    background:  var(--dark);
+    border: 2px solid #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #fff;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
-.log-box .register{
-  transition: transform .5s ease;
-  transform: translate(700px, -550px);
-  transition-delay: 0s;
+
+.form-select:focus{
+    background-color: #002e698c;
+}
+
+.form-input::placeholder, .form-select option {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none;
+    border-color: #ffd9aa;
+    box-shadow: 0 0 0 3px rgba(255, 217, 170, 0.1);
+}
 
 
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
 }
-.log-box .form-box.login{
-  transform: translateX(0);
-  transition: transform .6s ease;
-  transition-delay: .5s;
+
+.btn-register {
+    width: 100%;
+    padding: 15px;
+    background: #ffffffbe;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+    margin-top: 10px;
 }
-.log-box.active .form-box.login{
-  transform: translateX(550px);
-  transition-delay: 0s;
+
+.btn-register:hover {
+    background: #fffdfa;
+    transform: translateY(-2px);
 }
-.log-box.active .register{
-  transform:translate(0px, -550px);
-  transition-delay: .5s;
-  
+
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #fff;
+    font-size: 14px;
 }
-.error { color: red; margin-bottom: 10px; }
-.success { color: green; margin-bottom: 10px; }
+
+.login-link a {
+    color: #ffd9aa;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Image Upload Styles matching the theme */
+.image-upload {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #fff;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.image-upload:hover {
+    border-color: #ffd9aa;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.image-upload input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 150px;
+    margin-top: 15px;
+    border-radius: 8px;
+    display: none;
+    border: 2px solid #fff;
+}
+
+.image-upload-icon {
+    font-size: 36px;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.image-upload-text {
+    color: #fff;
+    text-align: center;
+}
+
+.image-upload-text strong {
+    color: #ffd9aa;
+}
+
+.upload-error {
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* Alert styles matching login page */
+.alert {
+    padding: 12px;
+    border-radius: 5px;
+    margin: 10px 0;
+    text-align: center;
+    font-weight: 600;
+}
+
+.alert-success {
+    background: rgba(235, 251, 238, 0.9);
+    color: #51cf66;
+    border: 1px solid #51cf66;
+}
+
+.alert-error {
+    background: rgba(255, 234, 234, 0.9);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+}
+
+@media (max-width: 850px) {
+    .registration-container {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .registration-body {
+        padding: 20px;
+    }
+}

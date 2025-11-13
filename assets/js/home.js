@@ -42,19 +42,54 @@ toggle.onclick = function () {
   tooltip.classList.remove('active'); // Hide tooltip when toggling
 };
 
-theme.addEventListener('click' , () => {
-    container.classList.toggle('dark');
-    
-    if (mode){
-        if (container.classList.contains('dark')){
-            mode.setAttribute('name', 'contrast');
-            display.textContent = 'Light UI';
 
-        }else{
-            mode.setAttribute('name', 'contrast-outline');
-            display.textContent = 'Dark UI';
-        }
+
+// ----- THEME TOGGLE -----
+theme.addEventListener('click', () => {
+  container.classList.toggle('dark');
+
+  if (container.classList.contains('dark')) {
+    mode?.setAttribute('name', 'contrast');
+    display.textContent = 'Light UI';
+    localStorage.setItem('theme', 'dark');
+  } else {
+    mode?.setAttribute('name', 'contrast-outline');
+    display.textContent = 'Dark UI';
+    localStorage.setItem('theme', 'light');
+  }
+});
+
+// ----- PAGE INITIALIZATION -----
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+
+  if (savedTheme) {
+    
+    if (savedTheme === 'dark') {
+      container.classList.add('dark');
+      mode?.setAttribute('name', 'contrast');
+      display.textContent = 'Light UI';
+    } else {
+      container.classList.remove('dark');
+      mode?.setAttribute('name', 'contrast-outline');
+      display.textContent = 'Dark UI';
     }
+  } else {
+  
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      container.classList.add('dark');
+      mode?.setAttribute('name', 'contrast');
+      display.textContent = 'Light UI';
+    }
+  }
+});
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
+  if (!localStorage.getItem("theme")) {
+    if (e.matches) container.classList.add("dark");
+    else container.classList.remove("dark");
+  }
 });
 
 
@@ -186,7 +221,7 @@ function initPageFunctionality(page) {
         console.log('Navigating to:', page);
         showLoading();
         
-        // Small delay to show loading spinner
+       
         setTimeout(function() {
             window.location.href = `?page=${page}`;
         }, 100);

@@ -183,6 +183,7 @@ font-weight: bold;
 }
 .container.dark .main-content{
     background: var(--dark);
+    transition: var(--transition);
 }
 .container.dark .page-header h1{
     color: var(--white);
@@ -461,25 +462,7 @@ font-weight: bold;
     }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-    .user-profile {
-        background: var(--dark);
-        border-color: var(--secondary);
-    }
-    
-    .user-name {
-        color: var(--white);
-    }
-    
-    .user-role {
-        color: var(--white2);
-    }
-    
-    .navigation.active .user-profile {
-        background: rgba(38, 36, 44, 0.9);
-    }
-}
+
 
 /* Focus states for accessibility */
 .user-profile:focus-within {
@@ -516,4 +499,8 @@ font-weight: bold;
 @keyframes loading {
     0% { left: -100%; }
     100% { left: 100%; }
+}
+
+.container.dark .main-content span {
+    color: var(--white);
 }

@@ -1,9 +1,46 @@
+.filter-section {
+    justify-content: flex-end;
+    padding: 10px 12px;
+    display: flex;
+    margin-bottom: 10px;
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.container.dark .filter-section{
+    background: var(--dark);
+    border:3px solid #444040;
+    border-bottom: none;
+}
+
+.filter-actions{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.container.dark .search-box input{
+    background:#444040 ;
+    color: var(--bg-blue);
+}
+.container.dark .search-box input:focus {
+    border: 1px solid white;
+}
 /* Students Table Optimizations */
 .students-table-container {
     overflow-x: auto;
     background: var(--white);
     border-radius: var(--border-radius);
     border: 1px solid var(--hover-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+}
+.container.dark .students-table-container{
+    background: var(--dark);
+    border:3px solid #444040;
 }
 
 .students-table {
@@ -11,7 +48,10 @@
     border-collapse: collapse;
     font-size: 0.85rem;
 }
-
+.container.dark .students-table th {
+    background: var(--dark);
+    color: var(--bg-blue);
+}
 .students-table th {
     background: var(--gray);
     padding: 12px 8px;
@@ -28,7 +68,9 @@
     color: var(--black2);
     vertical-align: middle;
 }
-
+.container.dark .students-table td{
+    color: var(--white);
+}
 .students-table tr:last-child td {
     border-bottom: none;
 }
@@ -36,6 +78,11 @@
 .students-table tr:hover {
     background: var(--hover-color);
 }
+.container.dark .students-table tr:hover{
+    background: rgba(105, 104, 104, 0.582);
+}
+
+
 
 /* Skill Interest Column */
 .skill-interest {
@@ -57,12 +104,21 @@
     border: 1px solid var(--primary);
 }
 
+.container.dark .skill-text{
+    background: var(--light-blue) !important;
+    color: var(--blue2) !important;
+}
+
 /* Action Buttons */
 .actions-header {
     width: 80px;
     text-align: center;
 }
-
+.action-btn{
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+}
 .action-buttons {
     display: flex;
     gap: 4px;
@@ -253,6 +309,9 @@
     background: var(--hover-color);
 }
 
+
+
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .students-table {
@@ -297,4 +356,219 @@
         margin: 10% auto;
         width: 95%;
     }
+}
+
+
+.export-btn {
+    background: var(--blue) !important;
+    color: var(--white);
+    border: none;
+    padding: 8px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: small !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: background-color 0.3s;
+}
+.container.dark .export-btn{
+    background: var(--bg-blue) !important;
+    color: var(--blue);
+}
+
+.export-btn:hover {
+    background-color: var(--hover-blue) !important;
+}
+.container.dark .export-btn:hover {
+    background-color: var(--blue)!important;
+    color: var(--white);
+}
+/* Year Pagination */
+.year-pagination {
+    display: flex;
+    gap: 10px;
+    
+    overflow-x: auto;
+    padding-bottom: 5px;
+    
+}
+
+.year-pagination::-webkit-scrollbar {
+    height: 5px;
+}
+
+.year-pagination::-webkit-scrollbar-track {
+    background: var(--blue);
+}
+
+.year-pagination::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+    border-radius: 5px;
+}
+
+.year-btn {
+    padding: 5px 10px;
+    background-color: var(--white);
+    border: 1px solid var(--black2);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    font-size:small;
+}
+
+.container.dark .year-btn{
+    background: var(--bg-blue);
+    border: 1px solid var(--dark-blue2);
+    color:var(--blue)
+
+}
+.container.dark .year-btn.active{
+   background-color: var(--hover-blue);
+   color: var(--bg-blue);
+}
+.year-btn.active {
+    background-color: var(--hover-blue);
+    color: var(--white);
+    border-color: var(--blue);
+}
+
+.year-btn:hover {
+    background-color: var(--blue);
+    color: var(--white);
+    border-color: var(--blue);
+}
+.container.dark .year-btn:hover {
+    background-color: var(--blue);
+    color: var(--white);
+    border-color: var(--blue);
+}
+.table-pagination{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+.container.dark .table-pagination{
+    background: var(--dark);
+    border:3px solid #444040;
+
+}
+
+.pagination-info{
+    font-size: 13px;
+    color: var(--black2);
+    padding: 8px;
+}
+
+.pagination-controls{
+    display: flex;
+    gap: 4px;
+   
+    padding: 8px;
+    border-radius: 8px;
+    
+}
+.pagination-btn{
+    width: 28px;
+    height: 28px;
+    border-radius: 5px;
+    background: none;
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 12px;
+    border: 1px solid;
+}
+
+.container.dark .pagination-btn{
+    color: var(--blue);
+    background-color: var(--bg-blue);
+}
+.container.dark .pagination-btn:hover{
+     background-color: var(--blue);
+     color: var(--white);
+}
+.pagination-btn:hover{
+    background-color: var(--blue);
+    color: var(--white);
+    border-color: var(--blue);
+}
+.pagination-btn.active{
+    background-color: var(--blue);
+    color: var(--white);
+    border-color: var(--blue);
+}
+.container.dark .pagination-btn.active{
+    background-color: var(--blue);
+    color: var(--white);
+     border-color: var(--blue);
+}
+.pagination-btn:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.image-upload {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #fff;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.image-upload:hover {
+    border-color: var(--dark);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.image-upload input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 150px;
+    margin-top: 15px;
+    border-radius: 8px;
+    display: none;
+    border: 2px solid var();
+}
+
+.image-upload-icon {
+    font-size: 36px;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.image-upload-text {
+    color: rgba(73, 72, 72, 0.5);
+    text-align: center;
+}
+
+.image-upload-text strong {
+    color: var(--dark);
+}
+
+.upload-error {
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-top: 5px;
+    text-align: center;
 }

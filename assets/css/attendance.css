@@ -17,10 +17,16 @@
     transition: var(--transition);
     border: 1px solid var(--hover-color);
 }
-
+.container.dark .summary-card {
+    background: var(--dark);
+    border:3px solid #444040;
+}
 .summary-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+.container.dark .summary-card:hover{
+    border:3px solid #f5f5f5;
 }
 
 .summary-card i {
@@ -35,19 +41,23 @@
 }
 
 .summary-card.present i {
-    background: var(--success);
+    background: rgba(84, 235, 129, 0.1);
+    color: var(--success);
 }
 
 .summary-card.absent i {
-    background: var(--danger);
+    background: rgba(235, 84, 84, 0.1);
+    color: var(--danger);
 }
 
 .summary-card.late i {
-    background: var(--warning);
+    background: rgba(235, 170, 84, 0.1);
+    color: var(--warning);
 }
 
 .summary-card.expected i {
-    background: var(--primary);
+    background: rgba(84, 167, 235, 0.1);
+    color: var(--primary);
 }
 
 .summary-card h3 {
@@ -56,7 +66,9 @@
     font-weight: 700;
     color: var(--dark);
 }
-
+.container.dark .summary-card h3{
+    color: var(--white);
+}
 .summary-card p {
     margin: 0;
     color: var(--black2);
@@ -69,6 +81,11 @@
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--hover-color);
+}
+
+.container.dark .students-container{
+    background: var(--dark);
+    border:3px solid #444040;
 }
 
 .students-header {
@@ -84,7 +101,9 @@
     margin: 0;
     color: var(--dark);
 }
-
+.container.dark .students-header h2{
+    color: var(--bg-blue);
+}
 .search-box {
     position: relative;
     flex-grow: 1;
@@ -118,7 +137,6 @@
     display: flex;
     gap: 10px;
 }
-
 .students-table {
     width: 100%;
     border-collapse: collapse;
@@ -133,6 +151,10 @@
     border-bottom: 1px solid var(--hover-color);
 }
 
+.container.dark .students-table th,
+.students-table td {
+    border-bottom: 1px solid #444040;
+}
 .students-table th {
     background: var(--gray);
     font-weight: 600;
@@ -143,6 +165,9 @@
 /* Institution Header Styles */
 .institution-header {
     background: var(--bg-blue) !important;
+}
+.container.dark .institution-header {
+    background-color: #444040 !important;
 }
 
 .institution-name {
@@ -275,8 +300,8 @@
     transform: none !important;
 }
 
-.btn-primary {
-    background: var(--primary);
+.attendance-actions .btn-primary {
+    background: var(--blue);
     color: var(--white);
 }
 
@@ -312,12 +337,13 @@
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+   
 }
 
 .btn-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    background: var(--bg-blue);
+    color: var(--blue);
 }
 
 .alert {

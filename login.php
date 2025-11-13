@@ -23,7 +23,7 @@ if (!$config_loaded) {
 
 // If already logged in, redirect to dashboard
 if (isset($_SESSION['user_id'])) {
-    header("Location: home.php");
+    header("Location: index.php");
     exit();
 }
 
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_email']) && isse
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([$user['user_id']]);
                 
-                header("Location: home.php");
+                header("Location: index.php");
                 exit();
             } else {
                 $error = "Your account has been deactivated.";
@@ -102,14 +102,15 @@ header {
   position: fixed;
   top: 0;
   left: 0;
+  bottom: 70px;
   width: 100%;
   height: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20 100px;
+  padding: 30 100px;
   box-sizing: border-box;
-  z-index: 99;
+  z-index: 999;
   
 }
 .background{
@@ -319,6 +320,7 @@ header {
   text-align: center;
   margin: 20px 0 0;
 }
+
 .form-box .login-register a{
   color: #552c00;
   text-decoration: none;
@@ -355,7 +357,7 @@ header {
     
     <header>
         <nav class="navbar">
-            <a href="home.php" class="nav-item" onclick="return checkLogin('home');"><ion-icon name="home"></ion-icon><span>home</span></a>
+            <a href="index.php" class="nav-item" onclick="return checkLogin('home');"><ion-icon name="home"></ion-icon><span>home</span></a>
             <a href="settings.php" class="nav-item"><ion-icon name="cog"></ion-icon><span>settings</span></a>
             <a href="register.php" class="nav-item"><ion-icon name="person-add"></ion-icon><span>new</span></a>
             <a href="register.php" class="nav-item"><ion-icon name="information-circle"></ion-icon><span>about</span></a>
@@ -431,21 +433,20 @@ header {
                 });
             }
         });
-        // Check if user is logged in before navigating to home/dashboard
+        // Check if user is logged in 
         function checkLogin(destination) {
-            // This is a simple client-side check
-            // The server will handle the actual authentication
-            return true; // Let the server handle the redirect
+            
+            return true; 
         }
         
         // Demo credentials auto-fill for testing
         document.addEventListener('DOMContentLoaded', function() {
-            // Auto-fill demo credentials for easier testing
+            
             const emailField = document.querySelector('input[name="user_email"]');
             const passwordField = document.querySelector('input[name="password"]');
             
             if (emailField && !emailField.value) {
-                emailField.value = 'supervisor@company.com';
+                emailField.value = 'info@ncat.gov.ng';
             }
             if (passwordField && !passwordField.value) {
                 passwordField.value = 'password';

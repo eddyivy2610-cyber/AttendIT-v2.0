@@ -11,10 +11,142 @@ $students = $student->read();
 
 $institution = new Institution($db);
 $institutions = $institution->read();
+
+$success_message = '';
+$error_message = '';
+$form_data = [];
+$upload_error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $result = processRegistration($_POST, files: $_FILES);
+    
+    if ($result['success']) {
+        $success_message = $result['message'];
+        $form_data = [];
+    } else {
+        $error_message = $result['message'];
+        $upload_error = $result['upload_error'] ?? '';
+        $form_data = $_POST;
+    }
+}
+
+function processRegistration($post_data, $files) {
+    try {
+       
+        $database = new Database();
+        $db = $database->getConnection();
+        $student = new Student($db);
+        
+        
+        $required_fields = ['student_name', 'email', 'phone', 'course_of_study', 'institution_id', 'gender'];
+        foreach ($required_fields as $field) {
+            if (empty(trim($post_data[$field] ?? ''))) {
+                return ['success' => false, 'message' => "Please fill in all required fields."];
+            }
+        }
+        
+        
+        if (!filter_var($post_data['email'], FILTER_VALIDATE_EMAIL)) {
+            return ['success' => false, 'message' => "Please enter a valid email address."];
+        }
+        
+        
+        $photo_url = '';
+        if (!empty($files['passport_image']) && $files['passport_image']['error'] === UPLOAD_ERR_OK) {
+            $upload_result = handlePassportUpload($files['passport_image']);
+            if (!$upload_result['success']) {
+                return [
+                    'success' => false, 
+                    'message' => "Registration failed due to image upload error.",
+                    'upload_error' => $upload_result['message']
+                ];
+            }
+            $photo_url = $upload_result['file_path'];
+        }
+        
+        
+        $student->student_name = trim($post_data['student_name']);
+        $student->email = trim($post_data['email']);
+        $student->phone = trim($post_data['phone']);
+        $student->course_of_study = trim($post_data['course_of_study']);
+        $student->institution_id = intval($post_data['institution_id']);
+        $student->gender = trim($post_data['gender']);
+        $student->period_of_attachment = trim($post_data['period_of_attachment'] ?? '');
+        $student->birthday = !empty($post_data['birthday']) ? $post_data['birthday'] : null;
+        $student->skill_of_interest = trim($post_data['skill_of_interest'] ?? '');
+        $student->supervisor = trim($post_data['supervisor'] ?? '');
+        $student->photo_url = $photo_url;
+        $student->join_date = date('Y-m-d');
+        $student->status = 'Active';
+
+        
+        if (!empty($post_data['period_of_attachment'])) {
+            $period_months = intval($post_data['period_of_attachment']);
+            $student->end_date = date('Y-m-d', strtotime("+$period_months months"));
+        }
+        
+        
+        if ($student->create()) {
+            return [
+                'success' => true, 
+                'message' => "Registration successful! Welcome to AttendIt."
+            ];
+        } else {
+            return ['success' => false, 'message' => "Unable to complete registration. Please try again."];
+        }
+        
+    } catch (Exception $e) {
+        error_log("Registration error: " . $e->getMessage());
+        return ['success' => false, 'message' => "System error. Please contact administrator."];
+    }
+}
+
+function handlePassportUpload($file) {
+    try {
+        // Check if file is an image
+        $check = getimagesize($file['tmp_name']);
+        if ($check === false) {
+            return ['success' => false, 'message' => "File is not an image."];
+        }
+        
+        // Check file size (limit to 2MB)
+        if ($file['size'] > 2000000) {
+            return ['success' => false, 'message' => "File is too large. Maximum size is 2MB."];
+        }
+        
+        // Allow certain file formats
+        $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+        $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($file_ext, $allowed_types)) {
+            return ['success' => false, 'message' => "Only JPG, JPEG, PNG & GIF files are allowed."];
+        }
+        
+        // Create uploads directory if it doesn't exist
+        $upload_dir = 'uploads/passports/';
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+        
+        // Generate unique filename
+        $new_filename = uniqid('passport_', true) . '.' . $file_ext;
+        $target_file = $upload_dir . $new_filename;
+        
+        // Move file to uploads directory
+        if (move_uploaded_file($file['tmp_name'], $target_file)) {
+            return ['success' => true, 'file_path' => $target_file];
+        } else {
+            return ['success' => false, 'message' => "Error uploading file."];
+        }
+    } catch (Exception $e) {
+        error_log("Image upload error: " . $e->getMessage());
+        return ['success' => false, 'message' => "System error during image upload."];
+    }
+}
+
 ?>
 <div id="students-page" class="page-content">
     <div class="content">
-        <!-- Unified Filter Section -->
+       
         <div class="filter-section">
             <div class="filter-actions">
                 <div class="year-pagination">
@@ -159,42 +291,63 @@ $institutions = $institution->read();
     <div class="modal-content">
         <div class="modal-header">
             <h3>Add New Student</h3>
+            <?php if ($success_message): ?>
+                <div class="alert alert-success">
+                    <ion-icon name="checkmark-circle"></ion-icon> <?php echo htmlspecialchars($success_message); ?>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($error_message): ?>
+                <div class="alert alert-error">
+                    <ion-icon name="close-circle"></ion-icon> <?php echo htmlspecialchars($error_message); ?>
+                </div>
+            <?php endif; ?>
             <span class="close" onclick="closeAddStudentModal()">&times;</span>
         </div>
+
+        
         <div class="modal-body">
-            <form id="addStudentForm">
+            <form method="POST" id="addStudentForm" enctype="multipart/form-data">
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Full Name *</label>
-                        <input type="text" name="student_name" required>
+                        <label for="student_name">Full Name *</label>
+                        <input type="text" id="student_name" name="student_name" 
+                               value="<?php echo htmlspecialchars($form_data['student_name'] ?? ''); ?>" 
+                               placeholder="Enter your full name" required>
                     </div>
                     <div class="form-group">
-                        <label>Email *</label>
-                        <input type="email" name="email" required>
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" 
+                               value="<?php echo htmlspecialchars($form_data['email'] ?? ''); ?>" 
+                               placeholder="Enter your email address" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Phone</label>
-                        <input type="tel" name="phone">
+                        <label for="phone">Phone</label>
+                       <input type="tel" id="phone" name="phone" 
+                               value="<?php echo htmlspecialchars($form_data['phone'] ?? ''); ?>" 
+                               placeholder="+2348012345678" required>
                     </div>
                     <div class="form-group">
-                        <label>Gender *</label>
-                        <select name="gender" required>
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+                        <label for="gender">Gender *</label>
+                         <select id="gender" name="gender" required>
+                            <option value="">Select gender</option>
+                            <option value="Male" <?php echo (($form_data['gender'] ?? '') == 'Male') ? 'selected' : ''; ?>>Male</option>
+                            <option value="Female" <?php echo (($form_data['gender'] ?? '') == 'Female') ? 'selected' : ''; ?>>Female</option>
+                            <option value="Other" <?php echo (($form_data['gender'] ?? '') == 'Other') ? 'selected' : ''; ?>>Other</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Course of Study *</label>
-                        <input type="text" name="course_of_study" required>
+                        <label for="course_of_study">Course of Study *</label>
+                        <input type="text" class="form-input" id="course_of_study" name="course_of_study" 
+                               value="<?php echo htmlspecialchars($form_data['course_of_study'] ?? ''); ?>" 
+                               placeholder="e.g., Computer Science, Engineering" required>
                     </div>
                     <div class="form-group">
-                        <label>Institution *</label>
+                        <label for="institution_id">Institution *</label>
                         <select name="institution_id" required>
                             <option value="">Select Institution</option>
                             <?php
@@ -209,29 +362,40 @@ $institutions = $institution->read();
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Skill Interest</label>
-                        <input type="text" name="skill_of_interest" placeholder="e.g., Web Development, Data Analysis">
+                        <label for="skill_of_interest">Skill Interest</label>
+                        <input type="text" id="skill_of_interest" name="skill_of_interest" 
+                           value="<?php echo htmlspecialchars($form_data['skill_of_interest'] ?? ''); ?>" 
+                           placeholder="e.g., Web Development, Data Analysis">
                     </div>
                     <div class="form-group">
-                        <label>Period of Attachment (months)</label>
-                        <input type="number" name="period_of_attachment" min="1" max="24" value="6">
+                        <label for="period_of_attachment">Period of Attachment (months)</label>
+                        <input type="number"  id="period_of_attachment" name="period_of_attachment" 
+                               value="<?php echo htmlspecialchars($form_data['period_of_attachment'] ?? '6'); ?>" 
+                               placeholder="e.g., 6" min="1" max="24">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Supervisor</label>
-                        <input type="text" name="supervisor">
-                    </div>
-                    <div class="form-group">
-                        <label>Birthday</label>
-                        <input type="date" name="birthday">
+                        <label class="form-label" for="passport_image">Passport Photo</label>
+                        <div class="image-upload" id="imageUpload">
+                            <input type="file" id="passport_image" name="passport_image" accept="image/*">
+                            <ion-icon name="cloud-upload-outline" class="image-upload-icon"></ion-icon>
+                            <div class="image-upload-text">
+                                <strong>Click to upload</strong> or drag and drop<br>
+                                <small>JPG, PNG, GIF (Max 2MB)</small>
+                            </div>
+                        </div>
+                        <img id="imagePreview" class="image-preview" alt="Passport Preview">
+                        <?php if ($upload_error): ?>
+                            <div class="upload-error"><?php echo htmlspecialchars($upload_error); ?></div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
             <button class="btn-secondary" onclick="closeAddStudentModal()">Cancel</button>
-            <button class="btn-primary" onclick="saveStudent()">Save Student</button>
+            <button type="submit" class="btn-primary" id="submitBtn" onclick="saveStudent()">Save Student</button>
         </div>
     </div>
 </div>
@@ -372,6 +536,104 @@ window.onclick = function(event) {
         closeAddStudentModal();
     }
 }
+
+
+// Form validation and functionality
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        const form = this;
+        const submitButton = document.getElementById('submitBtn');
+        
+        // Basic validation
+        const requiredFields = form.querySelectorAll('[required]');
+        let valid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                valid = false;
+                field.style.borderColor = '#ff6b6b';
+            } else {
+                field.style.borderColor = '#fff';
+            }
+        });
+        
+        if (!valid) {
+            e.preventDefault();
+            return;
+        }
+        
+        // Show loading state
+        submitButton.innerHTML = '<ion-icon name="refresh-circle"></ion-icon> Registering...';
+        submitButton.disabled = true;
+    });
+
+    // Phone number formatting
+    document.getElementById('phone').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.startsWith('234') && value.length === 13) {
+            value = '+' + value;
+        } else if (value.length === 11 && value.startsWith('0')) {
+            value = '+234' + value.substring(1);
+        }
+        e.target.value = value;
+    });
+
+    // Image preview
+    const imageUpload = document.getElementById('imageUpload');
+    const imageInput = document.getElementById('passport_image');
+    const imagePreview = document.getElementById('imagePreview');
+    
+    imageInput.addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            }
+            
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+
+    // Drag and drop functionality
+    imageUpload.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '#ffd9aa';
+        this.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+    });
+
+    imageUpload.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '#fff';
+        this.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+    });
+
+    imageUpload.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.style.borderColor = '#fff';
+        this.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            imageInput.files = e.dataTransfer.files;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+            }
+            reader.readAsDataURL(e.dataTransfer.files[0]);
+        }
+    });
+
+    // Auto-hide messages
+    <?php if ($success_message): ?>
+    setTimeout(() => {
+        const successAlert = document.querySelector('.alert-success');
+        if (successAlert) {
+            successAlert.style.display = 'none';
+        }
+    }, 8000);
+    <?php endif; ?>
 
 // Make functions global
 window.viewStudentReport = viewStudentReport;

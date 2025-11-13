@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 $current_user = [
     'user_id' => $_SESSION['user_id'],
     'username' => $_SESSION['username'],
-    'email' => $_SESSION['email'],
+    'email' => $_SESSION['user_email'],
     'role' => $_SESSION['role']
 ];
 
@@ -367,7 +367,7 @@ function updateUserPreferences($data, $user_id) {
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="theme">Theme</label>
-                                <select id="theme" name="theme">
+                                <select id="themeSelect" name="theme">
                                     <option value="light">Light</option>
                                     <option value="dark">Dark</option>
                                     <option value="auto">Auto (System)</option>
@@ -614,7 +614,7 @@ function updateUserPreferences($data, $user_id) {
                                 </div>
                                 <div class="member-info">
                                     <h4>Adeyefa Faith</h4>
-                                    <p class="member-role">Project Lead & UI/UX designer</p>
+                                    <p class="member-role">Project Lead</p>
                                     <div class="member-contributions">
                                         <span class="contribution-tag">System Architecture</span>
                                         <span class="contribution-tag">Team Organisation</span>
@@ -671,7 +671,6 @@ function updateUserPreferences($data, $user_id) {
                                     <h4>Peter Banes</h4>
                                     <p class="member-role">Interface and Visual Planner</p>
                                     <div class="member-contributions">
-                                        <span class="contribution-tag">Logo Design</span>
                                         <span class="contribution-tag">User Experience Planner</span>
                                         <span class="contribution-tag">Project Name</span>
                                     </div>
@@ -711,7 +710,7 @@ function updateUserPreferences($data, $user_id) {
                                     <img src="https://picsum.photos/seed/emily/80/80.jpg" alt="">
                                 </div>
                                 <div class="member-info">
-                                    <h4>Okechukwu</h4>
+                                    <h4>Okechukwu Onaiah</h4>
                                     <p class="member-role">Developer</p>
                                     <div class="member-contributions">
                                         <span class="contribution-tag">Frontend Design-Attendance</span>
@@ -724,10 +723,23 @@ function updateUserPreferences($data, $user_id) {
                                     <img src="https://picsum.photos/seed/emily/80/80.jpg" alt="">
                                 </div>
                                 <div class="member-info">
-                                    <h4>Mariam</h4>
+                                    <h4>Mariam Abubakar</h4>
                                     <p class="member-role">Developer</p>
                                     <div class="member-contributions">
                                         <span class="contribution-tag">Frontend Design-Register</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="team-member">
+                                <div class="member-avatar">
+                                    <img src="https://picsum.photos/seed/emily/80/80.jpg" alt="">
+                                </div>
+                                <div class="member-info">
+                                    <h4>Paschal Onyedikachi</h4>
+                                    <p class="member-role">Developer</p>
+                                    <div class="member-contributions">
+                                        <span class="contribution-tag">Frontend Design-Attendance</span>
                                     </div>
                                 </div>
                             </div>
@@ -758,8 +770,6 @@ function updateUserPreferences($data, $user_id) {
             </div>  
 
         </div>
-
-       
     </div>
 </div>
 

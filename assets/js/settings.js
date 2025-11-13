@@ -1,4 +1,3 @@
-// Tab navigation
 document.addEventListener('DOMContentLoaded', function() {
     const navItems = document.querySelectorAll('.nav-item');
     const tabs = document.querySelectorAll('.settings-tab');
@@ -7,11 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
         item.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Remove active class from all items and tabs
+          
             navItems.forEach(nav => nav.classList.remove('active'));
             tabs.forEach(tab => tab.classList.remove('active'));
             
-            // Add active class to clicked item
+            
             this.classList.add('active');
             
             // Show corresponding tab

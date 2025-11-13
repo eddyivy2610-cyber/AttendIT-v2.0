@@ -3,7 +3,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Include required files with error checking
  $requiredFiles = [
     __DIR__ . '/../config.php',
     __DIR__ . '/../model/students.php',
@@ -19,7 +18,6 @@ foreach ($requiredFiles as $file) {
     include_once $file;
 }
 
-// Check if classes exist before using them
  $requiredClasses = ['Database', 'Student', 'Attendance', 'Institution', 'SummaryService'];
 foreach ($requiredClasses as $className) {
     if (!class_exists($className)) {
@@ -40,7 +38,7 @@ try {
     $institution = new Institution($db);
     $summaryService = new SummaryService($db);
     
-    // Get dashboard statistics with error handling
+   
     try {
         // Get total active students
         $totalStudentsQuery = "SELECT COUNT(*) as total FROM students WHERE status = 'Active'";
@@ -49,17 +47,16 @@ try {
         $totalResult = $totalStmt->fetch(PDO::FETCH_ASSOC);
         $totalStudents = $totalResult['total'] ?? 0;
         
-        // Get today's summary from SummaryService
+        // Get and use today's summary from SummaryService
         $todaySummary = $summaryService->getTodaysSummary();
         
-        // Use the values from the summary service
         $presentCount = $todaySummary['present_count'] ?? 0;
         $lateCount = $todaySummary['late_count'] ?? 0;
         $absentCount = $todaySummary['absent_count'] ?? 0;
         $totalToday = $todaySummary['total_students'] ?? $totalStudents;
         $attendanceRate = $todaySummary['attendance_rate'] ?? 0;
         
-        // Calculate active students for display
+       
         $activeStudents = $presentCount + $lateCount;
         
         // Get recently added students
@@ -73,7 +70,7 @@ try {
         
     } catch (Exception $e) {
         error_log("Dashboard error: " . $e->getMessage());
-        // Set default values on error
+       
         $totalStudents = 0;
         $presentCount = 0;
         $lateCount = 0;
@@ -116,7 +113,7 @@ try {
                     <ion-icon name="folder-open-outline"></ion-icon>
                 </div>
             </div>
-            <div class="card-value">36</div>
+            <div class="card-value">-</div>
         </div>
     
         <div class="card">

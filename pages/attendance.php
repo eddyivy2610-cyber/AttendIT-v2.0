@@ -188,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Display messages from session
+
  $success_message = $_SESSION['success_message'] ?? null;
  $error_message = $_SESSION['error_message'] ?? null;
 unset($_SESSION['success_message'], $_SESSION['error_message']);
@@ -199,7 +199,7 @@ unset($_SESSION['success_message'], $_SESSION['error_message']);
 
 <!-- Attendance Content -->
 <div id="attendance-page" class="page-content">
-    <!-- Display Messages -->
+
     <?php if($success_message): ?>
     <div class="alert alert-success">
         <i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($success_message); ?>
@@ -211,28 +211,6 @@ unset($_SESSION['success_message'], $_SESSION['error_message']);
         <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($error_message); ?>
     </div>
     <?php endif; ?>
-
-    <!-- Debug Info Panel -->
-    <div class="debug-panel" style="background: #f8f9fa; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #dee2e6; display: none";>
-        <h4 style="margin-top: 0;">Debug Information</h4>
-        <div style="font-family: monospace; font-size: 12px;">
-            <strong>Today's Date:</strong> <?php echo date('Y-m-d'); ?><br>
-            <strong>Attendance Records:</strong> <?php 
-                $checkQuery = "SELECT COUNT(*) FROM attendance WHERE attendance_date = ?";
-                $checkStmt = $db->prepare($checkQuery);
-                $checkStmt->execute([date('Y-m-d')]);
-                echo $checkStmt->fetch(PDO::FETCH_ASSOC)['COUNT(*)'];
-            ?><br>
-            <strong>Daily Summary Records:</strong> <?php 
-                $checkQuery = "SELECT COUNT(*) FROM daily_summaries WHERE summary_date = ?";
-                $checkStmt = $db->prepare($checkQuery);
-                $checkStmt->execute([date('Y-m-d')]);
-                echo $checkStmt->fetch(PDO::FETCH_ASSOC)['COUNT(*)'];
-            ?><br>
-            <strong>Database Connection:</strong> <?php echo $db ? 'Connected' : 'Not Connected'; ?><br>
-            <a href="test_attendance.php" target="_blank" style="color: #007bff;">Run Full Database Test</a>
-        </div>
-    </div>
 
     <!-- Attendance Summary Cards -->
     <div class="attendance-summary">

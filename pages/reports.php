@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Include required files with error checking
+
 $requiredFiles = [
     __DIR__ . '/../config.php',
     __DIR__ . '/../model/students.php',
@@ -20,7 +20,7 @@ foreach ($requiredFiles as $file) {
     include_once $file;
 }
 
-// Check if classes exist before using them
+
 $requiredClasses = ['Database', 'Student', 'Performance', 'Attendance', 'SummaryService', 'Project'];
 foreach ($requiredClasses as $className) {
     if (!class_exists($className)) {
@@ -31,7 +31,7 @@ foreach ($requiredClasses as $className) {
 $database = new Database();
 $db = $database->getConnection();
 
-// Initialize variables
+
 $studentId = isset($_GET['student_id']) ? intval($_GET['student_id']) : null;
 $studentData = null;
 $performanceData = null;
@@ -55,32 +55,31 @@ try {
     error_log("Error loading students list: " . $e->getMessage());
 }
 
-// Initialize SummaryService
+
 $summaryService = new SummaryService($db);
 
-// Initialize student performance and attendance data
+
 $studentPerformance = [];
 $studentAttendance = ['total_days' => 0, 'present_days' => 0, 'attendance_rate' => 0];
 
-// Only try to load student data if we have a valid student_id
+
 if($studentId && $studentId > 0) {
     try {
-        // Load student data
+        
         $student = new Student($db);
         $student->student_id = $studentId;
         
         if($student->readOne()) {
             $studentData = $student;
             
-            // Set variables with proper fallbacks
+           
             $institution_name = !empty($studentData->institution_name) ? $studentData->institution_name : 'N/A';
             $student_name = !empty($studentData->student_name) ? $studentData->student_name : 'Unknown Student';
             $status = !empty($studentData->status) ? $studentData->status : 'Unknown';
-            
-            // Get student performance summary
+          
             $studentPerformance = $summaryService->getStudentPerformanceSummary($studentId, 30);
             
-            // Get student attendance rate
+      
             $studentAttendance = $summaryService->getStudentAttendanceRate($studentId, 30);
             
             // Get project count for this student
@@ -125,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         
         // Create performance record
         if ($performance->create()) {
-            // Reload performance data
+           
             $performanceResult = $performance->getLatestPerformance($studentId);
             if($performanceResult) {
                 $performanceData = $performanceResult;
@@ -175,8 +174,8 @@ unset($_SESSION['success_message'], $_SESSION['error_message']);
                             <span class="reports-status-badge reports-status-<?php echo htmlspecialchars(strtolower($status)); ?>">
                                 <?php echo htmlspecialchars($status); ?>
                             </span>
-                            <span class="reports-course"><?php echo !empty($studentData->course_of_study) ? htmlspecialchars($studentData->course_of_study) : 'No Course'; ?></span>
-                            <span class="reports-institution"><?php echo htmlspecialchars($institution_name); ?></span>
+                            <span class="reports-course"><ion-icon name="book-outline"></ion-icon><?php echo !empty($studentData->course_of_study) ? htmlspecialchars($studentData->course_of_study) : 'No Course'; ?></span>
+                            <span class="reports-institution"><ion-icon name="school-outline"></ion-icon><?php echo htmlspecialchars($institution_name); ?></span>
                         </div>
                     </div>
                 </div>

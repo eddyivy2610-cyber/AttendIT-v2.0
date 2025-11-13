@@ -14,13 +14,20 @@
     border-radius: var(--border-radius);
     padding: 20px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    transition: var(--transition);
-    
+    transition: var(--transition);   
+}
+
+.container.dark .card{
+    background: var(--dark);
+    border:3px solid #444040;
 }
 
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+.container.dark .card:hover {
+     border:3px solid #bebdbd;
 }
 
 .card-header {
@@ -46,21 +53,29 @@
     color: var(--white);
     font-size: 1.2rem;
 }
+.card-icon.active-students {
+    background: rgba(52, 152, 219, 0.1);
+    color: #3498db;
+}
 
 .card-icon.students {
-    background: var(--primary);
+    background: rgba(52, 152, 219, 0.1);
+    color: #3498db;
 }
 
 .card-icon.attendance {
-    background: var(--success);
+    background: rgba(52, 152, 219, 0.1);
+    color: #3498db;
 }
 
 .card-icon.projects {
-    background: var(--purple);
+   background: rgba(52, 152, 219, 0.1);
+   color: #3498db;
 }
 
 .card-icon.reports {
-    background: var(--warning);
+    background: rgba(52, 152, 219, 0.1);
+    color: #3498db;;
 }
 
 .card-value {
@@ -69,19 +84,8 @@
     color: var(--dark);
     margin-bottom: 5px;
 }
-
-.card-change {
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-}
-
-.card-change.positive {
-    color: var(--success);
-}
-
-.card-change.negative {
-    color: var(--danger);
+.container.dark .card-value{
+    color: var(--bg-blue);
 }
 /* Quick Actions Styles */
 .quick-actions {
@@ -125,15 +129,18 @@
 }
 
 .iconBx.actions.done {
-    background: var(--success);
+    background: rgba(114, 207, 90, 0.1);
+    color: var(--success);
 }
 
 .iconBx.actions.chart {
-    background: var(--warning);
+    background: rgba(252, 206, 80, 0.1);
+    color: var(--warning);
 }
 
 .iconBx.actions.list {
-    background: var(--primary);
+   background: rgba(179, 106, 212, 0.1);
+   color: var(--purple);
 }
 
 .numbers.actions {
@@ -147,7 +154,9 @@
     font-size: 0.9rem;
     color: var(--black2);
 }
-
+.container.dark .numbers.actions{
+    color:var(--white);
+}
 .details {
     position: relative;
     width: 100%;
@@ -168,9 +177,9 @@
     border-radius: 20px;
 }
 
-body.dark-theme .details .recentStudents {
-    background: var(--dark-black2);
-    box-shadow: 0 -4px var(--dark-blue);
+.container.dark .details .recentStudents {
+    background: var(--dark);
+    border:3px solid #444040;
 }
 
 .details .cardHeader {
@@ -179,13 +188,16 @@ body.dark-theme .details .recentStudents {
     align-items: flex-start;
 }
 
-body.dark-theme .cardHeader h3 {
+.container.dark .card-title {
     color: var(--white);
 }
 
 .cardHeader h3 {
     font-weight: 600;
     color: var(--hover-blue);
+}
+.container.dark .cardHeader h3 {
+    color: var(--white);
 }
 
 .cardHeader .btn {
@@ -196,11 +208,14 @@ body.dark-theme .cardHeader h3 {
     color: var(--white);
     border-radius: 6px;
 }
-
-body.dark-theme .cardHeader .btn {
-    background: var(--blue2);
+.container.dark .cardHeader .btn{
+    background: var(--white);
+    color: var(--blue);
 }
-
+.container.dark .recentStudents .btn:hover{
+    background: var(--primary);
+    color: var(--white);
+}
 .details table {
     width: 100%;
     border-collapse: collapse;
@@ -216,22 +231,12 @@ body.dark-theme .cardHeader .btn {
     font-size: small;
 }
 
-body.dark-theme .details .recentStudents table tr {
+.container.dark .details .recentStudents table tr {
     color: var(--white);
 }
 
 .details .recentStudents table tr:last-child {
     border-bottom: none;
-}
-
-.details .recentStudents table tbody tr:hover {
-    background: var(--blue);
-    color: var(--white);
-}
-
-body.dark-theme .details .recentStudents table tbody tr:hover {
-    background: var(--blue2);
-    color: var(--white);
 }
 
 .details .recentStudents table tr td {
@@ -246,38 +251,11 @@ body.dark-theme .details .recentStudents table tbody tr:hover {
     text-align: center;
 }
 
-.student-photo {
+.imgBx img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
-}
-
-.status {
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.status.present {
-    background: #8de02c;
-    color: var(--white);
-}
-
-.status.pending {
-    background: #e9b10a;
-    color: var(--white);
-}
-
-.status.return {
-    background: #f00;
-    color: var(--white);
-}
-
-.status.inProgress {
-    background: #1795ce;
-    color: var(--white);
 }
 
 .schoolGrid {
@@ -290,9 +268,9 @@ body.dark-theme .details .recentStudents table tbody tr:hover {
     border-radius: 20px;
 }
 
-body.dark-theme .schoolGrid {
+.container.dark .schoolGrid {
     background: var(--dark-black2);
-    box-shadow: 0 -4px var(--dark-blue);
+    border:3px solid #444040;
 }
 
 .schoolGrid .imgBx {
@@ -327,6 +305,11 @@ body.dark-theme .schoolGrid {
     color: var(--black2);
 }
 
+.container.dark .schoolGrid table tr td h4 span {
+    color: var(--white);
+}
+
+
 .schoolGrid table tr:hover {
     background: var(--blue);
     color: var(--white);
@@ -350,10 +333,10 @@ body.dark-theme .schoolGrid table tr:hover {
     display: flex;
     align-items: center;
     padding: 15px;
-    border-bottom: 1px solid var(--gray);
 }
 
-body.dark-theme .institution-item {
+
+.container.dark .institution-item {
     border-bottom: 1px solid var(--dark-black);
 }
 
@@ -367,7 +350,7 @@ body.dark-theme .institution-item {
     color: var(--black1);
 }
 
-body.dark-theme .institution-info h4 {
+.container.dark .institution-info h4 {
     color: var(--white);
 }
 
@@ -418,25 +401,3 @@ body.dark-theme .institution-info span {
     100% { transform: scale(1); }
 }
 
-/* Active Students card specific styling */
-.card-icon.active-students {
-    background: rgba(52, 152, 219, 0.1);
-    color: #3498db;
-}
-
-/* Responsive card adjustments */
-@media (max-width: 768px) {
-    .dashboard-cards {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .dashboard-cards {
-        grid-template-columns: 1fr;
-    }
-}
-.card-icon.active-students {
-    background: rgba(52, 152, 219, 0.1);
-    color: #3498db;
-}
