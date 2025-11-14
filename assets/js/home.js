@@ -5,7 +5,7 @@ const container = document.querySelector('.container');
 const icon = document.getElementById('collapse');
 const mode = theme.querySelector('ion-icon');
 const main = document.querySelector('.main-content');
-const display = document.getElementById('display')
+const display = document.getElementById('display');
 
 toggle.addEventListener('click', () => {
     nav.classList.toggle('active');

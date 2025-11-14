@@ -205,6 +205,9 @@
     color: var(--dark);
     margin-bottom: 2px;
 }
+.container.dark .student-name {
+    color: var(--bg-blue);
+}
 
 .student-gender {
     font-size: 0.8em;

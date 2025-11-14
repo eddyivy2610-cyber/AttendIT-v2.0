@@ -290,7 +290,7 @@ unset($_SESSION['success_message'], $_SESSION['error_message']);
                     $studentsByInstitution->execute();
                     $students = $studentsByInstitution->fetchAll(PDO::FETCH_ASSOC);
                     
-                    // Group students by institution
+                    
                     $groupedStudents = [];
                     foreach ($students as $student) {
                         $institution = $student['institution_name'] ?? 'Unknown Institution';
@@ -298,7 +298,7 @@ unset($_SESSION['success_message'], $_SESSION['error_message']);
                     }
                     
                     foreach ($groupedStudents as $institutionName => $institutionStudents) {
-                        // Add institution header row
+                        
                         echo '
                         <tr class="institution-header">
                             <td colspan="8" class="institution-name">
@@ -309,7 +309,7 @@ unset($_SESSION['success_message'], $_SESSION['error_message']);
                         
                         // Display students for this institution
                         foreach ($institutionStudents as $studentRow) {
-                            // Get today's attendance for this student with error handling
+                            
                             $todayAttendance = false;
                             try {
                                 $todayAttendance = $attendance->getStudentTodayAttendance($studentRow['student_id']);

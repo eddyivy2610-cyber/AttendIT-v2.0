@@ -57,7 +57,7 @@ body{
     border-right:3px solid #363636;
     position: fixed;
     overflow: hidden;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease;
     z-index: 100;
 }
 
@@ -149,6 +149,18 @@ font-weight: bold;
     transition: all .5s ease;
 }
 
+.nav-bar li.active{
+    background: var(--secondary);
+    border-radius: 8px;
+    pointer-events: none;
+}
+.nav-bar li.active a{
+    color: var(--blue2);
+    
+}
+.container.dark .nav-bar li.active a{
+    color: var(--dark);
+}
 /*navigation collapse*/
 .navigation.active{
     width: 90px;
