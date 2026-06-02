@@ -1,0 +1,151 @@
+<div id="dashboard-page" class="page-content">
+    <div class="dashboard-cards">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Total Students</div>
+                <div class="card-icon students">
+                    <ion-icon name="person-outline"></ion-icon>
+                </div>
+            </div>
+            <div class="card-value" id="total-students"><%= totalStudents %></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Attendance Rate</div>
+                <div class="card-icon attendance">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                </div>
+            </div>
+            <div class="card-value" id="attendance-rate"><%= attendanceRate %>%</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Active Projects</div>
+                <div class="card-icon projects">
+                    <ion-icon name="folder-open-outline"></ion-icon>
+                </div>
+            </div>
+            <div class="card-value">-</div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Active Students</div>
+                <div class="card-icon active-students">
+                    <ion-icon name="people-outline"></ion-icon>
+                </div>
+            </div>
+            <div class="card-value" id="active-students"><%= activeStudents %></div>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <a href="/?page=attendance" class="action-card-link">
+            <div class="card actions">
+                <div class="iconBx actions done">
+                    <ion-icon name="checkmark-circle-outline"></ion-icon>
+                </div>
+                <div>
+                    <div class="numbers actions">Mark Attendance</div>
+                    <div class="cardName">Update and manage daily attendance</div>
+                </div>
+            </div>
+        </a>
+        <a href="/?page=reports" class="action-card-link">
+            <div class="card actions">
+                <div class="iconBx actions chart">
+                    <ion-icon name="stats-chart-outline"></ion-icon>
+                </div>
+                <div>
+                    <div class="numbers actions">View Reports</div>
+                    <div class="cardName">Generate and analyze reports</div>
+                </div>
+            </div>
+        </a>
+        <a href="/?page=students" class="action-card-link">
+            <div class="card actions">
+                <div class="iconBx actions list">
+                    <ion-icon name="list-sharp"></ion-icon>
+                </div>
+                <div>
+                    <div class="numbers actions">Manage Students</div>
+                    <div class="cardName">View and manage student information</div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="details">
+        <!-- Recently Added Students -->
+        <div class="recentStudents">
+            <div class="cardHeader">
+                <h3>Recently Added</h3>
+                <a href="/?page=students" class="btn">View All</a>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Image</td>
+                        <td>Name</td>
+                        <td>Gender</td>
+                        <td>POA</td>
+                        <td>Joined on</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (recentStudents && recentStudents.length > 0) { %>
+                        <% recentStudents.forEach(student => { %>
+                            <tr>
+                                <td width="40px">
+                                    <div class="imgBx">
+                                        <img src="https://picsum.photos/seed/<%= encodeURIComponent(student.student_name) %>/40/40.jpg" alt="<%= student.student_name %>">
+                                    </div>
+                                </td>
+                                <td><%= student.student_name %></td>
+                                <td><%= student.gender || '--' %></td>
+                                <td><%= student.period_of_attachment ? student.period_of_attachment + ' months' : '--' %></td>
+                                <td><%= student.created_at ? new Date(student.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '--' %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem;">
+                                <i class="fas fa-user-plus" style="font-size: 2rem; color: #ccc; margin-bottom: 1rem;"></i>
+                                <br>No recently added students
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Institution Overview -->
+        <div class="schoolGrid">
+            <div class="cardHeader">
+                <h3>Institution Overview</h3>
+            </div>
+            <div class="institutions-table">
+                <% if (institutions && institutions.length > 0) { %>
+                    <% institutions.forEach(inst => { %>
+                        <div class="institution-item">
+                            <div class="imgBx">
+                                <img src="https://picsum.photos/seed/<%= encodeURIComponent(inst.institution_name) %>/60/60.jpg" alt="<%= inst.institution_name %>">
+                            </div>
+                            <div class="institution-info">
+                                <h4><%= inst.institution_name %></h4>
+                                <span><%= inst.student_count %> Active Students</span>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <i class="fas fa-university" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <br>No institutions found
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

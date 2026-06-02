@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Print Preview</title>
+    <style>
+        :root {
+            --bg: #0b1220;
+            --panel: rgba(17, 24, 39, 0.92);
+            --border: rgba(148, 163, 184, 0.18);
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --blue: #2563eb;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+            color: var(--text);
+            font-family: Arial, sans-serif;
+        }
+        .toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(2, 6, 23, 0.88);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 18px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .toolbar h1 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        .toolbar .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            border: 1px solid var(--border);
+            color: var(--text);
+            background: rgba(15, 23, 42, 0.85);
+        }
+        .btn.primary {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+        .preview {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 18px;
+        }
+        .card {
+            width: 100%;
+            min-height: 920px;
+            page-break-after: always;
+            break-after: page;
+            background: white;
+            color: #111827;
+            border-radius: 18px;
+            box-shadow: 0 18px 60px rgba(0, 0, 0, 0.24);
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        .title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 18px;
+            text-align: center;
+        }
+        .qr {
+            width: 320px;
+            height: 320px;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 10px;
+            background: #fff;
+        }
+        .url {
+            margin-top: 22px;
+            max-width: 100%;
+            font-size: 0.95rem;
+            word-break: break-word;
+            color: #2563eb;
+            text-align: center;
+        }
+        .note {
+            margin-top: 10px;
+            color: #6b7280;
+            text-align: center;
+        }
+        @media print {
+            body { background: #fff; }
+            .toolbar { display: none; }
+            .preview { padding: 0; max-width: none; }
+            .card {
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+                min-height: 100vh;
+            }
+        }
+        @page {
+            size: A4;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <h1>QR Print Preview</h1>
+        <div class="actions">
+            <a class="btn" href="<%= pdfUrl %>">Download PDF</a>
+            <a class="btn primary" href="javascript:window.print()">Print</a>
+        </div>
+    </div>
+
+    <div class="preview">
+        <% items.forEach(item => { %>
+            <section class="card">
+                <h2 class="title"><%= item.label %></h2>
+                <img class="qr" src="<%= item.qrDataUrl %>" alt="<%= item.label %> QR code">
+                <div class="url"><%= item.url %></div>
+                <div class="note">Scan to open the linked form</div>
+            </section>
+        <% }) %>
+    </div>
+</body>
+</html>

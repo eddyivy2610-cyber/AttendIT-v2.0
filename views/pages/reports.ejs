@@ -1,0 +1,127 @@
+<div id="reports-page" class="page-content">
+    <div class="reports-container">
+        <div class="reports-header">
+            <h2>Attendance Reports</h2>
+            <div class="report-filters">
+                <select id="report-student" class="filter-select">
+                    <option value="">All Students</option>
+                    <% if (students && students.length > 0) { %>
+                        <% students.forEach(s => { %>
+                            <option value="<%= s._id %>"><%= s.student_name %></option>
+                        <% }) %>
+                    <% } %>
+                </select>
+                <input type="month" id="report-month" class="filter-select" value="<%= new Date().toISOString().slice(0,7) %>">
+                <button class="btn btn-primary" onclick="generateReport()">
+                    <i class="fas fa-chart-bar"></i> Generate Report
+                </button>
+                <button class="btn btn-secondary" onclick="exportReport()">
+                    <i class="fas fa-download"></i> Export
+                </button>
+            </div>
+        </div>
+
+        <!-- Report Summary Cards -->
+        <div class="report-summary" id="report-summary" style="display:none;">
+            <div class="summary-card present">
+                <i class="fas fa-user-check"></i>
+                <div><h3 id="rpt-present">0</h3><p>Present Days</p></div>
+            </div>
+            <div class="summary-card late">
+                <i class="fas fa-user-clock"></i>
+                <div><h3 id="rpt-late">0</h3><p>Late Days</p></div>
+            </div>
+            <div class="summary-card absent">
+                <i class="fas fa-user-times"></i>
+                <div><h3 id="rpt-absent">0</h3><p>Absent Days</p></div>
+            </div>
+            <div class="summary-card expected">
+                <i class="fas fa-percent"></i>
+                <div><h3 id="rpt-rate">0%</h3><p>Attendance Rate</p></div>
+            </div>
+        </div>
+
+        <!-- Report Table -->
+        <div class="report-table-container">
+            <table class="students-table" id="report-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Present</th>
+                        <th>Late</th>
+                        <th>Absent</th>
+                        <th>Total</th>
+                        <th>Rate</th>
+                    </tr>
+                </thead>
+                <tbody id="report-tbody">
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding: 2rem; color:#aaa;">
+                            Select a month and click "Generate Report"
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+async function generateReport() {
+    const monthInput = document.getElementById('report-month').value;
+    if (!monthInput) { showNotification('Please select a month.', 'warning'); return; }
+
+    const [year, month] = monthInput.split('-');
+    const tbody = document.getElementById('report-tbody');
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem;">Loading...</td></tr>';
+
+    try {
+        const res = await fetch(`/api/attendance/monthly?year=${year}&month=${month}`);
+        const result = await res.json();
+
+        if (!result.success || result.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:#aaa;">No attendance data found for this period.</td></tr>';
+            document.getElementById('report-summary').style.display = 'none';
+            return;
+        }
+
+        let totalPresent = 0, totalLate = 0, totalAbsent = 0;
+
+        tbody.innerHTML = result.data.map(row => {
+            totalPresent += row.present_count;
+            totalLate += row.late_count;
+            totalAbsent += row.absent_count;
+            const rate = row.total_students > 0 ? Math.round(((row.present_count + row.late_count) / row.total_students) * 100) : 0;
+            return `<tr>
+                <td>${new Date(row.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</td>
+                <td><span style="color:var(--success, green)">${row.present_count}</span></td>
+                <td><span style="color:var(--warning, orange)">${row.late_count}</span></td>
+                <td><span style="color:var(--danger, red)">${row.absent_count}</span></td>
+                <td>${row.total_students}</td>
+                <td>${rate}%</td>
+            </tr>`;
+        }).join('');
+
+        // Update summary cards
+        const totalDays = result.data.length;
+        const totalExpected = result.data.reduce((s, r) => s + r.total_students, 0);
+        const overallRate = totalExpected > 0 ? Math.round(((totalPresent + totalLate) / totalExpected) * 100) : 0;
+
+        document.getElementById('rpt-present').textContent = totalPresent;
+        document.getElementById('rpt-late').textContent = totalLate;
+        document.getElementById('rpt-absent').textContent = totalAbsent;
+        document.getElementById('rpt-rate').textContent = overallRate + '%';
+        document.getElementById('report-summary').style.display = 'flex';
+
+    } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Error loading report.</td></tr>';
+    }
+}
+
+function exportReport() {
+    showNotification('Export coming soon!', 'info');
+}
+
+window.generateReport = generateReport;
+window.exportReport = exportReport;
+</script>

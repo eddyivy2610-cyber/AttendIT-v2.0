@@ -1,0 +1,12 @@
+[
+  {
+    "user_name": "Admin User",
+    "user_email": "admin@ncat.gov.ng",
+    "password": "$2a$10$vI8aWBnW3fID.Rt4YwoN5uRdBYBB6gB4PzE.S4eP1sK1T/v/lqS0S",
+    "user_role": "admin",
+    "is_active": true,
+    "last_login": null,
+    "created_at": { "$date": "2026-06-02T10:00:00Z" },
+    "updated_at": { "$date": "2026-06-02T10:00:00Z" }
+  }
+]
