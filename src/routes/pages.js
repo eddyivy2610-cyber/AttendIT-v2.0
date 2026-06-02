@@ -9,6 +9,29 @@ const { buildPublicQrAssets } = require('../utils/public-qr');
 
 const ALLOWED_PAGES = ['dashboard', 'students', 'attendance', 'reports', 'settings', 'projects'];
 
+// GET /api/dashboard-data — returns JSON for real-time dashboard updates
+router.get('/api/dashboard-data', requireAuth, async (req, res) => {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const [totalStudents, todayAttendance] = await Promise.all([
+            Student.countDocuments({ status: 'Active' }),
+            Attendance.find({ date: today })
+        ]);
+
+        const present = todayAttendance.filter(a => a.status === 'Present' || a.status === 'Late').length;
+        const attendanceRate = totalStudents > 0 ? Math.round((present / totalStudents) * 100) : 0;
+
+        res.json({
+            totalStudents,
+            attendanceRate,
+            activeStudents: present
+        });
+    } catch (err) {
+        console.error('Error in /api/dashboard-data:', err);
+        res.status(500).json({ error: 'Failed to fetch dashboard data' });
+    }
+});
+
 // GET / — main app shell, loads correct page content
 router.get('/', requireAuth, async (req, res) => {
     let page = req.query.page || 'dashboard';

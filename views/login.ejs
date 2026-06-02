@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendit | Login</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Sora:wght@400;500;600;700&display=swap');
 * {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Poppins', 'Sora', sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -55,8 +56,8 @@ header {
 .texts { padding: 80px; display: flex; flex-direction: column; color: #f2f2f2; justify-content: space-between; }
 .logo { margin-bottom: 7rem; }
 .welcome h2 { font-size: 40px; }
-.welcome h2 span { font-size: 25px; }
-.welcome p { font-size: 16px; margin: 20px 0; }
+.welcome h2 span { font-size: 25px; font-family: 'Sora', 'Poppins', sans-serif; }
+.welcome p { font-size: 16px; margin: 20px 0; font-family: 'Sora', 'Poppins', sans-serif; }
 .container .log-box { position: absolute; top: 0; right: 0; width: calc(100% - 58%); height: 100%; overflow: hidden; }
 .log-box .form-box {
   display: flex; justify-content: center; align-items: center;
@@ -64,7 +65,7 @@ header {
   background: transparent; backdrop-filter: blur(20px);
   border-top-right-radius: 10px; border-bottom-right-radius: 10px; color: #f2f2f2;
 }
-.form-box h2 { text-align: center; font-size: 30px; font-weight: 600; margin-bottom: 20px; color: #fff; }
+.form-box h2 { text-align: center; font-size: 30px; font-weight: 800; margin-bottom: 20px; color: #fff; font-family: 'Poppins', 'Sora', sans-serif; }
 .form-box .input-box {
   position: relative; width: 350px; margin: 30px 0; height: 50px;
   border-bottom: 2px solid #fff;
@@ -72,7 +73,7 @@ header {
 .form-box .input-box label {
   position: absolute; top: 50%; left: 5px; color: #fff;
   font-size: 1em; pointer-events: none; transform: translateY(-50%);
-  transition: .5s; font-weight: 400;
+  transition: .5s; font-weight: 500; font-family: 'Sora', 'Poppins', sans-serif;
 }
 .form-box .input-box input {
   min-width: 93%; height: 100%; background: transparent;
@@ -94,7 +95,8 @@ header {
 .form-box .btn {
   width: 100%; height: 50px; background: #ffffffbe;
   border: none; outline: none; border-radius: 6px;
-  font-size: 1.2em; font-weight: 600; cursor: pointer; transition: .3s; margin-top: 20px;
+  font-size: 1.2em; font-weight: 700; cursor: pointer; transition: .3s; margin-top: 20px;
+  font-family: 'Poppins', 'Sora', sans-serif;
 }
 .form-box .btn:hover { background: #fffdfa; }
 .form-box .login-register { font-size: 14px; color: #1f0909; text-align: center; margin: 20px 0 0; }

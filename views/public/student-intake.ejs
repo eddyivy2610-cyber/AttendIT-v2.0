@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Register Form</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Sora:wght@400;500;600;700&display=swap');
         :root {
             --bg: #0f172a;
             --panel: #111827;
@@ -19,7 +20,7 @@
         * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', 'Sora', sans-serif;
             background: radial-gradient(circle at top, #1e293b 0%, #0f172a 48%, #020617 100%);
             color: var(--text);
             min-height: 100vh;
@@ -40,8 +41,8 @@
             padding: 28px;
             margin-bottom: 18px;
         }
-        h1 { margin: 0 0 8px; font-size: 2rem; }
-        p { color: var(--muted); line-height: 1.6; }
+        h1 { margin: 0 0 8px; font-size: 2rem; font-family: 'Poppins', 'Sora', sans-serif; font-weight: 800; }
+        p { color: var(--muted); line-height: 1.6; font-family: 'Sora', 'Poppins', sans-serif; }
         .status {
             margin: 18px 0 0;
             padding: 12px 14px;
@@ -53,7 +54,7 @@
         .card { padding: 24px; }
         .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
         .field { display: flex; flex-direction: column; gap: 6px; }
-        label { font-weight: 600; font-size: 0.95rem; }
+        label { font-weight: 600; font-size: 0.95rem; font-family: 'Sora', 'Poppins', sans-serif; }
         input, select {
             width: 100%;
             border: 1px solid var(--border);

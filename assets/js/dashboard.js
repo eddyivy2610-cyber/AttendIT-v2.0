@@ -20,24 +20,29 @@ function initDashboard() {
 
 // Dashboard real-time data updates
 function updateDashboardData() {
-    fetch('api/dashboard-data.php')
+    fetch('/api/dashboard-data')
         .then(response => response.json())
         .then(data => {
             // Update card values
-            document.getElementById('total-students').textContent = data.totalStudents;
-            document.getElementById('attendance-rate').textContent = data.attendanceRate + '%';
-            document.getElementById('active-students').textContent = data.activeStudents;
+            if (document.getElementById('total-students')) {
+                document.getElementById('total-students').textContent = data.totalStudents;
+            }
+            if (document.getElementById('attendance-rate')) {
+                document.getElementById('attendance-rate').textContent = data.attendanceRate + '%';
+            }
+            if (document.getElementById('active-students')) {
+                document.getElementById('active-students').textContent = data.activeStudents;
+            }
             
             // Update change indicators with dynamic data
-            updateChangeIndicators(data);
+            if (typeof updateChangeIndicators === 'function') {
+                updateChangeIndicators(data);
+            }
         })
         .catch(error => {
             console.error('Error fetching dashboard data:', error);
         });
 }
-
-
-f
 // Initial load
 document.addEventListener('DOMContentLoaded', function() {
     updateDashboardData();

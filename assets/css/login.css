@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Sora:wght@400;500;600;700&display=swap');
+
  * {
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Poppins', 'Sora', sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -118,6 +120,7 @@ header {
     font-weight: 600;
     margin-bottom: 30px;
     color: #fff;
+    font-family: 'Poppins', 'Sora', sans-serif;
 }
 
 .form-row {
@@ -137,6 +140,7 @@ header {
     font-weight: 600;
     color: #fff;
     font-size: 14px;
+    font-family: 'Sora', 'Poppins', sans-serif;
 }
 
 .form-label .required {
