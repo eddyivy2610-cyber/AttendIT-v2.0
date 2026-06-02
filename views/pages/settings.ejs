@@ -1,0 +1,176 @@
+<div id="settings-page" class="page-content">
+    <div class="settings-container">
+        <h2>Settings</h2>
+
+        <!-- Public Student Register -->
+        <div class="settings-section">
+            <h3><i class="fas fa-qrcode"></i> Public Student Register</h3>
+            <div style="display:grid; grid-template-columns: 220px 1fr; gap: 18px; align-items:center;">
+                <div style="background:#fff; padding:12px; border-radius:12px; display:flex; align-items:center; justify-content:center;">
+                    <img src="<%= publicRegisterQrDataUrl %>" alt="Public student register QR code" style="width: 220px; height: 220px; max-width: 100%;">
+                </div>
+                <div>
+                    <p style="margin-top:0;">Share this QR code or link so a student can submit their details without logging in. Submissions stay pending until approved in Students.</p>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <label for="publicRegisterUrl">Form Link</label>
+                        <input type="text" id="publicRegisterUrl" value="<%= publicRegisterUrl %>" readonly style="width:100%; padding:10px; margin-top:4px;">
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="copyPublicRegisterLink()">
+                            <i class="fas fa-copy"></i> Copy Link
+                        </button>
+                        <a class="btn btn-secondary" href="/qr/print.pdf" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center;">
+                            <i class="fas fa-file-pdf"></i>&nbsp;Download PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Public Attendance -->
+        <div class="settings-section">
+            <h3><i class="fas fa-user-check"></i> Public Attendance</h3>
+            <p style="margin-top:0;">Five weekday QR codes route students to the mobile attendance page. They can sign in or sign out using their phone number.</p>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                <% (publicAttendanceLinks || []).forEach(item => { %>
+                    <div style="background:#fff; padding:12px; border-radius:12px; color:#111;">
+                        <div style="text-align:center; font-weight:700; margin-bottom:10px;"><%= item.label %></div>
+                        <div style="display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
+                            <img src="<%= item.qrDataUrl %>" alt="<%= item.label %> attendance QR code" style="width: 180px; height: 180px; max-width: 100%;">
+                        </div>
+                        <input type="text" value="<%= item.url %>" readonly style="width:100%; padding:8px; border:1px solid #ccc; border-radius:8px;">
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+
+        <!-- Institutions Management -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h3><i class="fas fa-university"></i> Institutions</h3>
+                <button class="btn btn-primary" onclick="showAddInstitutionModal()">
+                    <i class="fas fa-plus"></i> Add Institution
+                </button>
+            </div>
+            <div class="institutions-list">
+                <% if (institutions && institutions.length > 0) { %>
+                    <% institutions.forEach(inst => { %>
+                        <div class="institution-item" id="inst-<%= inst._id %>">
+                            <div class="institution-info">
+                                <h4><%= inst.institution_name %></h4>
+                                <span><%= inst.contact_email || 'No email set' %></span>
+                            </div>
+                            <button class="action-btn delete-btn" onclick="deleteInstitution('<%= inst._id %>', '<%= inst.institution_name %>')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p style="color:#aaa; text-align:center; padding: 1rem;">No institutions yet. Add one above.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- System Stats -->
+        <div class="settings-section">
+            <h3><i class="fas fa-chart-pie"></i> System Stats</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Total Students</span>
+                    <span class="stat-value"><%= totalStudents %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Active Students</span>
+                    <span class="stat-value"><%= activeStudents %></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Institutions</span>
+                    <span class="stat-value"><%= institutions ? institutions.length : 0 %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Institution Modal -->
+<div id="addInstModal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:500px;">
+        <div class="modal-header">
+            <h3>Add Institution</h3>
+            <span class="close" onclick="document.getElementById('addInstModal').style.display='none'">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="inst_name">Institution Name *</label>
+                <input type="text" id="inst_name" placeholder="e.g., Ahmadu Bello University" style="width:100%; padding:8px; margin-top:4px;">
+            </div>
+            <div class="form-group" style="margin-top:12px;">
+                <label for="inst_email">Contact Email</label>
+                <input type="email" id="inst_email" placeholder="contact@university.edu" style="width:100%; padding:8px; margin-top:4px;">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="document.getElementById('addInstModal').style.display='none'">Cancel</button>
+            <button class="btn-primary" onclick="saveInstitution()">Add Institution</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showAddInstitutionModal() {
+    document.getElementById('addInstModal').style.display = 'block';
+}
+
+async function saveInstitution() {
+    const name = document.getElementById('inst_name').value.trim();
+    const email = document.getElementById('inst_email').value.trim();
+    if (!name) { showNotification('Institution name is required.', 'error'); return; }
+
+    try {
+        const res = await fetch('/api/institutions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ institution_name: name, contact_email: email })
+        });
+        const result = await res.json();
+        if (result.success) {
+            showNotification('Institution added!', 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            showNotification(result.message || 'Failed.', 'error');
+        }
+    } catch (e) {
+        showNotification('Network error.', 'error');
+    }
+}
+
+async function deleteInstitution(id, name) {
+    if (!confirm(`Delete "${name}"? This will fail if students are assigned to it.`)) return;
+    try {
+        const res = await fetch('/api/institutions/' + id, { method: 'DELETE' });
+        const result = await res.json();
+        if (result.success) {
+            document.getElementById('inst-' + id)?.remove();
+            showNotification('Institution deleted!', 'success');
+        } else {
+            showNotification(result.message || 'Delete failed.', 'error');
+        }
+    } catch (e) {
+        showNotification('Network error.', 'error');
+    }
+}
+
+function copyPublicRegisterLink() {
+    const input = document.getElementById('publicRegisterUrl');
+    input.select();
+    input.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(input.value)
+        .then(() => showNotification('Public register link copied.', 'success'))
+        .catch(() => showNotification('Could not copy link.', 'error'));
+}
+
+window.showAddInstitutionModal = showAddInstitutionModal;
+window.saveInstitution = saveInstitution;
+window.deleteInstitution = deleteInstitution;
+window.copyPublicRegisterLink = copyPublicRegisterLink;
+</script>

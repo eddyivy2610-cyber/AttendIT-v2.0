@@ -131,7 +131,7 @@ function updateCurrentDate() {
 
 // Initialize the current page
 function initializeCurrentPage() {
-    const currentPage = '<?php echo $page; ?>';
+    const currentPage = window.CURRENT_PAGE || 'dashboard';
     console.log('Initializing page:', currentPage);
     
     setActiveNav(currentPage);

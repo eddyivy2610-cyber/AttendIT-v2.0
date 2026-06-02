@@ -1,0 +1,38 @@
+{
+  "name": "attendit-v2.0",
+  "version": "1.0.0",
+  "description": "AttendIT - Intern Attendance Management System",
+  "_old_description": "��#\u0000 \u0000A\u0000t\u0000t\u0000e\u0000n\u0000d\u0000I\u0000T\u0000-\u0000v\u00002\u0000.\u00000\u0000\r\u0000 \u0000",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node src/seed.js",
+    "seed:admin": "node src/seed-admin.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eddyivy2610-cyber/AttendIT-v2.0.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/eddyivy2610-cyber/AttendIT-v2.0/issues"
+  },
+  "homepage": "https://github.com/eddyivy2610-cyber/AttendIT-v2.0#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "connect-mongo": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "ejs": "^6.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongoose": "^9.6.3",
+    "multer": "^2.1.1",
+    "pdfkit": "^0.18.0",
+    "qrcode": "^1.5.4"
+  }
+}

@@ -159,6 +159,16 @@
     color: var(--white);
 }
 
+.approve-btn {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.approve-btn:hover {
+    background: #28a745;
+    color: var(--white);
+}
+
 /* End Date Styling */
 .end-date.expired {
     color: var(--danger);
