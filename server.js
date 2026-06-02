@@ -6,6 +6,7 @@ const { MongoStore } = require('connect-mongo');
 const path = require('path');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // ─── Database Connection ──────────────────────────────────────────────────────
 mongoose.connect(process.env.MONGODB_URI)
