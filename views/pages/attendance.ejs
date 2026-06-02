@@ -100,6 +100,10 @@
                         <td>
                             <div class="student-name"><%= student.student_name %></div>
                             <div class="student-gender"><%= student.gender || '' %></div>
+                            <div class="student-mobile-info">
+                                <%= student.course_of_study || '--' %> • 
+                                <%= institutionName %>
+                            </div>
                         </td>
                         <td class="student-course"><%= student.course_of_study || '--' %></td>
                         <td class="student-institution"><%= institutionName %></td>
@@ -213,13 +217,16 @@ async function markAllSignedIn() {
 async function resetTodayAttendance() {
     if (!confirm('Reset all attendance for today? This will delete all records.')) return;
     try {
-        const today = new Date().toISOString().split('T')[0];
-        const rows = document.querySelectorAll('tr[data-student-id]');
-        // We use the DELETE via attendance mark with no status — instead, call a reset route
-        // Simple: just reload after a soft warning since full reset requires a dedicated route
-        showNotification('Please contact admin to reset — use the API endpoint directly.', 'info');
+        const response = await fetch('/api/attendance/reset', { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+            showNotification(result.message, 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification(result.message || 'Reset failed.', 'error');
+        }
     } catch (err) {
-        showNotification('Error.', 'error');
+        showNotification('Network error.', 'error');
     }
 }
 

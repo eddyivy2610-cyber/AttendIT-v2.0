@@ -14,11 +14,13 @@ router.get('/login', redirectIfLoggedIn, (req, res) => {
 // POST /login — handle login form submission
 router.post('/login', redirectIfLoggedIn, async (req, res) => {
     const { user_email, password } = req.body;
+    console.log(`[AUTH] Login attempt for: ${user_email}`);
 
     // Clear any stale error
     req.session.error = null;
 
     if (!user_email || !password) {
+        console.log('[AUTH] Missing email or password');
         req.session.error = 'Please enter both email and password.';
         req.session.prefillEmail = user_email || '';
         return res.redirect('/login');
@@ -26,6 +28,7 @@ router.post('/login', redirectIfLoggedIn, async (req, res) => {
 
     try {
         const user = await User.findOne({ user_email: user_email.toLowerCase().trim() });
+        console.log(`[AUTH] User search result: ${user ? 'Found: ' + user.user_email : 'Not found'}`);
 
         if (!user) {
             req.session.error = 'Invalid email or password.';
@@ -34,11 +37,13 @@ router.post('/login', redirectIfLoggedIn, async (req, res) => {
         }
 
         if (!user.is_active) {
+            console.log('[AUTH] User account deactivated');
             req.session.error = 'Your account has been deactivated.';
             return res.redirect('/login');
         }
 
         const passwordMatch = await user.verifyPassword(password);
+        console.log(`[AUTH] Password match: ${passwordMatch}`);
         if (!passwordMatch) {
             req.session.error = 'Invalid email or password.';
             req.session.prefillEmail = user_email;
@@ -53,13 +58,23 @@ router.post('/login', redirectIfLoggedIn, async (req, res) => {
         req.session.error = null;
         req.session.prefillEmail = '';
 
+        console.log('[AUTH] Authentication successful. Redirecting to /');
+
         // Update last login
         await User.findByIdAndUpdate(user._id, { last_login: new Date() });
 
-        return res.redirect('/');
+        // Save session explicitly before redirecting to prevent race conditions
+        req.session.save((err) => {
+            if (err) {
+                console.error('[AUTH] Session save error:', err);
+                req.session.error = 'Session saving failed.';
+                return res.redirect('/login');
+            }
+            return res.redirect('/');
+        });
 
     } catch (err) {
-        console.error('Login error:', err);
+        console.error('[AUTH] Login error:', err);
         req.session.error = 'Server error. Please try again.';
         return res.redirect('/login');
     }

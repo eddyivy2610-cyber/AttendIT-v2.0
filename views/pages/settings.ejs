@@ -1,96 +1,689 @@
 <div id="settings-page" class="page-content">
     <div class="settings-container">
-        <h2>Settings</h2>
-
-        <!-- Public Student Register -->
-        <div class="settings-section">
-            <h3><i class="fas fa-qrcode"></i> Public Student Register</h3>
-            <div style="display:grid; grid-template-columns: 220px 1fr; gap: 18px; align-items:center;">
-                <div style="background:#fff; padding:12px; border-radius:12px; display:flex; align-items:center; justify-content:center;">
-                    <img src="<%= publicRegisterQrDataUrl %>" alt="Public student register QR code" style="width: 220px; height: 220px; max-width: 100%;">
-                </div>
-                <div>
-                    <p style="margin-top:0;">Share this QR code or link so a student can submit their details without logging in. Submissions stay pending until approved in Students.</p>
-                    <div class="form-group" style="margin-bottom:12px;">
-                        <label for="publicRegisterUrl">Form Link</label>
-                        <input type="text" id="publicRegisterUrl" value="<%= publicRegisterUrl %>" readonly style="width:100%; padding:10px; margin-top:4px;">
-                    </div>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <button class="btn btn-primary" onclick="copyPublicRegisterLink()">
-                            <i class="fas fa-copy"></i> Copy Link
-                        </button>
-                        <a class="btn btn-secondary" href="/qr/print" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center;">
-                            <i class="fas fa-eye"></i>&nbsp;Print Preview
-                        </a>
-                        <a class="btn btn-secondary" href="/qr/print.pdf" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center;">
-                            <i class="fas fa-file-pdf"></i>&nbsp;Download PDF
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="settings-header">
+            <h2>System Settings</h2>
+            <p class="subtitle">Manage institutions, public portals, user profile, preferences, and system stats.</p>
         </div>
 
-        <!-- Public Attendance -->
-        <div class="settings-section">
-            <h3><i class="fas fa-user-check"></i> Public Attendance</h3>
-            <p style="margin-top:0;">Five weekday QR codes route students to the mobile attendance page. They can sign in or sign out using their phone number.</p>
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-                <% (publicAttendanceLinks || []).forEach(item => { %>
-                    <div style="background:#fff; padding:12px; border-radius:12px; color:#111;">
-                        <div style="text-align:center; font-weight:700; margin-bottom:10px;"><%= item.label %></div>
-                        <div style="display:flex; align-items:center; justify-content:center; margin-bottom:10px;">
-                            <img src="<%= item.qrDataUrl %>" alt="<%= item.label %> attendance QR code" style="width: 180px; height: 180px; max-width: 100%;">
-                        </div>
-                        <input type="text" value="<%= item.url %>" readonly style="width:100%; padding:8px; border:1px solid #ccc; border-radius:8px;">
-                    </div>
-                <% }) %>
-            </div>
-        </div>
+        <div class="settings-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="settings-sidebar">
+                <div class="sidebar-section">
+                    <h3>Configuration</h3>
+                    <nav class="sidebar-nav">
+                        <a href="#" class="nav-item active" data-tab="portals-tab">
+                            <ion-icon name="qr-code-outline"></ion-icon>
+                            <span>Public Portals & QR</span>
+                        </a>
+                        <a href="#" class="nav-item" data-tab="institutions-tab">
+                            <ion-icon name="business-outline"></ion-icon>
+                            <span>Institutions</span>
+                        </a>
+                    </nav>
+                </div>
 
-        <!-- Institutions Management -->
-        <div class="settings-section">
-            <div class="section-header">
-                <h3><i class="fas fa-university"></i> Institutions</h3>
-                <button class="btn btn-primary" onclick="showAddInstitutionModal()">
-                    <i class="fas fa-plus"></i> Add Institution
-                </button>
-            </div>
-            <div class="institutions-list">
-                <% if (institutions && institutions.length > 0) { %>
-                    <% institutions.forEach(inst => { %>
-                        <div class="institution-item" id="inst-<%= inst._id %>">
-                            <div class="institution-info">
-                                <h4><%= inst.institution_name %></h4>
-                                <span><%= inst.contact_email || 'No email set' %></span>
+                <div class="sidebar-section">
+                    <h3>User Settings</h3>
+                    <nav class="sidebar-nav">
+                        <a href="#" class="nav-item" data-tab="profile-tab">
+                            <ion-icon name="person-outline"></ion-icon>
+                            <span>Profile Information</span>
+                        </a>
+                        <a href="#" class="nav-item" data-tab="security-tab">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                            <span>Security & Password</span>
+                        </a>
+                        <a href="#" class="nav-item" data-tab="notifications-tab">
+                            <ion-icon name="notifications-outline"></ion-icon>
+                            <span>Notifications</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>System Settings</h3>
+                    <nav class="sidebar-nav">
+                        <a href="#" class="nav-item" data-tab="preferences-tab">
+                            <ion-icon name="settings-outline"></ion-icon>
+                            <span>App Preferences</span>
+                        </a>
+                        <a href="#" class="nav-item" data-tab="system-info-tab">
+                            <ion-icon name="information-circle-outline"></ion-icon>
+                            <span>System Information</span>
+                        </a>
+                        <a href="#" class="nav-item" data-tab="backup-tab">
+                            <ion-icon name="cloud-download-outline"></ion-icon>
+                            <span>Backup & Export</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>About</h3>
+                    <nav class="sidebar-nav">
+                        <a href="#" class="nav-item" data-tab="credits-tab">
+                            <ion-icon name="heart-outline"></ion-icon>
+                            <span>Project Credits</span>
+                        </a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="settings-content">
+                
+                <!-- Tab 1: Portals & QR -->
+                <div id="portals-tab" class="settings-tab active">
+                    <div class="tab-header">
+                        <h2>Public Portals & QR Codes</h2>
+                        <p>Access links and QR codes for student self-registration and daily attendance check-in/out.</p>
+                    </div>
+                    
+                    <!-- Public Student Register -->
+                    <div class="form-section" style="border-bottom: 1px solid var(--hover-color); padding-bottom: 30px; margin-bottom: 30px;">
+                        <h3><i class="fas fa-qrcode"></i> Public Student Register</h3>
+                        <div style="display:grid; grid-template-columns: 220px 1fr; gap: 24px; align-items:start; margin-top: 15px;">
+                            <div style="background:#fff; padding:12px; border-radius:12px; display:flex; align-items:center; justify-content:center; border: 1px solid #ddd;">
+                                <img src="<%= publicRegisterQrDataUrl %>" alt="Public student register QR code" style="width: 200px; height: 200px; max-width: 100%;">
                             </div>
-                            <button class="action-btn delete-btn" onclick="deleteInstitution('<%= inst._id %>', '<%= inst.institution_name %>')">
-                                <i class="fas fa-trash"></i>
+                            <div>
+                                <p style="margin-top:0; line-height: 1.6; color: inherit;">Share this QR code or link to allow students to submit their registration details. Submitted forms will remain <strong>pending</strong> in the Students panel until approved.</p>
+                                <div class="form-group" style="margin-bottom:16px;">
+                                    <label for="publicRegisterUrl" style="font-weight:600;">Registration Form Link</label>
+                                    <input type="text" id="publicRegisterUrl" value="<%= publicRegisterUrl %>" readonly style="width:100%; padding:10px; margin-top:6px; border-radius: 8px; border: 1px solid #ccc;">
+                                </div>
+                                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                    <button class="btn btn-primary" onclick="copyPublicRegisterLink()">
+                                        <i class="fas fa-copy"></i> Copy Link
+                                    </button>
+                                    <a class="btn btn-outline" href="/qr/print" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center;">
+                                        <i class="fas fa-eye"></i>&nbsp;Print Preview
+                                    </a>
+                                    <a class="btn btn-outline" href="/qr/print.pdf" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center;">
+                                        <i class="fas fa-file-pdf"></i>&nbsp;Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Public Attendance -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-user-check"></i> Public Attendance Check-In</h3>
+                        <p style="margin-top:0; margin-bottom: 20px; line-height: 1.6;">Use these weekday-specific QR codes to route students to the mobile attendance portal. They can check in or out using their registered phone number.</p>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                            <% (publicAttendanceLinks || []).forEach(item => { %>
+                                <div style="background:var(--gray); padding:16px; border-radius:12px; border: 1px solid var(--hover-color); text-align:center;">
+                                    <div style="font-weight:700; margin-bottom:12px; color:var(--dark);"><%= item.label %></div>
+                                    <div style="background:#fff; padding:8px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; border: 1px solid #ddd;">
+                                        <img src="<%= item.qrDataUrl %>" alt="<%= item.label %> attendance QR code" style="width: 140px; height: 140px; max-width: 100%;">
+                                    </div>
+                                    <input type="text" value="<%= item.url %>" readonly style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-size:12px; text-align:center;">
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Institutions -->
+                <div id="institutions-tab" class="settings-tab">
+                    <div class="tab-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
+                        <div>
+                            <h2>Institutions Directory</h2>
+                            <p>Manage the list of affiliated schools and colleges.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="showAddInstitutionModal()">
+                            <i class="fas fa-plus"></i> Add Institution
+                        </button>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="institutions-list" style="display: grid; gap: 12px; margin-top:10px;">
+                            <% if (institutions && institutions.length > 0) { %>
+                                <% institutions.forEach(inst => { %>
+                                    <div class="institution-item" id="inst-<%= inst._id %>" style="display:flex; justify-content:space-between; align-items:center; padding: 15px 20px; background:var(--gray); border-radius:10px; border:1px solid var(--hover-color);">
+                                        <div class="institution-info">
+                                            <h4 style="margin:0 0 4px 0; font-size:1.05rem;"><%= inst.institution_name %></h4>
+                                            <span style="font-size:0.85rem; color:var(--black2);"><%= inst.contact_email || 'No email set' %></span>
+                                        </div>
+                                        <button class="btn btn-outline danger" style="padding: 6px 12px; border-radius:6px; border: 1px solid rgba(231,76,60,0.4);" onclick="deleteInstitution('<%= inst._id %>', '<%= inst.institution_name %>')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <p style="color:#aaa; text-align:center; padding: 2rem;">No institutions yet. Add one above.</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Profile Information -->
+                <div id="profile-tab" class="settings-tab">
+                    <div class="tab-header">
+                        <h2>Profile Information</h2>
+                        <p>Update your personal information and account details.</p>
+                    </div>
+                    
+                    <form id="profileForm" class="settings-form" onsubmit="updateProfile(event)">
+                        <div class="form-section">
+                            <h3>Basic Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="username">Username *</label>
+                                    <input type="text" id="username" name="username" value="<%= currentUser.username %>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address *</label>
+                                    <input type="email" id="email" name="email" value="<%= currentUser.email || '' %>" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Additional Information</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="full_name">Full Name</label>
+                                    <input type="text" id="full_name" name="full_name" placeholder="Enter your full name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="department">Department</label>
+                                    <input type="text" id="department" name="department" placeholder="e.g., Computer Science">
+                                </div>
+                                <div class="form-group">
+                                    <label for="position">Position</label>
+                                    <input type="text" id="position" name="position" placeholder="e.g., Senior Supervisor">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="reset" class="btn-secondary">Reset Changes</button>
+                            <button type="submit" class="btn-primary">
+                                <ion-icon name="save-outline"></ion-icon>
+                                Save Changes
                             </button>
                         </div>
-                    <% }) %>
-                <% } else { %>
-                    <p style="color:#aaa; text-align:center; padding: 1rem;">No institutions yet. Add one above.</p>
-                <% } %>
-            </div>
-        </div>
+                    </form>
+                </div>
 
-        <!-- System Stats -->
-        <div class="settings-section">
-            <h3><i class="fas fa-chart-pie"></i> System Stats</h3>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-label">Total Students</span>
-                    <span class="stat-value"><%= totalStudents %></span>
+                <!-- Tab 4: Security & Password -->
+                <div id="security-tab" class="settings-tab">
+                    <div class="tab-header">
+                        <h2>Security & Password</h2>
+                        <p>Manage your password and security settings.</p>
+                    </div>
+                    
+                    <form id="passwordForm" class="settings-form" onsubmit="updatePassword(event)">
+                        <div class="form-section">
+                            <h3>Change Password</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="current_password">Current Password *</label>
+                                    <input type="password" id="current_password" name="current_password" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="new_password">New Password *</label>
+                                    <input type="password" id="new_password" name="new_password" required>
+                                    <div class="password-strength">
+                                        <div class="strength-bar"></div>
+                                        <span class="strength-text">Password strength</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm_password">Confirm New Password *</label>
+                                    <input type="password" id="confirm_password" name="confirm_password" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Security Preferences</h3>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Two-Factor Authentication</h4>
+                                    <p>Add an extra layer of security to your account</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Login Notifications</h4>
+                                    <p>Get notified when someone logs into your account</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">
+                                <ion-icon name="key-outline"></ion-icon>
+                                Update Password
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Active Students</span>
-                    <span class="stat-value"><%= activeStudents %></span>
+
+                <!-- Tab 5: Notifications -->
+                <div id="notifications-tab" class="settings-tab">
+                    <div class="tab-header">
+                        <h2>Notification Preferences</h2>
+                        <p>Choose how and when you want to be notified.</p>
+                    </div>
+                    
+                    <form class="settings-form" onsubmit="e => e.preventDefault()">
+                        <div class="form-section">
+                            <h3>Email Notifications</h3>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Project Updates</h4>
+                                    <p>Get notified when projects are updated or completed</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Student Registrations</h4>
+                                    <p>Receive alerts when new students register</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>In-App Notifications</h3>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Desktop Notifications</h4>
+                                    <p>Show notifications on your desktop</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-primary" onclick="showNotification('Notification preferences saved!', 'success')">
+                                <ion-icon name="notifications-outline"></ion-icon>
+                                Save Preferences
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">Total Institutions</span>
-                    <span class="stat-value"><%= institutions ? institutions.length : 0 %></span>
+
+                <!-- Tab 6: App Preferences -->
+                <div id="preferences-tab" class="settings-tab">
+                    <div class="tab-header">
+                        <h2>Application Preferences</h2>
+                        <p>Customize your experience with the application.</p>
+                    </div>
+                    
+                    <form class="settings-form" onsubmit="e => e.preventDefault()">
+                        <div class="form-section">
+                            <h3>Interface Preferences</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="themeSelect">Theme</label>
+                                    <select id="themeSelect" name="theme">
+                                        <option value="light">Light</option>
+                                        <option value="dark">Dark</option>
+                                        <option value="auto">Auto (System)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="date_format">Date Format</label>
+                                    <select id="date_format" name="date_format">
+                                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Dashboard Preferences</h3>
+                            <div class="preference-item">
+                                <div class="preference-info">
+                                    <h4>Show Recent Activity</h4>
+                                    <p>Display recent activity on dashboard</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-primary" onclick="showNotification('App preferences saved!', 'success')">
+                                <ion-icon name="save-outline"></ion-icon>
+                                Save Preferences
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            </div>
+
+                <!-- Tab 7: System Information -->
+                <div id="system-info-tab" class="settings-tab">
+                    <div class="tab-header">
+                        <h2>System Information</h2>
+                        <p>Technical details about your installation.</p>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <ion-icon name="desktop-outline"></ion-icon>
+                            </div>
+                            <div class="info-content">
+                                <h3>Application</h3>
+                                <div class="info-item">
+                                    <span class="label">Version:</span>
+                                    <span class="value">Attendit v2.2.0</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Environment:</span>
+                                    <span class="value">Node.js Production</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Last Updated:</span>
+                                    <span class="value">June 2026</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <ion-icon name="server-outline"></ion-icon>
+                            </div>
+                            <div class="info-content">
+                                <h3>Server</h3>
+                                <div class="info-item">
+                                    <span class="label">Node Version:</span>
+                                    <span class="value">v18.17.0</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Database:</span>
+                                    <span class="value">MongoDB Atlas</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <ion-icon name="stats-chart-outline"></ion-icon>
+                            </div>
+                            <div class="info-content">
+                                <h3>Statistics</h3>
+                                <div class="info-item">
+                                    <span class="label">Total Students:</span>
+                                    <span class="value"><%= totalStudents %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Active Attachment:</span>
+                                    <span class="value"><%= activeStudents %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 8: Backup & Export -->
+                <div id="backup-tab" class="settings-tab">
+                    <div class="tab-header">
+                        <h2>Backup & Export</h2>
+                        <p>Manage your data backups and exports.</p>
+                    </div>
+                    
+                    <div class="backup-actions">
+                        <div class="action-card">
+                            <div class="action-icon">
+                                <ion-icon name="download-outline"></ion-icon>
+                            </div>
+                            <div class="action-content">
+                                <h3>Export Data</h3>
+                                <p>Download your data in various formats</p>
+                                <div class="action-buttons">
+                                    <button class="btn-outline" onclick="showNotification('Exporting JSON data...', 'info')">
+                                        <ion-icon name="document-outline"></ion-icon>
+                                        JSON Export
+                                    </button>
+                                    <button class="btn-outline" onclick="showNotification('Generating PDF report...', 'info')">
+                                        <ion-icon name="document-attach-outline"></ion-icon>
+                                        PDF Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-card">
+                            <div class="action-icon">
+                                <ion-icon name="cloud-upload-outline"></ion-icon>
+                            </div>
+                            <div class="action-content">
+                                <h3>Backup Database</h3>
+                                <p>Create a full backup of your database</p>
+                                <div class="action-buttons">
+                                    <button class="btn-primary" onclick="showNotification('Initiating MongoDB database backup...', 'success')">
+                                        <ion-icon name="server-outline"></ion-icon>
+                                        Create Backup
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 9: Project Credits -->
+                <div id="credits-tab" class="settings-tab">
+                    <div class="tab-header">
+                        <h2>Project Credits & Contributions</h2>
+                        <p>Meet the Team</p>
+                    </div>
+                    
+                    <div class="credits-content">
+                        <div class="credits-intro">
+                            <h3>About Attendit</h3>
+                            <p>Attendit is a comprehensive student attendance management system designed to streamline tracking, reporting, and management of student records in a standard environment.</p>
+                        </div>
+
+                        <!-- Management Team -->
+                        <div class="team-section">
+                            <h3>
+                                <ion-icon name="laptop-outline"></ion-icon>
+                                Management Team
+                            </h3>
+                            <div class="team-grid">
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <img src="https://picsum.photos/seed/emmy/80/80.jpg" alt="">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4>Adeyefa Faith</h4>
+                                        <p class="member-role">Project Lead</p>
+                                        <div class="member-contributions">
+                                            <span class="contribution-tag">System Architecture</span>
+                                            <span class="contribution-tag">Team Organisation</span>
+                                            <span class="contribution-tag">UI/UX Implementation</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <img src="https://picsum.photos/seed/orlando/80/80.jpg" alt="">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4>Ananu Awodi</h4>
+                                        <p class="member-role">Project Management</p>
+                                        <div class="member-contributions">
+                                            <span class="contribution-tag">Database Design</span>
+                                            <span class="contribution-tag">Team Organisation</span>
+                                            <span class="contribution-tag">Performance Briefing</span>
+                                            <span class="contribution-tag">Documentation</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <img src="https://picsum.photos/seed/emily/80/80.jpg" alt="">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4>Anisa Kwami</h4>
+                                        <p class="member-role">Project Management</p>
+                                        <div class="member-contributions">
+                                            <span class="contribution-tag">Database Design</span>
+                                            <span class="contribution-tag">Team Organisation</span>
+                                            <span class="contribution-tag">Performance Briefing</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Development Team -->
+                        <div class="team-section">
+                            <h3>
+                                <ion-icon name="laptop-outline"></ion-icon>
+                                Design & Development Team
+                            </h3>
+                            <div class="team-grid">
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <img src="https://picsum.photos/seed/emmy/80/80.jpg" alt="">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4>Peter Banes</h4>
+                                        <p class="member-role">Interface and Visual Planner</p>
+                                        <div class="member-contributions">
+                                            <span class="contribution-tag">User Experience Planner</span>
+                                            <span class="contribution-tag">Project Name</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <img src="https://picsum.photos/seed/orlando/80/80.jpg" alt="">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4>John Lucky</h4>
+                                        <p class="member-role">Lead Developer</p>
+                                        <div class="member-contributions">
+                                            <span class="contribution-tag">Frontend Design</span>
+                                            <span class="contribution-tag">Backend Design</span>
+                                            <span class="contribution-tag">Database Configuration</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <img src="https://picsum.photos/seed/emily/80/80.jpg" alt="">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4>Jeremiah Wakawa</h4>
+                                        <p class="member-role">Project Management</p>
+                                        <div class="member-contributions">
+                                            <span class="contribution-tag">Frontend Design-Dashboard</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <img src="https://picsum.photos/seed/emily/80/80.jpg" alt="">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4>Okechukwu Onaiah</h4>
+                                        <p class="member-role">Developer</p>
+                                        <div class="member-contributions">
+                                            <span class="contribution-tag">Frontend Design-Attendance</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <img src="https://picsum.photos/seed/emily/80/80.jpg" alt="">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4>Mariam Abubakar</h4>
+                                        <p class="member-role">Developer</p>
+                                        <div class="member-contributions">
+                                            <span class="contribution-tag">Frontend Design-Register</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="team-member">
+                                    <div class="member-avatar">
+                                        <img src="https://picsum.photos/seed/emily/80/80.jpg" alt="">
+                                    </div>
+                                    <div class="member-info">
+                                        <h4>Paschal Onyedikachi</h4>
+                                        <p class="member-role">Developer</p>
+                                        <div class="member-contributions">
+                                            <span class="contribution-tag">Frontend Design-Attendance</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project Information -->
+                        <div class="project-info-section">
+                            <h3>
+                                <ion-icon name="information-circle-outline"></ion-icon>
+                                Project Information
+                            </h3>
+                            <div class="project-info-grid">
+                                <div class="project-info-card">
+                                    <div class="info-icon">
+                                        <ion-icon name="logo-github"></ion-icon>
+                                    </div>
+                                    <div class="info-content">
+                                        <h4>Repository</h4>
+                                        <a href="https://github.com/eddyivy2610-cyber/AttendIT-v2.0" class="repo-link" target="_blank">View on GitHub</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
         </div>
     </div>
 </div>
@@ -172,8 +765,66 @@ function copyPublicRegisterLink() {
         .catch(() => showNotification('Could not copy link.', 'error'));
 }
 
+async function updateProfile(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+
+    try {
+        const res = await fetch('/api/settings/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email })
+        });
+        const result = await res.json();
+        if (result.success) {
+            showNotification(result.message, 'success');
+            // Update UI username if it matches EJS layout expectation
+            const navUserName = document.querySelector('.user-info .user-name');
+            if (navUserName) navUserName.textContent = username;
+        } else {
+            showNotification(result.message || 'Failed to update profile.', 'error');
+        }
+    } catch (e) {
+        showNotification('Network error.', 'error');
+    }
+}
+
+async function updatePassword(event) {
+    event.preventDefault();
+    const current_password = document.getElementById('current_password').value;
+    const new_password = document.getElementById('new_password').value;
+    const confirm_password = document.getElementById('confirm_password').value;
+
+    if (new_password !== confirm_password) {
+        showNotification('Passwords do not match.', 'error');
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/settings/password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ current_password, new_password })
+        });
+        const result = await res.json();
+        if (result.success) {
+            showNotification(result.message, 'success');
+            document.getElementById('passwordForm').reset();
+            const strengthBar = document.querySelector('.strength-bar');
+            if (strengthBar) strengthBar.style.width = '0%';
+        } else {
+            showNotification(result.message || 'Failed to change password.', 'error');
+        }
+    } catch (e) {
+        showNotification('Network error.', 'error');
+    }
+}
+
 window.showAddInstitutionModal = showAddInstitutionModal;
 window.saveInstitution = saveInstitution;
 window.deleteInstitution = deleteInstitution;
 window.copyPublicRegisterLink = copyPublicRegisterLink;
+window.updateProfile = updateProfile;
+window.updatePassword = updatePassword;
 </script>
