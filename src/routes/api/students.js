@@ -158,4 +158,26 @@ router.delete('/:id', requireAuth, async (req, res) => {
     }
 });
 
+// POST /api/students/:id/performance — add performance evaluation
+router.post('/:id/performance', requireAuth, async (req, res) => {
+    try {
+        const { technical_skill, learning_activity, active_contribution, comments } = req.body;
+        const Performance = require('../../models/Performance');
+        
+        const newPerformance = new Performance({
+            student: req.params.id,
+            evaluated_by: req.session.userId,
+            technical_skill: parseInt(technical_skill) || 0,
+            learning_activity: parseInt(learning_activity) || 0,
+            active_contribution: parseInt(active_contribution) || 0,
+            comments: comments ? comments.trim() : ''
+        });
+
+        await newPerformance.save();
+        res.json({ success: true, message: 'Performance rating added successfully!', data: newPerformance });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 module.exports = router;

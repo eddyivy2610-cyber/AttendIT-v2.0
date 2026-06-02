@@ -1,148 +1,169 @@
 <div id="dashboard-page" class="page-content">
+    <!-- Dashboard Cards Grid -->
     <div class="dashboard-cards">
-        <div class="card">
+        <div class="card total-students">
             <div class="card-header">
                 <div class="card-title">Total Students</div>
-                <div class="card-icon students">
-                    <ion-icon name="person-outline"></ion-icon>
+                <div class="card-icon">
+                    <ion-icon name="people-outline"></ion-icon>
                 </div>
             </div>
             <div class="card-value" id="total-students"><%= totalStudents %></div>
         </div>
 
-        <div class="card">
+        <div class="card attendance-rate">
             <div class="card-header">
                 <div class="card-title">Attendance Rate</div>
-                <div class="card-icon attendance">
+                <div class="card-icon">
                     <ion-icon name="calendar-outline"></ion-icon>
                 </div>
             </div>
             <div class="card-value" id="attendance-rate"><%= attendanceRate %>%</div>
         </div>
 
-        <div class="card">
+        <div class="card active-projects">
             <div class="card-header">
                 <div class="card-title">Active Projects</div>
-                <div class="card-icon projects">
+                <div class="card-icon">
                     <ion-icon name="folder-open-outline"></ion-icon>
                 </div>
             </div>
-            <div class="card-value">-</div>
+            <div class="card-value" id="active-projects">-</div>
         </div>
 
-        <div class="card">
+        <div class="card active-students">
             <div class="card-header">
                 <div class="card-title">Active Students</div>
-                <div class="card-icon active-students">
-                    <ion-icon name="people-outline"></ion-icon>
+                <div class="card-icon">
+                    <ion-icon name="person-check-outline"></ion-icon>
                 </div>
             </div>
             <div class="card-value" id="active-students"><%= activeStudents %></div>
         </div>
     </div>
 
+    <!-- Quick Actions Section -->
     <div class="quick-actions">
         <a href="/?page=attendance" class="action-card-link">
-            <div class="card actions">
-                <div class="iconBx actions done">
+            <div class="card action-card">
+                <div class="action-icon">
                     <ion-icon name="checkmark-circle-outline"></ion-icon>
                 </div>
-                <div>
-                    <div class="numbers actions">Mark Attendance</div>
-                    <div class="cardName">Update and manage daily attendance</div>
+                <div class="action-content">
+                    <div class="action-title">Mark Attendance</div>
+                    <div class="action-desc">Update and manage daily attendance</div>
                 </div>
             </div>
         </a>
+
         <a href="/?page=reports" class="action-card-link">
-            <div class="card actions">
-                <div class="iconBx actions chart">
+            <div class="card action-card">
+                <div class="action-icon">
                     <ion-icon name="stats-chart-outline"></ion-icon>
                 </div>
-                <div>
-                    <div class="numbers actions">View Reports</div>
-                    <div class="cardName">Generate and analyze reports</div>
+                <div class="action-content">
+                    <div class="action-title">View Reports</div>
+                    <div class="action-desc">Generate and analyze reports</div>
                 </div>
             </div>
         </a>
+
         <a href="/?page=students" class="action-card-link">
-            <div class="card actions">
-                <div class="iconBx actions list">
-                    <ion-icon name="list-sharp"></ion-icon>
+            <div class="card action-card">
+                <div class="action-icon">
+                    <ion-icon name="list-outline"></ion-icon>
                 </div>
-                <div>
-                    <div class="numbers actions">Manage Students</div>
-                    <div class="cardName">View and manage student information</div>
+                <div class="action-content">
+                    <div class="action-title">Manage Students</div>
+                    <div class="action-desc">View and manage student information</div>
                 </div>
             </div>
         </a>
     </div>
 
-    <div class="details">
+    <!-- Main Content Area -->
+    <div class="dashboard-details">
         <!-- Recently Added Students -->
-        <div class="recentStudents">
-            <div class="cardHeader">
-                <h3>Recently Added</h3>
-                <a href="/?page=students" class="btn">View All</a>
+        <div class="detail-card recent-students">
+            <div class="detail-header">
+                <h3>Recently Added Students</h3>
+                <a href="/?page=students" class="btn btn-primary">View All</a>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <td>Image</td>
-                        <td>Name</td>
-                        <td>Gender</td>
-                        <td>POA</td>
-                        <td>Joined on</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (recentStudents && recentStudents.length > 0) { %>
-                        <% recentStudents.forEach(student => { %>
-                            <tr>
-                                <td width="40px">
-                                    <div class="imgBx">
-                                        <img src="https://picsum.photos/seed/<%= encodeURIComponent(student.student_name) %>/40/40.jpg" alt="<%= student.student_name %>">
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Gender</th>
+                            <th>POA</th>
+                            <th>Joined On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (recentStudents && recentStudents.length > 0) { %>
+                            <% recentStudents.forEach(student => { %>
+                                <tr>
+                                    <td>
+                                        <div class="student-info">
+                                            <div class="student-avatar">
+                                                <img src="https://picsum.photos/seed/<%= encodeURIComponent(student.student_name) %>/40/40" alt="<%= student.student_name %>">
+                                            </div>
+                                            <span class="student-name"><%= student.student_name %></span>
+                                        </div>
+                                    </td>
+                                    <td><%= student.gender || '--' %></td>
+                                    <td><%= student.period_of_attachment ? student.period_of_attachment + ' months' : '--' %></td>
+                                    <td><%= student.created_at ? new Date(student.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '--' %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr class="empty-row">
+                                <td colspan="4">
+                                    <div class="empty-state">
+                                        <ion-icon name="person-add-outline"></ion-icon>
+                                        <p>No recently added students</p>
                                     </div>
                                 </td>
-                                <td><%= student.student_name %></td>
-                                <td><%= student.gender || '--' %></td>
-                                <td><%= student.period_of_attachment ? student.period_of_attachment + ' months' : '--' %></td>
-                                <td><%= student.created_at ? new Date(student.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '--' %></td>
                             </tr>
-                        <% }) %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="5" style="text-align: center; padding: 2rem;">
-                                <i class="fas fa-user-plus" style="font-size: 2rem; color: #ccc; margin-bottom: 1rem;"></i>
-                                <br>No recently added students
-                            </td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Institution Overview -->
-        <div class="schoolGrid">
-            <div class="cardHeader">
+        <div class="detail-card institution-overview">
+            <div class="detail-header">
                 <h3>Institution Overview</h3>
             </div>
-            <div class="institutions-table">
+
+            <div class="institution-list">
                 <% if (institutions && institutions.length > 0) { %>
                     <% institutions.forEach(inst => { %>
                         <div class="institution-item">
-                            <div class="imgBx">
-                                <img src="https://picsum.photos/seed/<%= encodeURIComponent(inst.institution_name) %>/60/60.jpg" alt="<%= inst.institution_name %>">
+                            <div class="institution-logo">
+                                <img src="https://picsum.photos/seed/<%= encodeURIComponent(inst.institution_name) %>/60/60" alt="<%= inst.institution_name %>">
                             </div>
-                            <div class="institution-info">
+                            <div class="institution-details">
                                 <h4><%= inst.institution_name %></h4>
-                                <span><%= inst.student_count %> Active Students</span>
+                                <div class="institution-stats">
+                                    <span class="stat">
+                                        <ion-icon name="people-outline"></ion-icon>
+                                        <%= inst.student_count %> Registered
+                                    </span>
+                                    <span class="stat">
+                                        <ion-icon name="checkmark-circle-outline"></ion-icon>
+                                        <%= inst.active_count || inst.student_count %> Active
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     <% }) %>
                 <% } else { %>
-                    <div style="text-align: center; padding: 2rem; color: #666;">
-                        <i class="fas fa-university" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                        <br>No institutions found
+                    <div class="empty-state">
+                        <ion-icon name="business-outline"></ion-icon>
+                        <p>No institutions found</p>
                     </div>
                 <% } %>
             </div>

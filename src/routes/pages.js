@@ -5,6 +5,8 @@ const { requireAuth } = require('../middleware/auth');
 const Student = require('../models/Student');
 const Attendance = require('../models/Attendance');
 const Institution = require('../models/Institution');
+const Project = require('../models/Project');
+const Performance = require('../models/Performance');
 const { buildPublicQrAssets } = require('../utils/public-qr');
 
 const ALLOWED_PAGES = ['dashboard', 'students', 'attendance', 'reports', 'settings', 'projects'];
@@ -40,6 +42,7 @@ router.get('/', requireAuth, async (req, res) => {
     const currentUser = {
         userId: req.session.userId,
         username: req.session.username,
+        email: req.session.email,
         role: req.session.role
     };
 
@@ -130,8 +133,66 @@ router.get('/', requireAuth, async (req, res) => {
 
         // ---- REPORTS DATA ----
         if (page === 'reports') {
-            const students = await Student.find({ status: 'Active' }, 'student_name').sort({ student_name: 1 });
-            viewData = { students };
+            const studentId = req.query.student_id;
+            const allStudents = await Student.find().sort({ student_name: 1 });
+            
+            let studentData = null;
+            let performanceData = null;
+            let attendanceData = [];
+            let projectCount = 0;
+            let studentAttendance = { total_days: 0, present_days: 0, attendance_rate: 0 };
+
+            if (studentId) {
+                studentData = await Student.findById(studentId).populate('institution');
+                if (studentData) {
+                    const latestPerf = await Performance.findOne({ student: studentId })
+                        .sort({ evaluation_date: -1 });
+                    
+                    if (latestPerf) {
+                        performanceData = {
+                            technical_skill: latestPerf.technical_skill,
+                            learning_activity: latestPerf.learning_activity,
+                            active_contribution: latestPerf.active_contribution,
+                            overall_rating: latestPerf.overall_rating,
+                            evaluation_date: latestPerf.evaluation_date,
+                            comments: latestPerf.comments
+                        };
+                    }
+
+                    const escapeRegExp = value => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    const [attRecords, projCount] = await Promise.all([
+                        Attendance.find({ student: studentId }).sort({ date: -1 }),
+                        Project.countDocuments({ students: new RegExp(escapeRegExp(studentData.student_name), 'i') })
+                    ]);
+                    
+                    attendanceData = attRecords;
+                    projectCount = projCount;
+
+                    const totalDays = attRecords.length;
+                    const presentDays = attRecords.filter(a => a.status === 'Present' || a.status === 'Late').length;
+                    const lateDays = attRecords.filter(a => a.status === 'Late').length;
+                    const absentDays = Math.max(0, totalDays - presentDays);
+                    const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
+                    
+                    studentAttendance = {
+                        total_days: totalDays,
+                        present_days: presentDays,
+                        late_days: lateDays,
+                        absent_days: absentDays,
+                        attendance_rate: attendanceRate
+                    };
+                }
+            }
+
+            viewData = {
+                allStudents,
+                studentId,
+                studentData,
+                performanceData,
+                attendanceData,
+                projectCount,
+                studentAttendance
+            };
         }
 
         // ---- SETTINGS DATA ----
@@ -156,7 +217,8 @@ router.get('/', requireAuth, async (req, res) => {
 
         // ---- PROJECTS DATA ----
         if (page === 'projects') {
-            viewData = {};
+            const projects = await Project.find().sort({ created_at: -1 });
+            viewData = { projects };
         }
 
         res.render('index', {

@@ -17,13 +17,60 @@
     <link rel="stylesheet" href="/assets/css/projects.css">
 </head>
 <body>
+
+    <div class="theme-transition-overlay" id="themeOverlay"></div>
+
+    <!-- Mobile Top Navigation Toggle -->
+    <button class="top-nav-toggle" id="topNavToggle" aria-label="Toggle navigation">
+        <ion-icon name="menu-outline"></ion-icon>
+    </button>
+
+    <!-- Mobile Top Navigation -->
+    <nav class="top-nav" id="topNav">
+        <ul class="top-nav-list">
+            <a href="/?page=dashboard" class="top-nav-item <%= page == 'dashboard' ? 'active' : '' %>" data-index="0">
+                <ion-icon name="grid-outline"></ion-icon>
+                <span>Dashboard</span>
+            </a>
+            <a href="/?page=students" class="top-nav-item <%= page == 'students' ? 'active' : '' %>" data-index="1">
+                <ion-icon name="people-outline"></ion-icon>
+                <span>Students</span>
+            </a>
+            <a href="/?page=attendance" class="top-nav-item <%= page == 'attendance' ? 'active' : '' %>" data-index="2">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>Attendance</span>
+            </a>
+            <a href="/?page=projects" class="top-nav-item <%= page == 'projects' ? 'active' : '' %>" data-index="3">
+                <ion-icon name="folder-open-outline"></ion-icon>
+                <span>Projects</span>
+            </a>
+            <a href="/?page=reports" class="top-nav-item <%= page == 'reports' ? 'active' : '' %>" data-index="4">
+                <ion-icon name="bar-chart-outline"></ion-icon>
+                <span>Reports</span>
+            </a>
+            <a href="/?page=settings" class="top-nav-item <%= page == 'settings' ? 'active' : '' %>" data-index="5">
+                <ion-icon name="settings-outline"></ion-icon>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="top-nav-item" id="mobileThemeToggle" data-index="6">
+                <ion-icon name="contrast-outline"></ion-icon>
+                <span>Theme</span>
+            </a>
+            <a href="/logout" class="top-nav-item" data-index="7">
+                <ion-icon name="log-out-outline"></ion-icon>
+                <span>Logout</span>
+            </a>
+        </ul>
+    </nav>
+
     <div class="container">
-        <div class="navigation">
-            <div>
+        <!-- Sidebar Navigation -->
+        <div class="navigation" id="sidebar">
+            <div class="sidebar-content">
                 <div class="nav-header">
                     <a href="/?page=dashboard" class="logo">
-                        <img src="/1761425618541.png" alt="">
-                        <span>Attendit</span>
+                        <img src="/1761425618541.png" alt="Attendit Logo">
+                        <span class="logo-text">Attendit</span>
                     </a>
                 </div>
 
@@ -36,25 +83,25 @@
                     </li>
                     <li class="<%= page === 'students' ? 'active' : '' %>">
                         <a href="/?page=students" data-tooltip="Students" data-page="students">
-                            <ion-icon name="person-outline"></ion-icon>
+                            <ion-icon name="people-outline"></ion-icon>
                             <span>Students</span>
                         </a>
                     </li>
                     <li class="<%= page === 'attendance' ? 'active' : '' %>">
                         <a href="/?page=attendance" data-tooltip="Attendance" data-page="attendance">
-                            <ion-icon name="calendar-number-outline"></ion-icon>
+                            <ion-icon name="calendar-outline"></ion-icon>
                             <span>Attendance</span>
                         </a>
                     </li>
                     <li class="<%= page === 'projects' ? 'active' : '' %>">
                         <a href="/?page=projects" data-tooltip="Projects" data-page="projects">
-                            <ion-icon name="folder-outline"></ion-icon>
+                            <ion-icon name="folder-open-outline"></ion-icon>
                             <span>Projects</span>
                         </a>
                     </li>
                     <li class="<%= page === 'reports' ? 'active' : '' %>">
                         <a href="/?page=reports" data-tooltip="Reports" data-page="reports">
-                            <ion-icon name="create-outline"></ion-icon>
+                            <ion-icon name="bar-chart-outline"></ion-icon>
                             <span>Reports</span>
                         </a>
                     </li>
@@ -64,7 +111,7 @@
             <div class="nav-footer">
                 <div class="user-profile">
                     <div class="user-avatar">
-                        <img src="/cropped-Latest-LOGO-NCAT-.1.png" alt="user">
+                        <img src="/cropped-Latest-LOGO-NCAT-.1.png" alt="User Avatar">
                     </div>
                     <div class="user-info">
                         <div class="user-name"><%= currentUser.username %></div>
@@ -72,36 +119,31 @@
                     </div>
                 </div>
 
-                <ul class="nav-bar down">
-                    <li>
-                        <div class="theme">
-                            <ion-icon name="contrast"></ion-icon>
-                            <span id="display">Dark UI</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="toggle">
-                            <i class='bxr bx-arrow-from-right-stroke' id="collapse"></i>
-                            <span>Collapse</span>
-                        </div>
-                    </li>
-                    <li class="<%= page === 'settings' ? 'active' : '' %>">
-                        <a href="/?page=settings" data-tooltip="Settings">
-                            <ion-icon name="settings-outline"></ion-icon>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/logout" data-tooltip="Sign Out">
-                            <ion-icon name="log-out-outline"></ion-icon>
-                            <span>Log Out</span>
-                        </a>
-                    </li>
-                </ul>
+                <div class="sidebar-controls">
+                    <button class="sidebar-btn theme-toggle" id="themeToggle">
+                        <ion-icon name="contrast-outline"></ion-icon>
+                        <span id="themeText">Dark UI</span>
+                    </button>
+
+                    <button class="sidebar-btn collapse-toggle" id="collapseToggle">
+                        <ion-icon name="chevron-back-outline" class="collapse-icon"></ion-icon>
+                        <span id="collapseText">Collapse</span>
+                    </button>
+
+                    <a href="/?page=settings" class="sidebar-btn settings-btn <%= page === 'settings' ? 'active' : '' %>">
+                        <ion-icon name="settings-outline"></ion-icon>
+                        <span>Settings</span>
+                    </a>
+
+                    <a href="/logout" class="sidebar-btn logout-btn">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                        <span>Log Out</span>
+                    </a>
+                </div>
             </div>
         </div>
 
-        <main class="main-content">
+        <main class="main-content" id="mainContent">
             <div class="page-header">
                 <h1 class="page-title"><%= page.charAt(0).toUpperCase() + page.slice(1) %></h1>
                 <span id="currentDate" class="date"><%= currentDate %></span>
@@ -119,25 +161,28 @@
     <!-- Notification System -->
     <div id="notification">
         <span id="notification-message"></span>
-        <button onclick="hideNotification()">×</button>
+        <button onclick="hideNotification()">
+            <ion-icon name="close-outline"></ion-icon>
+        </button>
     </div>
 
+    <!-- Sidebar tooltip -->
     <div id="sidebar-tooltip" class="sidebar-tooltip"></div>
 
     <!-- Pass current page to JS -->
     <script>window.CURRENT_PAGE = '<%= page %>';</script>
 
+    <!-- ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
     <!-- Scripts -->
     <script src="/assets/js/home.js"></script>
+    <script src="/assets/js/dashboard.js"></script>
     <script src="/assets/js/students.js"></script>
     <script src="/assets/js/attendance.js"></script>
-    <script src="/assets/js/dashboard.js"></script>
     <script src="/assets/js/settings.js"></script>
     <script src="/assets/js/reports.js"></script>
     <script src="/assets/js/projects.js"></script>
-
-    <!-- ionicons -->
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

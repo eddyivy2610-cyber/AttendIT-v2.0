@@ -6,8 +6,8 @@ const Institution = require('../models/Institution');
 const { normalizePhoneNumber } = require('../utils/phone');
 
 function isValidToken(req) {
-    const token = process.env.PUBLIC_REGISTER_TOKEN || process.env.PUBLIC_STUDENT_FORM_TOKEN;
-    return token && req.params.token === token;
+    const token = process.env.PUBLIC_REGISTER_TOKEN || process.env.PUBLIC_STUDENT_FORM_TOKEN || 'change-me-public-register-token';
+    return req.params.token === token;
 }
 
 function addMonths(date, months) {

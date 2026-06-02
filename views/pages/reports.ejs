@@ -1,127 +1,432 @@
-<div id="reports-page" class="page-content">
-    <div class="reports-container">
-        <div class="reports-header">
-            <h2>Attendance Reports</h2>
-            <div class="report-filters">
-                <select id="report-student" class="filter-select">
-                    <option value="">All Students</option>
-                    <% if (students && students.length > 0) { %>
-                        <% students.forEach(s => { %>
-                            <option value="<%= s._id %>"><%= s.student_name %></option>
-                        <% }) %>
+<div id="reports-page" class="page-content" data-student-id="<%= studentData ? studentData._id : '' %>">
+    <div class="reports-layout">
+        <!-- Main Content Area -->
+        <div class="reports-main">
+            <% if (studentData) { %>
+                <!-- Student Header -->
+                <div class="reports-student-header">
+                    <div class="reports-student-basic">
+                        <img src="<%= studentData.photo_url ? '/' + studentData.photo_url : 'https://picsum.photos/seed/' + studentData._id + '/80/80.jpg' %>" 
+                             alt="<%= studentData.student_name %>" class="reports-student-avatar">
+                        <div class="reports-student-info-compact">
+                            <h2><%= studentData.student_name %></h2>
+                            <div class="reports-student-meta">
+                                <span class="reports-status-badge reports-status-<%= (studentData.status || 'inactive').toLowerCase() %>">
+                                    <%= studentData.status || 'Inactive' %>
+                                </span>
+                                <span class="reports-course">
+                                    <ion-icon name="book-outline"></ion-icon>
+                                    <%= studentData.course_of_study || 'No Course' %>
+                                </span>
+                                <span class="reports-institution">
+                                    <ion-icon name="school-outline"></ion-icon>
+                                    <%= studentData.institution ? studentData.institution.institution_name : 'N/A' %>
+                                </span>
+                            </div>
+                            <div class="reports-student-mobile-info">
+                                <span><ion-icon name="mail-outline"></ion-icon> <%= studentData.email || 'N/A' %></span>
+                                <span><ion-icon name="call-outline"></ion-icon> <%= studentData.phone || 'N/A' %></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="reports-student-actions">
+                        <button class="reports-btn-outline" onclick="exportReport()">
+                            <ion-icon name="download-outline"></ion-icon> <span class="reports-btn-text">Export</span>
+                        </button>
+                        <button class="reports-btn-primary" onclick="sendReport()">
+                            <ion-icon name="paper-plane-outline"></ion-icon> <span class="reports-btn-text">Send</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="reports-stats-overview">
+                    <div class="reports-stat-card">
+                        <div class="reports-stat-icon">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                        </div>
+                        <div class="reports-stat-content">
+                            <div class="reports-stat-value"><%= studentAttendance.attendance_rate %>%</div>
+                            <div class="reports-stat-label">Attendance</div>
+                        </div>
+                    </div>
+                    <div class="reports-stat-card">
+                        <div class="reports-stat-icon">
+                            <ion-icon name="checkmark-circle-outline"></ion-icon>
+                        </div>
+                        <div class="reports-stat-content">
+                            <div class="reports-stat-value"><%= studentAttendance.present_days %></div>
+                            <div class="reports-stat-label">Present</div>
+                        </div>
+                    </div>
+                    <div class="reports-stat-card">
+                        <div class="reports-stat-icon">
+                            <ion-icon name="time-outline"></ion-icon>
+                        </div>
+                        <div class="reports-stat-content">
+                            <div class="reports-stat-value"><%= studentAttendance.late_days || 0 %></div>
+                            <div class="reports-stat-label">Late Days</div>
+                        </div>
+                    </div>
+                    <div class="reports-stat-card">
+                        <div class="reports-stat-icon">
+                            <ion-icon name="close-circle-outline"></ion-icon>
+                        </div>
+                        <div class="reports-stat-content">
+                            <div class="reports-stat-value"><%= studentAttendance.absent_days || 0 %></div>
+                            <div class="reports-stat-label">Absent Days</div>
+                        </div>
+                    </div>
+                    <div class="reports-stat-card">
+                        <div class="reports-stat-icon">
+                            <ion-icon name="trending-up-outline"></ion-icon>
+                        </div>
+                        <div class="reports-stat-content">
+                            <div class="reports-stat-value"><%= performanceData ? performanceData.overall_rating : 0 %>%</div>
+                            <div class="reports-stat-label">Performance</div>
+                        </div>
+                    </div>
+                    <div class="reports-stat-card">
+                        <div class="reports-stat-icon">
+                            <ion-icon name="folder-outline"></ion-icon>
+                        </div>
+                        <div class="reports-stat-content">
+                            <div class="reports-stat-value"><%= projectCount %></div>
+                            <div class="reports-stat-label">Projects</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Information Grid -->
+                <div class="reports-section">
+                    <div class="reports-section-header">
+                        <h3>Student Information</h3>
+                    </div>
+                    <div class="reports-info-grid">
+                        <div class="reports-info-item">
+                            <div class="reports-info-icon">
+                                <ion-icon name="mail-outline"></ion-icon>
+                            </div>
+                            <div class="reports-info-details">
+                                <label>Email</label>
+                                <span><%= studentData.email || 'N/A' %></span>
+                            </div>
+                        </div>
+                        <div class="reports-info-item">
+                            <div class="reports-info-icon">
+                                <ion-icon name="call-outline"></ion-icon>
+                            </div>
+                            <div class="reports-info-details">
+                                <label>Phone</label>
+                                <span><%= studentData.phone || 'N/A' %></span>
+                            </div>
+                        </div>
+                        <div class="reports-info-item">
+                            <div class="reports-info-icon">
+                                <ion-icon name="person-outline"></ion-icon>
+                            </div>
+                            <div class="reports-info-details">
+                                <label>Gender</label>
+                                <span><%= studentData.gender || 'N/A' %></span>
+                            </div>
+                        </div>
+                        
+                        <div class="reports-info-item">
+                            <div class="reports-info-icon">
+                                <ion-icon name="school-outline"></ion-icon>
+                            </div>
+                            <div class="reports-info-details">
+                                <label>Course</label>
+                                <span><%= studentData.course_of_study || 'N/A' %></span>
+                            </div>
+                        </div>
+                        <div class="reports-info-item">
+                            <div class="reports-info-icon">
+                                <ion-icon name="business-outline"></ion-icon>
+                            </div>
+                            <div class="reports-info-details">
+                                <label>Institution</label>
+                                <span><%= studentData.institution ? studentData.institution.institution_name : 'N/A' %></span>
+                            </div>
+                        </div>
+                        <div class="reports-info-item">
+                            <div class="reports-info-icon">
+                                <ion-icon name="ribbon-outline"></ion-icon>
+                            </div>
+                            <div class="reports-info-details">
+                                <label>Skills Interest</label>
+                                <span><%= studentData.skill_of_interest || 'N/A' %></span>
+                            </div>
+                        </div>
+                        
+                        <div class="reports-info-item">
+                            <div class="reports-info-icon">
+                                <ion-icon name="calendar-outline"></ion-icon>
+                            </div>
+                            <div class="reports-info-details">
+                                <label>Commencement Date</label>
+                                <span><%= studentData.join_date ? new Date(studentData.join_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A' %></span>
+                            </div>
+                        </div>
+                        <div class="reports-info-item">
+                            <div class="reports-info-icon">
+                                <ion-icon name="flag-outline"></ion-icon>
+                            </div>
+                            <div class="reports-info-details">
+                                <label>Completion Date</label>
+                                <span><%= studentData.end_date ? new Date(studentData.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A' %></span>
+                            </div>
+                        </div>
+                        <div class="reports-info-item">
+                            <div class="reports-info-icon">
+                                <ion-icon name="time-outline"></ion-icon>
+                            </div>
+                            <div class="reports-info-details">
+                                <label>Program Period</label>
+                                <span><%= studentData.period_of_attachment ? studentData.period_of_attachment + ' months' : 'N/A' %></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Section -->
+                <div class="reports-section">
+                    <div class="reports-section-header">
+                        <h3>Performance Metrics</h3>
+                        <% if (performanceData) { %>
+                            <span class="reports-last-evaluated">Last: <%= new Date(performanceData.evaluation_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+                        <% } %>
+                    </div>
+                    
+                    <% if (performanceData) { %>
+                        <div class="reports-performance-grid">
+                            <div class="reports-performance-metric">
+                                <div class="reports-metric-header">
+                                    <span class="reports-metric-label">Technical Skills</span>
+                                    <span class="reports-metric-value"><%= performanceData.technical_skill %>%</span>
+                                </div>
+                                <div class="reports-progress-bar">
+                                    <div class="reports-progress-fill" data-width="<%= performanceData.technical_skill %>"></div>
+                                </div>
+                            </div>
+                            <div class="reports-performance-metric">
+                                <div class="reports-metric-header">
+                                    <span class="reports-metric-label">Learning Activity</span>
+                                    <span class="reports-metric-value"><%= performanceData.learning_activity %>%</span>
+                                </div>
+                                <div class="reports-progress-bar">
+                                    <div class="reports-progress-fill" data-width="<%= performanceData.learning_activity %>"></div>
+                                </div>
+                            </div>
+                            <div class="reports-performance-metric">
+                                <div class="reports-metric-header">
+                                    <span class="reports-metric-label">Active Contribution</span>
+                                    <span class="reports-metric-value"><%= performanceData.active_contribution %>%</span>
+                                </div>
+                                <div class="reports-progress-bar">
+                                    <div class="reports-progress-fill" data-width="<%= performanceData.active_contribution %>"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <% if (performanceData.comments) { %>
+                            <div class="reports-performance-comments">
+                                <strong>Supervisor Comments:</strong>
+                                <p><%= performanceData.comments %></p>
+                            </div>
+                        <% } %>
+                    <% } else { %>
+                        <div class="reports-no-data">
+                            <ion-icon name="stats-chart-outline"></ion-icon>
+                            <p>No performance data available yet.</p>
+                        </div>
                     <% } %>
-                </select>
-                <input type="month" id="report-month" class="filter-select" value="<%= new Date().toISOString().slice(0,7) %>">
-                <button class="btn btn-primary" onclick="generateReport()">
-                    <i class="fas fa-chart-bar"></i> Generate Report
-                </button>
-                <button class="btn btn-secondary" onclick="exportReport()">
-                    <i class="fas fa-download"></i> Export
-                </button>
-            </div>
+                </div>
+
+                <!-- Attendance History -->
+                <div class="reports-section">
+                    <div class="reports-section-header">
+                        <h3>Attendance History</h3>
+                    </div>
+                    <% if (attendanceData && attendanceData.length > 0) { %>
+                        <div style="overflow-x:auto;">
+                            <table class="students-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Arrival</th>
+                                        <th>Departure</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% attendanceData.forEach(record => { %>
+                                        <tr>
+                                            <td><%= record.date %></td>
+                                            <td><%= record.status %></td>
+                                            <td><%= record.arrival_time ? new Date(record.arrival_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--' %></td>
+                                            <td><%= record.departure_time ? new Date(record.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--' %></td>
+                                            <td><%= record.notes || '--' %></td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="reports-no-data">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                            <p>No attendance history found for this student.</p>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Compact Evaluation Input -->
+                <div class="reports-section reports-compact-form">
+                    <div class="reports-section-header">
+                        <h3>Quick Evaluation</h3>
+                    </div>
+                    <form id="reports-performanceForm" class="reports-performance-form-compact" onsubmit="submitEvaluation(event)">
+                        <div class="reports-evaluation-grid">
+                            <div class="reports-eval-item">
+                                <label class="reports-eval-label">Technical</label>
+                                <input type="range" class="reports-eval-range" id="reports-technical_skill" name="technical_skill" min="0" max="100" value="75" oninput="updateRangeLabel(this)">
+                                <span class="reports-eval-value" id="reports-technical_skill_value">75%</span>
+                            </div>
+                            
+                            <div class="reports-eval-item">
+                                <label class="reports-eval-label">Learning</label>
+                                <input type="range" class="reports-eval-range" id="reports-learning_activity" name="learning_activity" min="0" max="100" value="75" oninput="updateRangeLabel(this)">
+                                <span class="reports-eval-value" id="reports-learning_activity_value">75%</span>
+                            </div>
+                            
+                            <div class="reports-eval-item">
+                                <label class="reports-eval-label">Contribution</label>
+                                <input type="range" class="reports-eval-range" id="reports-active_contribution" name="active_contribution" min="0" max="100" value="75" oninput="updateRangeLabel(this)">
+                                <span class="reports-eval-value" id="reports-active_contribution_value">75%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="reports-eval-comments">
+                            <textarea class="reports-form-textarea-small" id="reports-comments" name="comments" placeholder="Add comments (optional)" rows="2"></textarea>
+                            <button type="submit" class="reports-btn-primary reports-btn-compact">
+                                <ion-icon name="save-outline"></ion-icon> <span class="reports-btn-text">Save</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            <% } else { %>
+                <!-- No Student Selected -->
+                <div class="reports-no-student-selected">
+                    <div class="reports-empty-state">
+                        <ion-icon name="document-text-outline"></ion-icon>
+                        <h3>No Student Selected</h3>
+                        <p>Select a student from the list to view their reports and performance metrics.</p>
+                    </div>
+                </div>
+            <% } %>
         </div>
 
-        <!-- Report Summary Cards -->
-        <div class="report-summary" id="report-summary" style="display:none;">
-            <div class="summary-card present">
-                <i class="fas fa-user-check"></i>
-                <div><h3 id="rpt-present">0</h3><p>Present Days</p></div>
+        <!-- Students Sidebar -->
+        <div class="reports-students-sidebar">
+            <div class="reports-sidebar-header">
+                <h3>Students</h3>
+                <div class="reports-search-box">
+                    <ion-icon name="search-outline"></ion-icon>
+                    <input type="text" id="reports-studentSearch" placeholder="Search students...">
+                </div>
             </div>
-            <div class="summary-card late">
-                <i class="fas fa-user-clock"></i>
-                <div><h3 id="rpt-late">0</h3><p>Late Days</p></div>
+            
+            <div class="reports-students-list" id="reports-studentsList">
+                <% if (allStudents && allStudents.length > 0) { %>
+                    <% allStudents.forEach(student => { %>
+                        <div class="reports-student-item <%= studentId == student._id.toString() ? 'reports-active' : '' %>" 
+                             onclick="window.location.href='?page=reports&student_id=<%= student._id %>'">
+                            <img src="<%= student.photo_url ? '/' + student.photo_url : 'https://picsum.photos/seed/' + student._id + '/40/40.jpg' %>" 
+                                 alt="<%= student.student_name %>" class="reports-student-avatar-small">
+                            <div class="reports-student-info-small">
+                                <div class="reports-student-name"><%= student.student_name %></div>
+                                <div class="reports-student-course"><%= student.course_of_study || 'No Course' %></div>
+                            </div>
+                            <span class="reports-status-indicator reports-status-<%= (student.status || 'inactive').toLowerCase() %>"></span>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="reports-no-students">
+                        <ion-icon name="people-outline"></ion-icon>
+                        <p>No students found</p>
+                    </div>
+                <% } %>
             </div>
-            <div class="summary-card absent">
-                <i class="fas fa-user-times"></i>
-                <div><h3 id="rpt-absent">0</h3><p>Absent Days</p></div>
-            </div>
-            <div class="summary-card expected">
-                <i class="fas fa-percent"></i>
-                <div><h3 id="rpt-rate">0%</h3><p>Attendance Rate</p></div>
-            </div>
-        </div>
-
-        <!-- Report Table -->
-        <div class="report-table-container">
-            <table class="students-table" id="report-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Present</th>
-                        <th>Late</th>
-                        <th>Absent</th>
-                        <th>Total</th>
-                        <th>Rate</th>
-                    </tr>
-                </thead>
-                <tbody id="report-tbody">
-                    <tr>
-                        <td colspan="6" style="text-align:center; padding: 2rem; color:#aaa;">
-                            Select a month and click "Generate Report"
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
 
 <script>
-async function generateReport() {
-    const monthInput = document.getElementById('report-month').value;
-    if (!monthInput) { showNotification('Please select a month.', 'warning'); return; }
+function updateRangeLabel(input) {
+    const valueSpan = document.getElementById(input.id + '_value');
+    if (valueSpan) {
+        valueSpan.textContent = input.value + '%';
+    }
+}
 
-    const [year, month] = monthInput.split('-');
-    const tbody = document.getElementById('report-tbody');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem;">Loading...</td></tr>';
+async function submitEvaluation(event) {
+    event.preventDefault();
+    const reportsPage = document.getElementById('reports-page');
+    const studentId = reportsPage ? reportsPage.dataset.studentId : '';
+    if (!studentId) {
+        showNotification('No student selected.', 'error');
+        return;
+    }
+
+    const technical_skill = document.getElementById('reports-technical_skill').value;
+    const learning_activity = document.getElementById('reports-learning_activity').value;
+    const active_contribution = document.getElementById('reports-active_contribution').value;
+    const comments = document.getElementById('reports-comments').value;
 
     try {
-        const res = await fetch(`/api/attendance/monthly?year=${year}&month=${month}`);
-        const result = await res.json();
-
-        if (!result.success || result.data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:#aaa;">No attendance data found for this period.</td></tr>';
-            document.getElementById('report-summary').style.display = 'none';
-            return;
+        const response = await fetch(`/api/students/${studentId}/performance`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ technical_skill, learning_activity, active_contribution, comments })
+        });
+        const result = await response.json();
+        if (result.success) {
+            showNotification(result.message, 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            showNotification(result.message || 'Failed to save evaluation.', 'error');
         }
-
-        let totalPresent = 0, totalLate = 0, totalAbsent = 0;
-
-        tbody.innerHTML = result.data.map(row => {
-            totalPresent += row.present_count;
-            totalLate += row.late_count;
-            totalAbsent += row.absent_count;
-            const rate = row.total_students > 0 ? Math.round(((row.present_count + row.late_count) / row.total_students) * 100) : 0;
-            return `<tr>
-                <td>${new Date(row.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</td>
-                <td><span style="color:var(--success, green)">${row.present_count}</span></td>
-                <td><span style="color:var(--warning, orange)">${row.late_count}</span></td>
-                <td><span style="color:var(--danger, red)">${row.absent_count}</span></td>
-                <td>${row.total_students}</td>
-                <td>${rate}%</td>
-            </tr>`;
-        }).join('');
-
-        // Update summary cards
-        const totalDays = result.data.length;
-        const totalExpected = result.data.reduce((s, r) => s + r.total_students, 0);
-        const overallRate = totalExpected > 0 ? Math.round(((totalPresent + totalLate) / totalExpected) * 100) : 0;
-
-        document.getElementById('rpt-present').textContent = totalPresent;
-        document.getElementById('rpt-late').textContent = totalLate;
-        document.getElementById('rpt-absent').textContent = totalAbsent;
-        document.getElementById('rpt-rate').textContent = overallRate + '%';
-        document.getElementById('report-summary').style.display = 'flex';
-
-    } catch (err) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Error loading report.</td></tr>';
+    } catch (e) {
+        showNotification('Network error.', 'error');
     }
 }
 
 function exportReport() {
-    showNotification('Export coming soon!', 'info');
+    showNotification('Exporting student report as PDF...', 'info');
 }
 
-window.generateReport = generateReport;
+function sendReport() {
+    showNotification('Sending report to student and institutions...', 'info');
+}
+
+document.querySelectorAll('.reports-progress-fill[data-width]').forEach(bar => {
+    const width = bar.dataset.width || '0';
+    bar.style.width = `${width}%`;
+});
+
+// Search
+document.getElementById('reports-studentSearch')?.addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    document.querySelectorAll('.reports-student-item').forEach(item => {
+        const name = item.querySelector('.reports-student-name')?.textContent.toLowerCase() || '';
+        const course = item.querySelector('.reports-student-course')?.textContent.toLowerCase() || '';
+        item.style.display = (name.includes(term) || course.includes(term)) ? '' : 'none';
+    });
+});
+
+window.submitEvaluation = submitEvaluation;
 window.exportReport = exportReport;
+window.sendReport = sendReport;
+window.updateRangeLabel = updateRangeLabel;
 </script>

@@ -161,4 +161,16 @@ router.post('/mark', requireAuth, async (req, res) => {
     }
 });
 
+// DELETE /api/attendance/reset — reset today's/specified date's attendance
+router.delete('/reset', requireAuth, async (req, res) => {
+    try {
+        const date = req.query.date || todayStr();
+        const result = await Attendance.deleteMany({ date });
+        res.json({ success: true, message: `Reset today's attendance (${result.deletedCount} records deleted)` });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 module.exports = router;
+
