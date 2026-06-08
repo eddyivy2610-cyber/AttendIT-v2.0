@@ -126,13 +126,25 @@
                         </select>
                     </div>
                     <div class="field full">
-                        <label for="institution_id">Institution *</label>
-                        <select id="institution_id" name="institution_id" required>
-                            <option value="">Select institution</option>
-                            <% (institutions || []).forEach(inst => { %>
-                                <option value="<%= inst._id %>" <%= String(formData.institution_id || '') === String(inst._id) ? 'selected' : '' %>><%= inst.institution_name %></option>
-                            <% }) %>
-                        </select>
+                        <label for="institution_name">Institution *</label>
+                        <input list="institutions" id="institution_name" name="institution_name" required value="<%= formData.institution_name || '' %>" placeholder="Type or select a university">
+                        <datalist id="institutions">
+                            <option value="University of Ibadan">
+                            <option value="University of Lagos">
+                            <option value="Obafemi Awolowo University">
+                            <option value="Ahmadu Bello University">
+                            <option value="University of Ilorin">
+                            <option value="Covenant University">
+                            <option value="University of Nigeria, Nsukka">
+                            <option value="Federal University of Technology, Minna">
+                            <option value="University of Benin">
+                            <option value="University of Abuja">
+                            <option value="Lagos State University">
+                            <option value="Babcock University">
+                            <option value="Nnamdi Azikiwe University">
+                            <option value="Bayero University Kano">
+                            <option value="Federal University of Technology, Akure">
+                        </datalist>
                     </div>
                     <div class="field full">
                         <label for="course_of_study">Course of Study *</label>

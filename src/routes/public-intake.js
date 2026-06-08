@@ -54,14 +54,14 @@ router.post(['/register/:token', '/join/:token'], async (req, res) => {
             email,
             phone,
             gender,
-            institution_id,
+            institution_name,
             course_of_study,
             period_of_attachment,
             skill_of_interest,
             supervisor
         } = req.body;
 
-        if (!student_name || !email || !phone || !gender || !institution_id || !course_of_study) {
+        if (!student_name || !email || !phone || !gender || !institution_name || !course_of_study) {
             return res.status(400).render('public/student-intake', {
                 institutions,
                 success: false,
@@ -71,15 +71,10 @@ router.post(['/register/:token', '/join/:token'], async (req, res) => {
             });
         }
 
-        const institution = await Institution.findById(institution_id);
+        let institution = await Institution.findOne({ institution_name: new RegExp('^' + institution_name + '$', 'i') });
         if (!institution) {
-            return res.status(400).render('public/student-intake', {
-                institutions,
-                success: false,
-                error: 'Selected institution was not found.',
-                formData: req.body,
-                publicFormAction: `/register/${req.params.token}`
-            });
+            institution = new Institution({ institution_name });
+            await institution.save();
         }
 
         const joinDate = new Date();

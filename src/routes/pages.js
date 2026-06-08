@@ -85,6 +85,7 @@ router.get('/', requireAuth, async (req, res) => {
                             }
                         }
                     },
+                    { $match: { student_count: { $gt: 0 } } },
                     { $sort: { student_count: -1 } }
                 ])
             ]);
