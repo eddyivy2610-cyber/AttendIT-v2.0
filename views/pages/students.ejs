@@ -1,9 +1,15 @@
+<style>
+.day-pill { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--panel-2); color: var(--muted); cursor: pointer; font-size: 0.85rem; transition: all 0.2s; user-select: none; }
+.day-pill.active { background: var(--accent-2); color: white; border-color: var(--accent-2); }
+.pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+</style>
 <div id="students-page" class="page-content">
     <div class="content">
         <div class="filter-section">
             <div class="filter-actions">
                 <div class="year-pagination">
-                    <button class="year-btn active">2025</button>
+                    <button class="year-btn active">2026</button>
+                    <button class="year-btn">2025</button>
                     <button class="year-btn">2024</button>
                     <button class="year-btn">2023</button>
                     <button class="year-btn">2022</button>
@@ -87,10 +93,26 @@
                 </thead>
                 <tbody>
                     <% if (students && students.length > 0) { %>
-                        <% students.forEach((student, index) => { %>
-                            <% const isExpired = student.end_date && new Date(student.end_date) < new Date(); %>
-                            <tr class="student-row" data-student-id="<%= student._id %>">
-                                <td><%= index + 1 %></td>
+                        <% 
+                        const groupedStudents = {};
+                        students.forEach(s => {
+                            const batch = s.days_of_week_batch || 'Unassigned Batch';
+                            if (!groupedStudents[batch]) groupedStudents[batch] = [];
+                            groupedStudents[batch].push(s);
+                        });
+                        
+                        let globalIndex = 1;
+                        for (const [batchName, batchStudents] of Object.entries(groupedStudents)) { 
+                        %>
+                            <tr class="group-header-row">
+                                <td colspan="10" style="background-color: rgba(37, 99, 235, 0.1); font-weight: bold; padding: 12px 15px; color: var(--text);">
+                                    <i class="fas fa-layer-group" style="color: var(--accent-2); margin-right: 8px;"></i> Batch: <%= batchName %> (<%= batchStudents.length %> students)
+                                </td>
+                            </tr>
+                            <% batchStudents.forEach((student) => { %>
+                                <% const isExpired = student.end_date && new Date(student.end_date) < new Date(); %>
+                                <tr class="student-row" data-student-id="<%= student._id %>">
+                                    <td><%= globalIndex++ %></td>
                                 <td>
                                     <img src="<%= student.photo_url ? '/' + student.photo_url : 'https://picsum.photos/seed/' + encodeURIComponent(student.student_name) + '/40/40.jpg' %>"
                                          alt="<%= student.student_name %>"
@@ -121,6 +143,12 @@
                                                 data-tooltip="Edit Student">
                                             <i class="fas fa-edit"></i>
                                         </button>
+                                        <% const sBatch = student.days_of_week_batch || ''; %>
+                                        <button class="action-btn" style="color: var(--accent-2); border: 1px solid var(--border);"
+                                                onclick="openRegroupModal('<%= student._id %>', '<%= sBatch %>')"
+                                                data-tooltip="Change Batch">
+                                            <i class="fas fa-layer-group"></i>
+                                        </button>
                                         <button class="action-btn delete-btn"
                                                 onclick="deleteStudent('<%= student._id %>')"
                                                 data-tooltip="Delete Student">
@@ -129,7 +157,8 @@
                                     </div>
                                 </td>
                             </tr>
-                        <% }) %>
+                            <% }) %>
+                        <% } %>
                     <% } else { %>
                         <tr>
                             <td colspan="10" style="text-align: center; padding: 20px;">
@@ -222,11 +251,19 @@
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="supervisor">Supervisor</label>
-                        <input type="text" id="supervisor" name="supervisor" placeholder="Supervisor name">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Days of Week Batch</label>
+                        <input type="hidden" id="days_of_week_batch" name="days_of_week_batch" value="">
+                        <div class="pill-group" id="days-pills">
+                            <div class="day-pill" data-day="Monday">Monday</div>
+                            <div class="day-pill" data-day="Tuesday">Tuesday</div>
+                            <div class="day-pill" data-day="Wednesday">Wednesday</div>
+                            <div class="day-pill" data-day="Thursday">Thursday</div>
+                            <div class="day-pill" data-day="Friday">Friday</div>
+                        </div>
                     </div>
                 </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="passport_image">Passport Photo</label>
@@ -250,7 +287,112 @@
     </div>
 </div>
 
+<!-- Regroup Student Modal -->
+<div id="regroupModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3>Change Student Batch</h3>
+            <span class="close" onclick="closeRegroupModal()">&times;</span>
+        </div>
+        <div id="regroup-modal-alert" style="display:none; padding: 10px 20px;"></div>
+        <div class="modal-body">
+            <input type="hidden" id="regroup_student_id">
+            <input type="hidden" id="regroup_days_batch">
+            <div class="pill-group" id="regroup-days-pills" style="justify-content: center; margin-bottom: 20px;">
+                <div class="day-pill" data-day="Monday">Monday</div>
+                <div class="day-pill" data-day="Tuesday">Tuesday</div>
+                <div class="day-pill" data-day="Wednesday">Wednesday</div>
+                <div class="day-pill" data-day="Thursday">Thursday</div>
+                <div class="day-pill" data-day="Friday">Friday</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeRegroupModal()">Cancel</button>
+            <button type="button" class="btn-primary" id="regroupBtn" onclick="saveRegroup()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
 <script>
+// Add Student Pill Logic
+document.addEventListener('DOMContentLoaded', () => {
+    setupPills('days-pills', 'days_of_week_batch');
+    setupPills('regroup-days-pills', 'regroup_days_batch');
+});
+
+function setupPills(containerId, inputId) {
+    const container = document.getElementById(containerId);
+    if(!container) return;
+    const pills = container.querySelectorAll('.day-pill');
+    const hiddenInput = document.getElementById(inputId);
+    
+    pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            let selectedDays = hiddenInput.value ? hiddenInput.value.split(',').map(d => d.trim()).filter(d=>d) : [];
+            const day = pill.dataset.day;
+            if (selectedDays.includes(day)) {
+                selectedDays = selectedDays.filter(d => d !== day);
+                pill.classList.remove('active');
+            } else {
+                selectedDays.push(day);
+                pill.classList.add('active');
+            }
+            const allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            selectedDays.sort((a, b) => allDays.indexOf(a) - allDays.indexOf(b));
+            hiddenInput.value = selectedDays.join(', ');
+        });
+    });
+}
+
+function openRegroupModal(studentId, currentBatch) {
+    document.getElementById('regroup_student_id').value = studentId;
+    const hiddenInput = document.getElementById('regroup_days_batch');
+    hiddenInput.value = currentBatch || '';
+    
+    const pills = document.getElementById('regroup-days-pills').querySelectorAll('.day-pill');
+    let selectedDays = currentBatch ? currentBatch.split(',').map(d => d.trim()) : [];
+    pills.forEach(pill => {
+        if (selectedDays.includes(pill.dataset.day)) pill.classList.add('active');
+        else pill.classList.remove('active');
+    });
+    
+    document.getElementById('regroupModal').style.display = 'block';
+}
+
+function closeRegroupModal() {
+    document.getElementById('regroupModal').style.display = 'none';
+}
+
+async function saveRegroup() {
+    const studentId = document.getElementById('regroup_student_id').value;
+    const newBatch = document.getElementById('regroup_days_batch').value;
+    const btn = document.getElementById('regroupBtn');
+    
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+    
+    try {
+        const response = await fetch('/api/students/' + studentId, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ days_of_week_batch: newBatch })
+        });
+        const result = await response.json();
+        if (result.success) {
+            showNotification('Batch updated successfully!', 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            showNotification(result.message || 'Update failed', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Save Changes';
+        }
+    } catch (err) {
+        showNotification('Network error.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
+    }
+}
+
 // Students page — all API calls now go to /api/students
 function viewStudentReport(studentId) {
     window.location.href = '/?page=reports&student_id=' + studentId;
@@ -393,4 +535,7 @@ window.saveStudent = saveStudent;
 window.editStudent = editStudent;
 window.deleteStudent = deleteStudent;
 window.approveStudent = approveStudent;
+window.openRegroupModal = openRegroupModal;
+window.closeRegroupModal = closeRegroupModal;
+window.saveRegroup = saveRegroup;
 </script>

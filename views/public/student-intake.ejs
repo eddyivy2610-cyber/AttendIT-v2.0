@@ -82,6 +82,28 @@
         .ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
         small { color: var(--muted); }
         .note { margin-top: 14px; font-size: 0.95rem; }
+        .day-pill {
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--panel-2);
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .day-pill.active {
+            background: var(--accent-2);
+            color: white;
+            border-color: var(--accent-2);
+        }
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
         @media (max-width: 720px) {
             .grid { grid-template-columns: 1fr; }
             h1 { font-size: 1.6rem; }
@@ -159,9 +181,17 @@
                         <input id="skill_of_interest" name="skill_of_interest" type="text" value="<%= formData.skill_of_interest || '' %>">
                     </div>
                     <div class="field full">
-                        <label for="supervisor">Supervisor</label>
-                        <input id="supervisor" name="supervisor" type="text" value="<%= formData.supervisor || '' %>">
+                        <label>Days of Week Batch</label>
+                        <input type="hidden" id="days_of_week_batch" name="days_of_week_batch" value="<%= formData.days_of_week_batch || '' %>">
+                        <div class="pill-group" id="days-pills">
+                            <div class="day-pill" data-day="Monday">Monday</div>
+                            <div class="day-pill" data-day="Tuesday">Tuesday</div>
+                            <div class="day-pill" data-day="Wednesday">Wednesday</div>
+                            <div class="day-pill" data-day="Thursday">Thursday</div>
+                            <div class="day-pill" data-day="Friday">Friday</div>
+                        </div>
                     </div>
+
                 </div>
 
                 <div class="actions">
@@ -172,5 +202,36 @@
             </form>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pills = document.querySelectorAll('.day-pill');
+            const hiddenInput = document.getElementById('days_of_week_batch');
+            
+            let selectedDays = hiddenInput.value ? hiddenInput.value.split(',').map(d => d.trim()).filter(d => d) : [];
+            pills.forEach(pill => {
+                if (selectedDays.includes(pill.dataset.day)) {
+                    pill.classList.add('active');
+                }
+            });
+
+            pills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    const day = pill.dataset.day;
+                    if (selectedDays.includes(day)) {
+                        selectedDays = selectedDays.filter(d => d !== day);
+                        pill.classList.remove('active');
+                    } else {
+                        selectedDays.push(day);
+                        pill.classList.add('active');
+                    }
+                    
+                    const allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+                    selectedDays.sort((a, b) => allDays.indexOf(a) - allDays.indexOf(b));
+                    
+                    hiddenInput.value = selectedDays.join(', ');
+                });
+            });
+        });
+    </script>
 </body>
 </html>

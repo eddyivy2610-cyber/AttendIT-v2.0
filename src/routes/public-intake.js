@@ -58,7 +58,7 @@ router.post(['/register/:token', '/join/:token'], async (req, res) => {
             course_of_study,
             period_of_attachment,
             skill_of_interest,
-            supervisor
+            days_of_week_batch
         } = req.body;
 
         if (!student_name || !email || !phone || !gender || !institution_name || !course_of_study) {
@@ -88,7 +88,7 @@ router.post(['/register/:token', '/join/:token'], async (req, res) => {
             course_of_study: course_of_study.trim(),
             period_of_attachment: period_of_attachment || null,
             skill_of_interest: skill_of_interest || null,
-            supervisor: supervisor || null,
+            days_of_week_batch: days_of_week_batch || null,
             join_date: joinDate,
             end_date: period_of_attachment ? addMonths(joinDate, period_of_attachment) : null,
             status: 'Inactive',

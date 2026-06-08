@@ -53,8 +53,8 @@ router.post('/', requireAuth, upload.single('photo'), async (req, res) => {
     try {
         const {
             email, student_name, period_of_attachment, institution_id,
-            birthday, course_of_study, skill_of_interest, gender,
-            join_date, end_date, supervisor, phone, status
+            birthday, course_of_study, skill_of_interest, gender, days_of_week_batch,
+            join_date, end_date, phone, status
         } = req.body;
 
         // Find institution by its MongoDB _id
@@ -73,9 +73,9 @@ router.post('/', requireAuth, upload.single('photo'), async (req, res) => {
             course_of_study: course_of_study || null,
             skill_of_interest: skill_of_interest || null,
             gender: gender || null,
+            days_of_week_batch: days_of_week_batch || null,
             join_date: join_date || null,
             end_date: end_date || null,
-            supervisor: supervisor || null,
             phone: phone ? normalizePhoneNumber(phone) : null,
             status: status || 'Active',
             approval_status: 'approved',
