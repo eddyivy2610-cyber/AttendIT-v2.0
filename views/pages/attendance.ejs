@@ -1,163 +1,220 @@
-<div id="attendance-page" class="page-content">
+<div id="attendance-page" class="page-content" style="padding: 24px;">
 
     <!-- Attendance Summary Cards -->
-    <div class="attendance-summary">
-        <div class="summary-card present">
-            <i class="fas fa-user-check"></i>
-            <div>
-                <h3 id="present-count"><%= summary.presentCount %></h3>
-                <p>Present</p>
+    <div class="dashboard-cards-new" style="margin-bottom: 24px;">
+        <!-- Total Students Tracked -->
+        <div class="stat-card">
+            <div class="stat-icon icon-blue">
+                <ion-icon name="people-outline"></ion-icon>
+            </div>
+            <div class="stat-details">
+                <p class="stat-title">Total Students</p>
+                <span class="stat-value" id="expected-count"><%= summary.totalStudents %></span>
             </div>
         </div>
-        <div class="summary-card absent">
-            <i class="fas fa-user-times"></i>
-            <div>
-                <h3 id="absent-count"><%= summary.absentCount %></h3>
-                <p>Absent</p>
+
+        <!-- On Time Percentage -->
+        <div class="stat-card">
+            <div class="stat-icon icon-green">
+                <ion-icon name="time-outline"></ion-icon>
+            </div>
+            <div class="stat-details">
+                <p class="stat-title">On Time %</p>
+                <% const onTimeRate = summary.totalStudents > 0 ? Math.round((summary.presentCount / summary.totalStudents) * 100) : 0; %>
+                <span class="stat-value" id="present-count"><%= onTimeRate %>%</span>
             </div>
         </div>
-        <div class="summary-card late">
-            <i class="fas fa-user-clock"></i>
-            <div>
-                <h3 id="late-count"><%= summary.lateCount %></h3>
-                <p>Late</p>
+
+        <!-- Late Students -->
+        <div class="stat-card">
+            <div class="stat-icon icon-orange">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+            </div>
+            <div class="stat-details">
+                <p class="stat-title">Late Arrivals</p>
+                <span class="stat-value" id="late-count"><%= summary.lateCount %></span>
             </div>
         </div>
-        <div class="summary-card expected">
-            <i class="fas fa-users"></i>
-            <div>
-                <h3 id="expected-count"><%= summary.totalStudents %></h3>
-                <p>Expected</p>
+
+        <!-- Missing Clock Out / Absent -->
+        <div class="stat-card">
+            <div class="stat-icon icon-red" style="background: #FEE2E2; color: #EF4444;">
+                <ion-icon name="close-circle-outline"></ion-icon>
+            </div>
+            <div class="stat-details">
+                <p class="stat-title">Absent</p>
+                <span class="stat-value" id="absent-count"><%= summary.absentCount %></span>
             </div>
         </div>
     </div>
 
-    <!-- Students Table -->
-    <div class="students-container">
-        <div class="students-header">
-            <h2>Interns (<%= summary.totalStudents %>)</h2>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search students..." id="searchInput">
+    <!-- Main Table Card -->
+    <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+        
+        <!-- Controls Header -->
+        <div style="padding: 20px; border-bottom: 1px solid #EAECF0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <!-- Left: Search -->
+            <div style="position: relative; width: 280px;">
+                <ion-icon name="search-outline" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #8E9CAE; font-size: 18px;"></ion-icon>
+                <input type="text" id="searchInput" placeholder="Search name" style="width: 100%; padding: 10px 10px 10px 36px; border: 1px solid #EAECF0; border-radius: 8px; font-size: 14px; color: #111827; outline: none; transition: border-color 0.2s;">
             </div>
-            <div class="attendance-actions">
-                <button class="btn btn-primary" onclick="markAllSignedIn()">
-                    <i class="fas fa-check-circle"></i> Mark All Signed In
+
+            <!-- Right: Actions -->
+            <div style="display: flex; gap: 12px;">
+                <button style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: white; border: 1px solid #EAECF0; border-radius: 8px; color: #4A5568; font-size: 14px; font-weight: 500; cursor: pointer;">
+                    <ion-icon name="filter-outline"></ion-icon> Filter
                 </button>
-                <button class="btn btn-secondary" onclick="resetTodayAttendance()">
-                    <i class="fas fa-undo"></i> Reset Today
+                <button onclick="markAllSignedIn()" style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #F8FAFC; border: 1px solid #EAECF0; border-radius: 8px; color: #0052FF; font-size: 14px; font-weight: 500; cursor: pointer;">
+                    <ion-icon name="checkmark-done-outline"></ion-icon> Mark All
+                </button>
+                <button onclick="resetTodayAttendance()" style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; color: #DC2626; font-size: 14px; font-weight: 500; cursor: pointer;">
+                    <ion-icon name="refresh-outline"></ion-icon> Reset
+                </button>
+                <button style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #6366F1; border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: 500; cursor: pointer;">
+                    <ion-icon name="download-outline"></ion-icon> Export CSV
                 </button>
             </div>
         </div>
 
-        <table class="students-table">
-            <thead>
-                <tr>
-                    <th>S/N</th>
-                    <th>Image</th>
-                    <th>Name</th>
-                    <th>Course</th>
-                    <th>Institution</th>
-                    <th>Arrival Time</th>
-                    <th>Actions</th>
-                    <th>Depart Time</th>
-                </tr>
-            </thead>
-            <tbody id="attendance-tbody">
-                <%
-                // Group students by institution
-                const grouped = {};
-                students.forEach(s => {
-                    const instName = s.institution ? s.institution.institution_name : 'Unknown Institution';
-                    if (!grouped[instName]) grouped[instName] = [];
-                    grouped[instName].push(s);
-                });
-
-                let serial = 1;
-                Object.keys(grouped).forEach(institutionName => {
-                    const instStudents = grouped[institutionName];
-                %>
-                    <tr class="institution-header">
-                        <td colspan="8" class="institution-name">
-                            <i class="fas fa-university"></i> <%= institutionName %>
-                            <span class="student-count">(<%= instStudents.length %> students)</span>
-                        </td>
+        <!-- Table -->
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="background-color: #F8FAFC; border-bottom: 1px solid #EAECF0;">
+                        <th style="padding: 16px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Date <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                        <th style="padding: 16px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Day <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                        <th style="padding: 16px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Student <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                        <th style="padding: 16px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Check-In <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                        <th style="padding: 16px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Check-Out <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                        <th style="padding: 16px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Status <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                        <th style="padding: 16px 20px; font-size: 13px; font-weight: 600; color: #6E7C87; text-align: center;">Actions</th>
                     </tr>
-                    <% instStudents.forEach(student => {
-                        const att = attendanceMap[student._id.toString()];
-                        const isSignedIn = att && att.arrival_time;
-                        const isSignedOut = att && att.departure_time;
-                        const status = att ? att.status : 'Absent';
-                        const arrivalTime = isSignedIn ? new Date(att.arrival_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '--';
-                        const departTime = isSignedOut ? new Date(att.departure_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '--';
+                </thead>
+                <tbody id="attendance-tbody">
+                    <%
+                    // Group students by Student Group
+                    const grouped = {};
+                    students.forEach(s => {
+                        const groupName = s.student_group ? s.student_group.name : 'Unassigned';
+                        if (!grouped[groupName]) grouped[groupName] = [];
+                        grouped[groupName].push(s);
+                    });
+
+                    // Sort keys: Unassigned at the bottom
+                    const sortedGroupNames = Object.keys(grouped).sort((a, b) => {
+                        if (a === 'Unassigned') return 1;
+                        if (b === 'Unassigned') return -1;
+                        return a.localeCompare(b);
+                    });
+
+                    const currentDateObj = new Date(today);
+                    const currentDateStr = currentDateObj.toISOString().split('T')[0];
+                    const currentDayStr = currentDateObj.toLocaleDateString('en-US', { weekday: 'long' });
+
+                    sortedGroupNames.forEach(groupName => {
+                        const groupStudents = grouped[groupName];
                     %>
-                    <tr data-student-id="<%= student._id %>" data-institution="<%= institutionName %>">
-                        <td class="serial-number"><%= serial++ %></td>
-                        <td>
-                            <img src="<%= student.photo_url ? '/' + student.photo_url : 'https://picsum.photos/seed/' + encodeURIComponent(student.student_name) + '/50/50.jpg' %>"
-                                 alt="<%= student.student_name %>" class="student-img">
-                        </td>
-                        <td>
-                            <div class="student-name"><%= student.student_name %></div>
-                            <div class="student-gender"><%= student.gender || '' %></div>
-                            <div class="student-mobile-info">
-                                <%= student.course_of_study || '--' %> • 
-                                <%= institutionName %>
-                            </div>
-                        </td>
-                        <td class="student-course"><%= student.course_of_study || '--' %></td>
-                        <td class="student-institution"><%= institutionName %></td>
-                        <td class="time-display arrival-time"><%= arrivalTime %></td>
-                        <td>
-                            <div class="action-buttons">
-                                <% if (!isSignedIn) { %>
-                                    <button class="btn btn-signin" onclick="handleSignIn('<%= student._id %>')">
-                                        <i class="fas fa-sign-in-alt"></i> Sign In
-                                    </button>
+                        <!-- Group Header Row -->
+                        <tr>
+                            <td colspan="7" style="padding: 12px 20px; background-color: #F1F5F9; font-weight: 600; color: #475569; font-size: 14px;">
+                                <ion-icon name="folder-open-outline" style="vertical-align: middle; margin-right: 6px;"></ion-icon> 
+                                <%= groupName %> 
+                                <span style="font-weight: 400; font-size: 13px; color: #94A3B8; margin-left: 8px;">(<%= groupStudents.length %> students)</span>
+                            </td>
+                        </tr>
+
+                        <% groupStudents.forEach(student => {
+                            const att = attendanceMap[student._id.toString()];
+                            const isSignedIn = att && att.arrival_time;
+                            const isSignedOut = att && att.departure_time;
+                            const status = att ? att.status : 'Absent';
+                            
+                            // Format timestamps
+                            const arrivalTime = isSignedIn ? new Date(att.arrival_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null;
+                            const departTime = isSignedOut ? new Date(att.departure_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null;
+                        %>
+                        <tr class="student-row" data-student-id="<%= student._id %>" data-group="<%= groupName %>" style="border-bottom: 1px solid #EAECF0; transition: background-color 0.2s;">
+                            <!-- Date & Day -->
+                            <td style="padding: 16px 20px; font-size: 14px; color: #64748B;"><%= currentDateStr %></td>
+                            <td style="padding: 16px 20px; font-size: 14px; color: #64748B;"><%= currentDayStr %></td>
+                            
+                            <!-- Student Info -->
+                            <td style="padding: 16px 20px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="font-size: 14px; font-weight: 500; color: #1E293B;" class="student-name"><%= student.student_name %></div>
+                                </div>
+                            </td>
+
+                            <!-- Check-In -->
+                            <td style="padding: 16px 20px;">
+                                <% if (arrivalTime) { %>
+                                    <span style="font-size: 14px; color: #1E293B; font-weight: 500;"><%= arrivalTime %></span>
                                 <% } else { %>
-                                    <button class="btn <%= status === 'Late' ? 'btn-late' : 'btn-signed' %>" disabled>
-                                        <i class="fas <%= status === 'Late' ? 'fa-clock' : 'fa-check' %>"></i> <%= status %>
+                                    <button onclick="handleCheckIn('<%= student._id %>', this)" style="background: none; border: 1px solid #EAECF0; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #94A3B8; transition: all 0.2s;" onmouseover="this.style.color='#10B981'; this.style.borderColor='#10B981'" onmouseout="this.style.color='#94A3B8'; this.style.borderColor='#EAECF0'">
+                                        <ion-icon name="checkmark-outline" style="font-size: 18px;"></ion-icon>
                                     </button>
                                 <% } %>
+                            </td>
 
-                                <% if (isSignedIn && !isSignedOut) { %>
-                                    <button class="btn btn-signout" onclick="handleSignOut('<%= student._id %>')">
-                                        <i class="fas fa-sign-out-alt"></i> Sign Out
-                                    </button>
-                                <% } else if (isSignedOut) { %>
-                                    <button class="btn btn-signed-out" disabled>
-                                        <i class="fas fa-check"></i> Signed Out
-                                    </button>
+                            <!-- Check-Out -->
+                            <td style="padding: 16px 20px;">
+                                <% if (departTime) { %>
+                                    <span style="font-size: 14px; color: #1E293B; font-weight: 500;"><%= departTime %></span>
                                 <% } else { %>
-                                    <button class="btn btn-signout" disabled>
-                                        <i class="fas fa-sign-out-alt"></i> Sign Out
-                                    </button>
+                                    <% if (isSignedIn) { %>
+                                        <button onclick="handleCheckOut('<%= student._id %>', this)" style="background: none; border: 1px solid #EAECF0; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #94A3B8; transition: all 0.2s;" onmouseover="this.style.color='#EF4444'; this.style.borderColor='#EF4444'" onmouseout="this.style.color='#94A3B8'; this.style.borderColor='#EAECF0'">
+                                            <ion-icon name="checkmark-outline" style="font-size: 18px;"></ion-icon>
+                                        </button>
+                                    <% } else { %>
+                                        <span style="font-size: 14px; color: #CBD5E1;">--</span>
+                                    <% } %>
                                 <% } %>
-                            </div>
-                        </td>
-                        <td class="time-display depart-time"><%= departTime %></td>
-                    </tr>
-                    <% }) %>
-                <% }); %>
+                            </td>
 
-                <% if (students.length === 0) { %>
-                    <tr><td colspan="8" style="text-align: center; padding: 2rem;">No active students found.</td></tr>
-                <% } %>
-            </tbody>
-        </table>
+                            <!-- Status Badge -->
+                            <td style="padding: 16px 20px;">
+                                <% if (status === 'Present') { %>
+                                    <span style="display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; background-color: #DCFCE7; color: #166534;">Present</span>
+                                <% } else if (status === 'Late') { %>
+                                    <span style="display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; background-color: #FEE2E2; color: #991B1B;">Late</span>
+                                <% } else { %>
+                                    <span style="display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; background-color: #F1F5F9; color: #475569;">Absent</span>
+                                <% } %>
+                            </td>
 
-        <!-- Submit Attendance -->
-        <div class="submit-attendance-container">
-            <button class="btn btn-submit" onclick="submitAttendanceReport()">
-                <i class="fas fa-paper-plane"></i> Submit Attendance Report
-            </button>
+                            <!-- Edit Action -->
+                            <td style="padding: 16px 20px; text-align: center;">
+                                <button style="background: none; border: 1px solid #EAECF0; border-radius: 6px; padding: 6px 12px; font-size: 13px; color: #475569; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                                    <ion-icon name="create-outline"></ion-icon> Edit
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    <% }); %>
+
+                    <% if (students.length === 0) { %>
+                        <tr><td colspan="7" style="text-align: center; padding: 48px 0; color: #94A3B8; font-size: 14px;">No active students found.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Table Footer -->
+        <div style="padding: 16px 20px; border-top: 1px solid #EAECF0; display: flex; justify-content: space-between; align-items: center; color: #64748B; font-size: 13px;">
+            <div>Showing <%= students.length %> students</div>
+            <div style="display: flex; gap: 8px;">
+                <button style="padding: 6px 12px; border: 1px solid #EAECF0; border-radius: 6px; background: white; cursor: pointer;">&lt;</button>
+                <button style="padding: 6px 12px; border: none; border-radius: 6px; background: #6366F1; color: white; cursor: pointer;">1</button>
+                <button style="padding: 6px 12px; border: 1px solid #EAECF0; border-radius: 6px; background: white; cursor: pointer;">&gt;</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-async function handleSignIn(studentId) {
-    const row = document.querySelector(`tr[data-student-id="${studentId}"]`);
+async function handleCheckIn(studentId, btnElement) {
+    btnElement.disabled = true;
+    btnElement.innerHTML = '<ion-icon name="sync-outline" class="spin" style="font-size:18px;"></ion-icon>';
     try {
         const response = await fetch('/api/attendance/signin', {
             method: 'POST',
@@ -166,17 +223,27 @@ async function handleSignIn(studentId) {
         });
         const result = await response.json();
         if (result.success) {
-            showNotification(result.message, 'success');
-            setTimeout(() => location.reload(), 800);
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            const parentTd = btnElement.parentElement;
+            parentTd.innerHTML = `<span style="font-size: 14px; color: #10B981; font-weight: 600; animation: fadeIn 0.3s;">${timeStr}</span>`;
+            
+            setTimeout(() => location.reload(), 1500);
         } else {
             showNotification(result.message || 'Sign in failed.', 'error');
+            btnElement.disabled = false;
+            btnElement.innerHTML = '<ion-icon name="checkmark-outline" style="font-size: 18px;"></ion-icon>';
         }
     } catch (err) {
         showNotification('Network error.', 'error');
+        btnElement.disabled = false;
+        btnElement.innerHTML = '<ion-icon name="checkmark-outline" style="font-size: 18px;"></ion-icon>';
     }
 }
 
-async function handleSignOut(studentId) {
+async function handleCheckOut(studentId, btnElement) {
+    btnElement.disabled = true;
+    btnElement.innerHTML = '<ion-icon name="sync-outline" class="spin" style="font-size:18px;"></ion-icon>';
     try {
         const response = await fetch('/api/attendance/signout', {
             method: 'POST',
@@ -185,19 +252,27 @@ async function handleSignOut(studentId) {
         });
         const result = await response.json();
         if (result.success) {
-            showNotification('Signed out successfully!', 'success');
-            setTimeout(() => location.reload(), 800);
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            const parentTd = btnElement.parentElement;
+            parentTd.innerHTML = `<span style="font-size: 14px; color: #EF4444; font-weight: 600; animation: fadeIn 0.3s;">${timeStr}</span>`;
+            
+            setTimeout(() => location.reload(), 1500);
         } else {
             showNotification(result.message || 'Sign out failed.', 'error');
+            btnElement.disabled = false;
+            btnElement.innerHTML = '<ion-icon name="checkmark-outline" style="font-size: 18px;"></ion-icon>';
         }
     } catch (err) {
         showNotification('Network error.', 'error');
+        btnElement.disabled = false;
+        btnElement.innerHTML = '<ion-icon name="checkmark-outline" style="font-size: 18px;"></ion-icon>';
     }
 }
 
 async function markAllSignedIn() {
     if (!confirm('Mark all students as signed in?')) return;
-    const rows = document.querySelectorAll('tr[data-student-id]');
+    const rows = document.querySelectorAll('.student-row');
     const ids = Array.from(rows).map(r => r.dataset.studentId);
 
     let count = 0;
@@ -230,23 +305,33 @@ async function resetTodayAttendance() {
     }
 }
 
-async function submitAttendanceReport() {
-    if (!confirm("Submit today's attendance report? This will finalize all records for today.")) return;
-    showNotification('Attendance report submitted successfully!', 'success');
-}
-
-// Search
 document.getElementById('searchInput').addEventListener('input', function(e) {
     const term = e.target.value.toLowerCase();
-    document.querySelectorAll('tr[data-student-id]').forEach(row => {
+    document.querySelectorAll('.student-row').forEach(row => {
         const name = row.querySelector('.student-name')?.textContent.toLowerCase() || '';
-        const institution = row.dataset.institution?.toLowerCase() || '';
-        row.style.display = (name.includes(term) || institution.includes(term)) ? '' : 'none';
+        const group = row.dataset.group?.toLowerCase() || '';
+        row.style.display = (name.includes(term) || group.includes(term)) ? '' : 'none';
     });
 });
 
-window.handleSignIn = handleSignIn;
-window.handleSignOut = handleSignOut;
+window.handleCheckIn = handleCheckIn;
+window.handleCheckOut = handleCheckOut;
 window.markAllSignedIn = markAllSignedIn;
-window.resetAllAttendance = resetTodayAttendance;
+window.resetTodayAttendance = resetTodayAttendance;
 </script>
+
+<style>
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+.spin {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+.student-row:hover {
+    background-color: #F8FAFC !important;
+}
+</style>

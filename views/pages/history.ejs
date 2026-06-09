@@ -1,0 +1,158 @@
+<style>
+    .dark-theme .users-table-card { background-color: #1f2937 !important; border-color: #374151 !important; }
+    .dark-theme .users-table thead { background-color: #374151 !important; border-bottom-color: #4b5563 !important; }
+    .dark-theme .users-table th { color: #d1d5db !important; }
+    .dark-theme .users-table td { color: #d1d5db !important; border-bottom-color: #374151 !important; }
+    .dark-theme .student-name { color: #f3f4f6 !important; }
+    .dark-theme .search-box-new { background-color: #374151 !important; border-color: #4b5563 !important; }
+    .dark-theme .search-box-new input { background-color: transparent !important; color: #f3f4f6 !important; }
+    .dark-theme .search-box-new input::placeholder { color: #9ca3af !important; }
+    .dark-theme .skill-badge { background-color: #1e3a8a !important; color: #bfdbfe !important; border-color: #1d4ed8 !important; }
+</style>
+
+<div id="history-page" class="page-content" style="padding: 24px; max-width: 1400px; margin: 0 auto; height: auto;">
+    
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="users-page-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+            
+            <!-- Top bar -->
+            <div class="users-header-actions" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h2 style="margin: 0; font-size: 18px; font-weight: 600; color: #111827;">Archived Records</h2>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="search-box-new" style="display: flex; align-items: center; gap: 8px; background-color: var(--white); border: 1px solid #EAECF0; border-radius: 8px; padding: 8px 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);">
+                        <ion-icon name="search-outline" style="color: #9BA7B0; font-size: 16px;"></ion-icon>
+                        <input type="text" placeholder="Search records..." id="history-search-input" onkeyup="applyHistoryFilters()" style="border: none; outline: none; font-size: 13px; width: 200px; font-family: 'DM Sans', sans-serif;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table Card -->
+            <div class="users-table-card" style="background-color: var(--white); border: 1px solid rgba(234, 236, 240, 0.8); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02); display: flex; flex-direction: column; flex: 1;">
+                <div style="overflow-x: auto; flex: 1;">
+                    <table class="users-table" style="width: 100%; border-collapse: collapse; text-align: left;" id="history-table">
+                        <thead style="background-color: #F8FAFC; border-bottom: 1px solid #EAECF0; position: sticky; top: 0; z-index: 10;">
+                            <tr>
+                                <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Full Name</th>
+                                <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Institution</th>
+                                <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Skill</th>
+                                <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Date Joined</th>
+                                <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Completion Date</th>
+                                <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px; text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <% if (typeof students !== 'undefined' && students && students.length > 0) { %>
+                                <% students.forEach((student) => { 
+                                    const instName = student.institution ? student.institution.institution_name : '';
+                                    const skill = student.skill_of_interest ? student.skill_of_interest.skill_name : '';
+                                    const studentName = student.student_name || "Unknown";
+                                    const email = student.email || "";
+                                    
+                                    let joinDateStr = "N/A";
+                                    if (student.join_date) {
+                                        const d = new Date(student.join_date);
+                                        joinDateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                    }
+                                    
+                                    let endDateStr = "N/A";
+                                    if (student.end_date) {
+                                        const d = new Date(student.end_date);
+                                        endDateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                    }
+                                %>
+                                    <tr class="history-row hover:bg-[#F8FAFC]/50" data-name="<%= studentName.toLowerCase() %>" data-email="<%= email.toLowerCase() %>" style="border-bottom: 1px solid #EAECF0; transition: background-color 0.2s;">
+                                        <td style="padding: 12px 16px;">
+                                            <div style="display: flex; align-items: center; gap: 12px;">
+                                                <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #F1F5F9; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #475569; font-size: 14px; overflow: hidden; border: 1px solid #E2E8F0;">
+                                                    <% if (student.photo_url) { %>
+                                                        <img src="<%= student.photo_url %>" alt="<%= studentName %>" style="width: 100%; height: 100%; object-fit: cover;">
+                                                    <% } else { %>
+                                                        <%= studentName.charAt(0).toUpperCase() %>
+                                                    <% } %>
+                                                </div>
+                                                <div>
+                                                    <div class="student-name" style="font-weight: 600; color: var(--black1); font-size: 14px; margin-bottom: 2px;"><%= studentName %></div>
+                                                    <div style="color: var(--black2); font-size: 12px;"><%= email %></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="padding: 12px 16px;">
+                                            <div style="color: #475569; font-size: 13px;"><%= instName || '—' %></div>
+                                        </td>
+                                        <td style="padding: 12px 16px;">
+                                            <% if (skill) { %>
+                                                <span class="skill-badge" style="background-color: #EFF4FF; color: #0052FF; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid #D6E4FF;"><%= skill %></span>
+                                            <% } else { %>
+                                                <span style="color: #9BA7B0; font-size: 13px;">—</span>
+                                            <% } %>
+                                        </td>
+                                        <td style="padding: 12px 16px;">
+                                            <div style="color: #475569; font-size: 13px;"><%= joinDateStr %></div>
+                                        </td>
+                                        <td style="padding: 12px 16px;">
+                                            <div style="color: #475569; font-size: 13px; font-weight: 600;"><%= endDateStr %></div>
+                                        </td>
+                                        <td style="padding: 12px 16px; text-align: center;">
+                                            <button onclick="window.location.href='/?page=reports&student_id=<%= student._id %>'" style="background: none; border: 1px solid #EAECF0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; color: #6E7C87; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" title="View Report" onmouseover="this.style.color='#0052FF'; this.style.borderColor='#0052FF'" onmouseout="this.style.color='#6E7C87'; this.style.borderColor='#EAECF0'">
+                                                <ion-icon name="document-text-outline" style="font-size: 16px;"></ion-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr id="no-history-row">
+                                    <td colspan="6" style="padding: 40px; text-align: center; color: #6E7C87;">
+                                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;">
+                                            <div style="width: 48px; height: 48px; border-radius: 50%; background: #F8FAFC; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #9BA7B0;">
+                                                <ion-icon name="time-outline"></ion-icon>
+                                            </div>
+                                            <div>
+                                                <p style="margin: 0; font-size: 14px; font-weight: 500; color: var(--black1);">No archived records</p>
+                                                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--black2);">Students who complete their attachment period will appear here.</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="padding: 12px 20px; border-top: 1px solid #EAECF0; display: flex; justify-content: space-between; align-items: center; background-color: var(--white); border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                    <span id="history-showing-info" style="font-size: 13px; color: var(--black2);">
+                        Showing <%= typeof students !== 'undefined' ? students.length : 0 %> records
+                    </span>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+function applyHistoryFilters() {
+    const search = document.getElementById('history-search-input').value.toLowerCase();
+    let visibleCount = 0;
+    
+    document.querySelectorAll('#history-table-body .history-row').forEach(row => {
+        const rowName = row.dataset.name || '';
+        const rowEmail = row.dataset.email || '';
+        
+        let match = true;
+        if (search && !rowName.includes(search) && !rowEmail.includes(search)) match = false;
+        
+        if (match) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    const info = document.getElementById('history-showing-info');
+    if(info) info.textContent = `Showing ${visibleCount} records`;
+}
+</script>

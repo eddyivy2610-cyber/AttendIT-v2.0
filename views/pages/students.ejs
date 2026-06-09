@@ -3,187 +3,239 @@
 .day-pill.active { background: var(--accent-2); color: white; border-color: var(--accent-2); }
 .pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 </style>
-<div id="students-page" class="page-content">
-    <div class="content">
-        <div class="filter-section">
-            <div class="filter-actions">
-                <div class="year-pagination">
-                    <button class="year-btn active">2026</button>
-                    <button class="year-btn">2025</button>
-                    <button class="year-btn">2024</button>
-                    <button class="year-btn">2023</button>
-                    <button class="year-btn">2022</button>
-                    <button class="year-btn">2021</button>
+<div id="students-page" class="page-content" style="padding: 24px; max-width: 1400px; margin: 0 auto; height: auto;">
+    
+    <!-- Directory View -->
+    <div id="directory-view">
+        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 24px;">
+            <button class="btn-primary" style="background-color: #0052FF; border-radius: 8px; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: none; color: white; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s;" onclick="showAddGroupModal()">
+                <ion-icon name="add-outline" style="font-size: 18px;"></ion-icon> Add Group
+            </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+            <!-- "All Students" Folder Card -->
+            <div class="folder-card hover:bg-[#F8FAFC]/50" onclick="openGroupTable('all', 'All Students')" style="background: white; border: 1px solid #EAECF0; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 16px;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; background: #EFF4FF; color: #0052FF; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                    <ion-icon name="folder-open-outline"></ion-icon>
                 </div>
-                <div class="search-box">
-                    <input type="text" placeholder="Search students..." class="search-input" id="student-search">
-                    <i class="fas fa-search search-icon"></i>
+                <div>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #111827;">All Students</h3>
+                    <p style="margin: 4px 0 0 0; font-size: 13px; color: #6E7C87;">View full directory</p>
                 </div>
-                <div class="action-buttons">
-                    <button class="export-btn" onclick="showAddStudentModal()">
-                        <i class="fa-solid fa-user-plus"></i> Add Student
+            </div>
+
+            <% 
+            const yearsMap = {};
+            if (typeof groups !== 'undefined' && groups) {
+                groups.forEach(g => {
+                    if (!yearsMap[g.year]) yearsMap[g.year] = [];
+                    yearsMap[g.year].push(g);
+                });
+            }
+            const sortedYears = Object.keys(yearsMap).sort((a,b)=>b-a);
+            sortedYears.forEach(year => {
+                yearsMap[year].forEach(g => { 
+            %>
+                <div class="folder-card hover:bg-[#F8FAFC]/50" onclick="openGroupTable('<%= g._id %>', this.dataset.name)" data-name="<%= g.name %>" style="background: var(--white); border: 1px solid #EAECF0; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: #F8FAFC; color: var(--black2); display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                        <ion-icon name="folder-outline"></ion-icon>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--black1);"><%= g.name %></h3>
+                        <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--black2);"><%= year %> Batch</p>
+                    </div>
+                </div>
+            <% 
+                });
+            }); 
+            %>
+        </div>
+    </div>
+    <style>
+        /* Dark Theme Overrides for Inline Styles */
+        .dark-theme #table-group-title { color: #f3f4f6 !important; }
+        .dark-theme .users-table-card { background-color: #1f2937 !important; border-color: #374151 !important; }
+        .dark-theme .users-table thead { background-color: #374151 !important; border-bottom-color: #4b5563 !important; }
+        .dark-theme .users-table th { color: #d1d5db !important; }
+        .dark-theme .users-table td { color: #d1d5db !important; border-bottom-color: #374151 !important; }
+        .dark-theme .student-name { color: #f3f4f6 !important; }
+        .dark-theme .search-box-new { background-color: #374151 !important; border-color: #4b5563 !important; }
+        .dark-theme .search-box-new input { background-color: transparent !important; color: #f3f4f6 !important; }
+        .dark-theme .search-box-new input::placeholder { color: #9ca3af !important; }
+        .dark-theme button[onclick="exportToPDF()"], 
+        .dark-theme button[onclick="backToDirectory()"], 
+        .dark-theme #rename-group-btn { background-color: #374151 !important; color: #d1d5db !important; border-color: #4b5563 !important; }
+        .dark-theme button[onclick="exportToPDF()"]:hover, 
+        .dark-theme button[onclick="backToDirectory()"]:hover, 
+        .dark-theme #rename-group-btn:hover { background-color: #4b5563 !important; color: #ffffff !important; }
+        .dark-theme .status-badge-pending { background-color: #78350f !important; color: #fde68a !important; }
+        .dark-theme .status-badge-verified { background-color: #14532d !important; color: #bbf7d0 !important; }
+        .dark-theme .status-badge-unapplied { background-color: #374151 !important; color: #f3f4f6 !important; }
+        .dark-theme .skill-badge { background-color: #1e3a8a !important; color: #bfdbfe !important; border-color: #1d4ed8 !important; }
+    </style>
+
+    <!-- Table View (Hidden initially) -->
+    <div id="table-view" style="display: none; flex-direction: column; gap: 16px;">
+        <div class="users-page-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+            
+            <!-- Top bar: Title, Back Button, Search, Add User -->
+            <div class="users-header-actions" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button onclick="backToDirectory()" style="background: none; border: 1px solid #EAECF0; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background-color: var(--white); color: var(--black2); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" title="Back to Directory" onmouseover="this.style.backgroundColor='var(--hover-color)'; this.style.color='var(--black1)'" onmouseout="this.style.backgroundColor='var(--white)'; this.style.color='var(--black2)'">
+                        <ion-icon name="arrow-back-outline" style="font-size: 18px;"></ion-icon>
                     </button>
-                    <button class="export-btn">
-                        <i class="fas fa-download"></i> Export
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <h2 id="table-group-title" style="margin: 0; font-size: 18px; font-weight: 600; color: var(--black1);">All Students</h2>
+                        <button id="rename-group-btn" onclick="triggerRenameGroup()" style="display: none; background: var(--white); border: 1px solid #EAECF0; border-radius: 6px; color: var(--black2); cursor: pointer; padding: 6px; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" title="Rename Group" onmouseover="this.style.color='#0052FF'; this.style.borderColor='#0052FF'" onmouseout="this.style.color='var(--black2)'; this.style.borderColor='#EAECF0'">
+                            <ion-icon name="create-outline" style="font-size: 16px;"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="search-box-new" style="display: flex; align-items: center; gap: 8px; background-color: var(--white); border: 1px solid #EAECF0; border-radius: 8px; padding: 8px 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);">
+                        <ion-icon name="search-outline" style="color: #9BA7B0; font-size: 16px;"></ion-icon>
+                        <input type="text" placeholder="Search users..." id="student-search-input" onkeyup="applyTableFilters()" style="border: none; outline: none; font-size: 13px; width: 200px; font-family: 'DM Sans', sans-serif;">
+                    </div>
+                    <button onclick="exportToPDF()" style="background-color: var(--white); border: 1px solid #EAECF0; border-radius: 8px; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 8px; padding: 8px 16px; color: var(--black1); cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='var(--white)'">
+                        <ion-icon name="download-outline" style="font-size: 16px;"></ion-icon> Export PDF
+                    </button>
+                    <button class="btn-primary" style="background-color: #0052FF; border-radius: 8px; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: none; color: white; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s;" onclick="showAddStudentModal()">
+                        <ion-icon name="add-outline" style="font-size: 16px;"></ion-icon> Add User
                     </button>
                 </div>
             </div>
-        </div>
 
-        <% if (pendingStudents && pendingStudents.length > 0) { %>
-            <div class="students-table-container" style="margin-bottom: 16px;">
-                <div style="padding: 14px 16px; border-bottom: 1px solid var(--hover-color); display:flex; justify-content:space-between; align-items:center; gap: 12px;">
-                    <div>
-                        <h3 style="margin:0 0 4px;">Pending Student Submissions</h3>
-                        <small style="color:var(--black2);">Review and approve public QR submissions before they become active.</small>
-                    </div>
-                    <span style="padding: 6px 10px; border-radius: 999px; background: rgba(37, 99, 235, 0.1); color: var(--primary); font-weight: 700;"><%= pendingStudents.length %> pending</span>
-                </div>
-                <div style="overflow-x:auto;">
-                    <table class="students-table">
-                        <thead>
+            <!-- Users Table Card -->
+            <div class="users-table-card" style="background-color: var(--white); border: 1px solid rgba(234, 236, 240, 0.8); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02); display: flex; flex-direction: column; flex: 1;">
+                <div style="overflow-x: auto; flex: 1;">
+                    <table class="users-table" style="width: 100%; border-collapse: collapse; text-align: left;" id="main-users-table">
+                        <thead style="background-color: #F8FAFC; border-bottom: 1px solid #EAECF0; position: sticky; top: 0; z-index: 10;">
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Institution</th>
-                                <th>Course</th>
-                                <th>Submitted</th>
-                                <th class="actions-header">Action</th>
+                                <th style="font-weight: 600; color: var(--black2); font-size: 13px; padding: 12px 16px; cursor: pointer;" onclick="sortTable(0)">Full Name <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                                <th style="font-weight: 600; color: var(--black2); font-size: 13px; padding: 12px 16px; cursor: pointer;" onclick="sortTable(1)">Email <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                                <th style="font-weight: 600; color: var(--black2); font-size: 13px; padding: 12px 16px; cursor: pointer;" onclick="sortTable(2)">Institution <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                                <th style="font-weight: 600; color: var(--black2); font-size: 13px; padding: 12px 16px; cursor: pointer;" onclick="sortTable(3)">Skill <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                                <th style="font-weight: 600; color: var(--black2); font-size: 13px; padding: 12px 16px; cursor: pointer;" onclick="sortTable(4)">Verification <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                                <th style="font-weight: 600; color: var(--black2); font-size: 13px; padding: 12px 16px; cursor: pointer;" onclick="sortTable(5)">Date Joined <ion-icon name="swap-vertical-outline" style="vertical-align: middle; opacity: 0.5;"></ion-icon></th>
+                                <th style="font-weight: 600; color: var(--black2); font-size: 13px; padding: 12px 16px; text-align: center;">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <% pendingStudents.forEach(student => { %>
-                                <tr>
-                                    <td><%= student.student_name %></td>
-                                    <td><%= student.email %></td>
-                                    <td><%= student.institution ? student.institution.institution_name : '--' %></td>
-                                    <td><%= student.course_of_study || '--' %></td>
-                                    <td><%= student.created_at ? new Date(student.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '--' %></td>
-                                    <td>
-                                        <div class="action-buttons side">
-                                            <button class="action-btn approve-btn" onclick="approveStudent('<%= student._id %>')" data-tooltip="Approve Student">
-                                                <i class="fas fa-check"></i>
-                                            </button>
+                        <tbody id="users-table-body">
+                            <% 
+                            let allUsers = [];
+                            if (typeof students !== 'undefined' && students) allUsers = allUsers.concat(students);
+                            if (typeof pendingStudents !== 'undefined' && pendingStudents) allUsers = allUsers.concat(pendingStudents);
+                            
+                            const uniqueUsersMap = new Map();
+                            allUsers.forEach(u => uniqueUsersMap.set(u._id.toString(), u));
+                            allUsers = Array.from(uniqueUsersMap.values());
+                            
+                            if (allUsers.length > 0) { 
+                            %>
+                                <% allUsers.forEach((student) => { 
+                                    const groupId = student.student_group ? (student.student_group._id || student.student_group) : 'unassigned';
+                                    const instName = student.institution ? student.institution.institution_name : '';
+                                    const skill = student.skill_of_interest ? student.skill_of_interest.skill_name : '';
+                                    const studentName = student.student_name || "Unknown";
+                                    const email = student.email || "";
+                                %>
+                                    <tr class="student-row hover:bg-[#F8FAFC]/50" 
+                                        data-student-id="<%= student._id %>" 
+                                        data-group-id="<%= groupId %>"
+                                        data-institution="<%= instName %>"
+                                        data-skill="<%= skill %>"
+                                        data-name="<%= studentName.toLowerCase() %>"
+                                        data-email="<%= email.toLowerCase() %>"
+                                        style="border-bottom: 1px solid #EAECF0; transition: background-color 0.2s; cursor: pointer;" onclick="viewStudentReport('<%= student._id %>')">
+                                        <td style="padding: 12px 16px;">
+                                            <div style="display: flex; align-items: center; gap: 12px;">
+                                                <div style="font-weight: 500; color: var(--black1); font-size: 13px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" class="student-name"><%= studentName %></div>
+                                            </div>
+                                        </td>
+                                        <td style="padding: 12px 16px; font-size: 13px; color: var(--black2);"><%= email || '--' %></td>
+                                        <td style="padding: 12px 16px; font-size: 13px; color: var(--black2); max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<%= instName || '--' %>"><%= instName || '--' %></td>
+                                        <td style="padding: 12px 16px; font-size: 13px; color: var(--black2); font-weight: 500;">
+                                            <% if(skill) { %>
+                                                <span class="skill-badge" style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background-color: #F1F5F9; color: var(--black2); border: 1px solid #E2E8F0;"><%= skill %></span>
+                                            <% } else { %>
+                                                --
+                                            <% } %>
+                                        </td>
+                                        <td style="padding: 12px 16px;">
+                                            <% if(student.approval_status === 'pending') { %>
+                                                <span class="status-badge-pending" style="display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; background-color: #FEF3C7; color: #92400E;">Pending</span>
+                                            <% } else if(student.status === 'Active') { %>
+                                                <span class="status-badge-verified" style="display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; background-color: #DCFCE7; color: #166534;">Verified</span>
+                                            <% } else { %>
+                                                <span class="status-badge-unapplied" style="display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; background-color: #F3F4F6; color: var(--black1);">Unapplied</span>
+                                            <% } %>
+                                        </td>
+                                        <td style="padding: 12px 16px; font-size: 13px; color: var(--black2);">
+                                            <%= student.created_at ? new Date(student.created_at).toLocaleDateString() : (student.join_date ? new Date(student.join_date).toLocaleDateString() : 'N/A') %>
+                                        </td>
+                                        <td style="padding: 12px 16px; text-align: center;">
+                                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                                <button onclick="event.stopPropagation(); openEditStudentModal('<%= student._id %>')" style="background: none; border: none; color: #0052FF; cursor: pointer; padding: 4px;" title="Edit">
+                                                    <ion-icon name="create-outline" style="font-size: 18px;"></ion-icon>
+                                                </button>
+                                                <button onclick="event.stopPropagation(); deleteStudent('<%= student._id %>')" style="background: none; border: none; color: #EF4444; cursor: pointer; padding: 4px;" title="Delete">
+                                                    <ion-icon name="trash-outline" style="font-size: 18px;"></ion-icon>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr id="no-users-row">
+                                    <td colspan="6" style="padding: 64px 0; text-align: center;">
+                                        <div style="display: flex; flex-direction: column; align-items: center; color: var(--black2);">
+                                            <div style="width: 48px; height: 48px; border-radius: 50%; background-color: #F8FAFC; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                                                <ion-icon name="people-outline" style="font-size: 24px; color: var(--black2);"></ion-icon>
+                                            </div>
+                                            <h3 style="color: var(--black1); font-weight: 500; font-size: 14px; margin: 0 0 4px 0;">No Users Found</h3>
+                                            <p style="font-size: 12px; margin: 0;">There are currently no registered students matching your criteria.</p>
                                         </div>
                                     </td>
                                 </tr>
-                            <% }) %>
+                            <% } %>
                         </tbody>
                     </table>
                 </div>
-            </div>
-        <% } %>
 
-        <!-- Students Table -->
-        <div class="students-table-container">
-            <table class="students-table">
-                <thead>
-                    <tr>
-                        <th class="sortable" data-sort="sn">S/N</th>
-                        <th class="sortable" data-sort="image"><i class="fas fa-image"></i></th>
-                        <th class="sortable" data-sort="name">Name</th>
-                        <th class="sortable" data-sort="gender">Gender</th>
-                        <th class="sortable" data-sort="course">Department</th>
-                        <th class="sortable" data-sort="school">School</th>
-                        <th class="sortable" data-sort="skill">Skill Interest</th>
-                        <th class="sortable" data-sort="start">Start Date</th>
-                        <th class="sortable" data-sort="end">End Date</th>
-                        <th class="actions-header">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (students && students.length > 0) { %>
-                        <% 
-                        const groupedStudents = {};
-                        students.forEach(s => {
-                            const batch = s.days_of_week_batch || 'Unassigned Batch';
-                            if (!groupedStudents[batch]) groupedStudents[batch] = [];
-                            groupedStudents[batch].push(s);
-                        });
-                        
-                        let globalIndex = 1;
-                        for (const [batchName, batchStudents] of Object.entries(groupedStudents)) { 
-                        %>
-                            <tr class="group-header-row">
-                                <td colspan="10" style="background-color: rgba(37, 99, 235, 0.1); font-weight: bold; padding: 12px 15px; color: var(--text);">
-                                    <i class="fas fa-layer-group" style="color: var(--accent-2); margin-right: 8px;"></i> Batch: <%= batchName %> (<%= batchStudents.length %> students)
-                                </td>
-                            </tr>
-                            <% batchStudents.forEach((student) => { %>
-                                <% const isExpired = student.end_date && new Date(student.end_date) < new Date(); %>
-                                <tr class="student-row" data-student-id="<%= student._id %>">
-                                    <td><%= globalIndex++ %></td>
-                                <td>
-                                    <img src="<%= student.photo_url ? '/' + student.photo_url : 'https://picsum.photos/seed/' + encodeURIComponent(student.student_name) + '/40/40.jpg' %>"
-                                         alt="<%= student.student_name %>"
-                                         class="student-photo"
-                                         onclick="viewStudentReport('<%= student._id %>')">
-                                </td>
-                                <td class="student-name" onclick="viewStudentReport('<%= student._id %>')">
-                                    <%= student.student_name %>
-                                </td>
-                                <td><%= student.gender || 'N/A' %></td>
-                                <td><%= student.course_of_study || '--' %></td>
-                                <td><%= student.institution ? student.institution.institution_name : '--' %></td>
-                                <td>
-                                    <div class="skill-interest">
-                                        <span class="skill-text"><%= student.skill_of_interest || 'Not specified' %></span>
-                                    </div>
-                                </td>
-                                <td><%= student.join_date ? new Date(student.join_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '--' %></td>
-                                <td>
-                                    <div class="end-date <%= isExpired ? 'expired' : '' %>">
-                                        <%= student.end_date ? new Date(student.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '--' %>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="action-buttons side">
-                                        <button class="action-btn edit-btn"
-                                                onclick="editStudent('<%= student._id %>')"
-                                                data-tooltip="Edit Student">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <% const sBatch = student.days_of_week_batch || ''; %>
-                                        <button class="action-btn" style="color: var(--accent-2); border: 1px solid var(--border);"
-                                                onclick="openRegroupModal('<%= student._id %>', '<%= sBatch %>')"
-                                                data-tooltip="Change Batch">
-                                            <i class="fas fa-layer-group"></i>
-                                        </button>
-                                        <button class="action-btn delete-btn"
-                                                onclick="deleteStudent('<%= student._id %>')"
-                                                data-tooltip="Delete Student">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <% }) %>
-                        <% } %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="10" style="text-align: center; padding: 20px;">
-                                <div class="no-students">
-                                    <i class="fas fa-user-graduate" style="font-size: 2rem; color: #ccc; margin-bottom: 10px;"></i>
-                                    <p>No students found. Please add some students to get started.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid #EAECF0; background-color: #ffffff;">
+                    <div style="font-size: 12px; color: #6E7C87;" id="table-showing-info">
+                        Showing results
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+</div>
+</div>
 
-        <div class="table-pagination">
-            <div class="pagination-info">
-                Showing <span class="start-record">1</span> to
-                <span class="end-record"><%= students ? students.length : 0 %></span> of
-                <span class="total-records"><%= students ? students.length : 0 %></span> students
+<!-- Add Group Modal -->
+<div id="addGroupModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3>Add New Group</h3>
+            <span class="close" onclick="closeAddGroupModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Group Name *</label>
+                <input type="text" id="new_group_name" placeholder="e.g., Batch B">
             </div>
-            <div class="pagination-controls">
-                <button class="pagination-btn" disabled><i class="fas fa-chevron-left"></i></button>
-                <button class="pagination-btn active">1</button>
-                <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+            <div class="form-group">
+                <label>Year</label>
+                <input type="number" id="new_group_year" value="<%= new Date().getFullYear() %>">
             </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeAddGroupModal()">Cancel</button>
+            <button type="button" class="btn-primary" onclick="saveGroup()">Save Group</button>
         </div>
     </div>
 </div>
@@ -242,8 +294,15 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="skill_of_interest">Skill Interest</label>
-                        <input type="text" id="skill_of_interest" name="skill_of_interest" placeholder="e.g., Web Development, Data Analysis">
+                        <label for="skill_id">Skill Interest</label>
+                        <select name="skill_id" id="skill_id">
+                            <option value="">Select Skill</option>
+                            <% if (typeof skills !== 'undefined' && skills) { %>
+                                <% skills.forEach(sk => { %>
+                                    <option value="<%= sk._id %>"><%= sk.skill_name %></option>
+                                <% }) %>
+                            <% } %>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="period_of_attachment">Period of Attachment (months)</label>
@@ -252,15 +311,15 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group" style="grid-column: 1 / -1;">
-                        <label>Days of Week Batch</label>
-                        <input type="hidden" id="days_of_week_batch" name="days_of_week_batch" value="">
-                        <div class="pill-group" id="days-pills">
-                            <div class="day-pill" data-day="Monday">Monday</div>
-                            <div class="day-pill" data-day="Tuesday">Tuesday</div>
-                            <div class="day-pill" data-day="Wednesday">Wednesday</div>
-                            <div class="day-pill" data-day="Thursday">Thursday</div>
-                            <div class="day-pill" data-day="Friday">Friday</div>
-                        </div>
+                        <label>Student Group</label>
+                        <select name="student_group" id="student_group" required style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #EAECF0;">
+                            <option value="">Select Group</option>
+                            <% if (typeof groups !== 'undefined' && groups) { %>
+                                <% groups.forEach(g => { %>
+                                    <option value="<%= g._id %>"><%= g.name %> (<%= g.year %>)</option>
+                                <% }) %>
+                            <% } %>
+                        </select>
                     </div>
                 </div>
 
@@ -287,23 +346,105 @@
     </div>
 </div>
 
+<!-- Edit Student Modal -->
+<div id="editStudentModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Student Data</h3>
+            <span class="close" onclick="closeEditStudentModal()">&times;</span>
+        </div>
+        <div id="edit-modal-alert" style="display:none; padding: 10px 20px;"></div>
+        <div class="modal-body">
+            <form id="editStudentForm" enctype="multipart/form-data">
+                <input type="hidden" id="edit_student_id" name="student_id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit_student_name">Full Name</label>
+                        <input type="text" id="edit_student_name" name="student_name" readonly style="background-color: #F8FAFC;">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_email">Email</label>
+                        <input type="email" id="edit_email" name="email" readonly style="background-color: #F8FAFC;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit_phone">Phone</label>
+                        <input type="tel" id="edit_phone" name="phone" readonly style="background-color: #F8FAFC;">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_gender">Gender</label>
+                        <select id="edit_gender" name="gender">
+                            <option value="">Select gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit_course_of_study">Course of Study</label>
+                        <input type="text" id="edit_course_of_study" name="course_of_study">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_institution_id">Institution</label>
+                        <select name="institution_id" id="edit_institution_id">
+                            <option value="">Select Institution</option>
+                            <% if (institutions && institutions.length > 0) { %>
+                                <% institutions.forEach(inst => { %>
+                                    <option value="<%= inst._id %>"><%= inst.institution_name %></option>
+                                <% }) %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit_skill_id">Skill Interest</label>
+                        <select name="skill_id" id="edit_skill_id">
+                            <option value="">Select Skill</option>
+                            <% if (typeof skills !== 'undefined' && skills) { %>
+                                <% skills.forEach(sk => { %>
+                                    <option value="<%= sk._id %>"><%= sk.skill_name %></option>
+                                <% }) %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_period_of_attachment">Period of Attachment (months)</label>
+                        <input type="number" id="edit_period_of_attachment" name="period_of_attachment" min="1" max="24">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeEditStudentModal()">Cancel</button>
+            <button type="button" class="btn-primary" id="editSubmitBtn" onclick="submitEditStudent()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
 <!-- Regroup Student Modal -->
 <div id="regroupModal" class="modal">
     <div class="modal-content" style="max-width: 400px;">
         <div class="modal-header">
-            <h3>Change Student Batch</h3>
+            <h3>Change Student Group</h3>
             <span class="close" onclick="closeRegroupModal()">&times;</span>
         </div>
         <div id="regroup-modal-alert" style="display:none; padding: 10px 20px;"></div>
         <div class="modal-body">
             <input type="hidden" id="regroup_student_id">
-            <input type="hidden" id="regroup_days_batch">
-            <div class="pill-group" id="regroup-days-pills" style="justify-content: center; margin-bottom: 20px;">
-                <div class="day-pill" data-day="Monday">Monday</div>
-                <div class="day-pill" data-day="Tuesday">Tuesday</div>
-                <div class="day-pill" data-day="Wednesday">Wednesday</div>
-                <div class="day-pill" data-day="Thursday">Thursday</div>
-                <div class="day-pill" data-day="Friday">Friday</div>
+            <div class="form-group">
+                <label>Select Group</label>
+                <select id="regroup_student_group" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #EAECF0;">
+                    <option value="">Select Group</option>
+                    <% if (typeof groups !== 'undefined' && groups) { %>
+                        <% groups.forEach(g => { %>
+                            <option value="<%= g._id %>"><%= g.name %> (<%= g.year %>)</option>
+                        <% }) %>
+                    <% } %>
+                </select>
             </div>
         </div>
         <div class="modal-footer">
@@ -314,48 +455,168 @@
 </div>
 
 <script>
-// Add Student Pill Logic
-document.addEventListener('DOMContentLoaded', () => {
-    setupPills('days-pills', 'days_of_week_batch');
-    setupPills('regroup-days-pills', 'regroup_days_batch');
-});
+let currentGroupId = 'all';
 
-function setupPills(containerId, inputId) {
-    const container = document.getElementById(containerId);
-    if(!container) return;
-    const pills = container.querySelectorAll('.day-pill');
-    const hiddenInput = document.getElementById(inputId);
-    
-    pills.forEach(pill => {
-        pill.addEventListener('click', () => {
-            let selectedDays = hiddenInput.value ? hiddenInput.value.split(',').map(d => d.trim()).filter(d=>d) : [];
-            const day = pill.dataset.day;
-            if (selectedDays.includes(day)) {
-                selectedDays = selectedDays.filter(d => d !== day);
-                pill.classList.remove('active');
-            } else {
-                selectedDays.push(day);
-                pill.classList.add('active');
-            }
-            const allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-            selectedDays.sort((a, b) => allDays.indexOf(a) - allDays.indexOf(b));
-            hiddenInput.value = selectedDays.join(', ');
-        });
-    });
+function openGroupTable(groupId, groupName) {
+    currentGroupId = groupId;
+    document.getElementById('table-group-title').textContent = groupName;
+    document.getElementById('rename-group-btn').style.display = groupId === 'all' ? 'none' : 'inline-block';
+    document.getElementById('directory-view').style.display = 'none';
+    document.getElementById('table-view').style.display = 'flex';
+    applyTableFilters();
 }
 
-function openRegroupModal(studentId, currentBatch) {
-    document.getElementById('regroup_student_id').value = studentId;
-    const hiddenInput = document.getElementById('regroup_days_batch');
-    hiddenInput.value = currentBatch || '';
+async function triggerRenameGroup() {
+    if (!currentGroupId || currentGroupId === 'all') return;
+    const currentName = document.getElementById('table-group-title').textContent;
+    const newName = prompt("Enter new name for the group:", currentName);
+    if (newName && newName.trim() !== "" && newName !== currentName) {
+        try {
+            const res = await fetch(`/api/groups/${currentGroupId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newName.trim() })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showNotification('Group renamed successfully!', 'success');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showNotification(data.message || 'Error renaming group', 'error');
+            }
+        } catch (err) {
+            showNotification('Error renaming group', 'error');
+        }
+    }
+}
+
+function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
     
-    const pills = document.getElementById('regroup-days-pills').querySelectorAll('.day-pill');
-    let selectedDays = currentBatch ? currentBatch.split(',').map(d => d.trim()) : [];
-    pills.forEach(pill => {
-        if (selectedDays.includes(pill.dataset.day)) pill.classList.add('active');
-        else pill.classList.remove('active');
+    // Title
+    const groupName = document.getElementById('table-group-title').textContent;
+    doc.setFontSize(16);
+    doc.text(`Student Export: ${groupName}`, 14, 15);
+    
+    const rows = [];
+    document.querySelectorAll('#users-table-body .student-row').forEach(row => {
+        if (row.style.display !== 'none') {
+            const name = row.querySelector('.student-name').textContent.trim();
+            // In our table, column 4 (index 3) is Skill
+            const skill = row.cells[3].textContent.trim();
+            
+            // To get "Batch", we can use the dataset or the current group Name
+            let batch = groupName !== 'All Students' ? groupName : "Unassigned";
+            if (groupName === 'All Students') {
+                // If it's "All Students", try to extract batch from somewhere if needed, but the user requested columns: Name, Batch, Skill.
+                // In the data we don't display the batch in the table currently, but we have row.dataset.groupId.
+                // Since this might just be a flat export, we can put "All" or find the actual group.
+                // For simplicity, we just use the current groupName or a generic value if it's "all".
+            }
+            
+            rows.push({ name, batch, skill });
+        }
     });
     
+    // Sort by skill as requested ("according to skills")
+    rows.sort((a, b) => a.skill.localeCompare(b.skill));
+    
+    const tableData = rows.map(r => [r.name, r.batch, r.skill]);
+    
+    doc.autoTable({
+        startY: 20,
+        head: [['Name', 'Batch', 'Skill']],
+        body: tableData,
+        theme: 'striped',
+        styles: { fontSize: 10, font: 'helvetica' },
+        headStyles: { fillColor: [0, 82, 255] }
+    });
+    
+    doc.save(`Students_${groupName.replace(/\s+/g, '_')}_Skills.pdf`);
+}
+
+function backToDirectory() {
+    document.getElementById('table-view').style.display = 'none';
+    document.getElementById('directory-view').style.display = 'block';
+}
+
+function filterTableByGroup(groupId, element) {
+    openGroupTable(groupId, element.textContent.trim());
+}
+
+function applyTableFilters() {
+    const search = document.getElementById('student-search-input').value.toLowerCase();
+    
+    let visibleCount = 0;
+    document.querySelectorAll('#users-table-body .student-row').forEach(row => {
+        const rowGroup = row.dataset.groupId;
+        const rowName = row.dataset.name;
+        const rowEmail = row.dataset.email;
+        
+        let match = true;
+        if (currentGroupId !== 'all' && rowGroup !== currentGroupId) match = false;
+        if (search && !rowName.includes(search) && !rowEmail.includes(search)) match = false;
+        
+        if (match) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    const info = document.getElementById('table-showing-info');
+    if(info) info.textContent = `Showing ${visibleCount} results`;
+    const emptyRow = document.getElementById('no-users-row');
+    if (emptyRow) emptyRow.style.display = visibleCount === 0 ? '' : 'none';
+}
+
+let sortAsc = true;
+function sortTable(columnIndex) {
+    const tbody = document.getElementById("users-table-body");
+    const rows = Array.from(tbody.querySelectorAll(".student-row"));
+    
+    rows.sort((a, b) => {
+        let valA = a.cells[columnIndex].textContent.trim().toLowerCase();
+        let valB = b.cells[columnIndex].textContent.trim().toLowerCase();
+        
+        if (valA < valB) return sortAsc ? -1 : 1;
+        if (valA > valB) return sortAsc ? 1 : -1;
+        return 0;
+    });
+    
+    rows.forEach(row => tbody.appendChild(row));
+    sortAsc = !sortAsc;
+}
+
+function showAddGroupModal() { document.getElementById('addGroupModal').style.display = 'block'; }
+function closeAddGroupModal() { document.getElementById('addGroupModal').style.display = 'none'; }
+async function saveGroup() {
+    const name = document.getElementById('new_group_name').value;
+    const year = document.getElementById('new_group_year').value;
+    if(!name) return showNotification('Name is required', 'error');
+    try {
+        const response = await fetch('/api/groups', {
+            method: 'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({name, year})
+        });
+        if(response.ok) {
+            showNotification('Group created', 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            showNotification('Failed to create group', 'error');
+        }
+    } catch(e) { showNotification('Network error', 'error'); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // applyTableFilters(); // Only apply when opening a table now
+});
+
+function openRegroupModal(studentId, currentGroup) {
+    document.getElementById('regroup_student_id').value = studentId;
+    document.getElementById('regroup_student_group').value = currentGroup || '';
     document.getElementById('regroupModal').style.display = 'block';
 }
 
@@ -365,7 +626,7 @@ function closeRegroupModal() {
 
 async function saveRegroup() {
     const studentId = document.getElementById('regroup_student_id').value;
-    const newBatch = document.getElementById('regroup_days_batch').value;
+    const newGroup = document.getElementById('regroup_student_group').value;
     const btn = document.getElementById('regroupBtn');
     
     btn.disabled = true;
@@ -375,11 +636,11 @@ async function saveRegroup() {
         const response = await fetch('/api/students/' + studentId, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ days_of_week_batch: newBatch })
+            body: JSON.stringify({ student_group: newGroup })
         });
         const result = await response.json();
         if (result.success) {
-            showNotification('Batch updated successfully!', 'success');
+            showNotification('Group updated successfully!', 'success');
             setTimeout(() => location.reload(), 800);
         } else {
             showNotification(result.message || 'Update failed', 'error');
@@ -390,6 +651,89 @@ async function saveRegroup() {
         showNotification('Network error.', 'error');
         btn.disabled = false;
         btn.textContent = 'Save Changes';
+    }
+}
+
+async function openEditStudentModal(id) {
+    try {
+        const response = await fetch('/api/students/' + id);
+        const result = await response.json();
+        if (result.success) {
+            const data = result.data;
+            document.getElementById('edit_student_id').value = data._id;
+            document.getElementById('edit_student_name').value = data.student_name || '';
+            document.getElementById('edit_email').value = data.email || '';
+            document.getElementById('edit_phone').value = data.phone || '';
+            document.getElementById('edit_gender').value = data.gender || '';
+            document.getElementById('edit_course_of_study').value = data.course_of_study || '';
+            document.getElementById('edit_institution_id').value = data.institution ? data.institution._id : '';
+            document.getElementById('edit_skill_id').value = data.skill_of_interest ? data.skill_of_interest._id : '';
+            document.getElementById('edit_period_of_attachment').value = data.period_of_attachment || '';
+            
+            document.getElementById('editStudentModal').style.display = 'block';
+        } else {
+            showNotification('Failed to fetch student data', 'error');
+        }
+    } catch(err) {
+        showNotification('Network error fetching student', 'error');
+    }
+}
+
+function closeEditStudentModal() {
+    document.getElementById('editStudentModal').style.display = 'none';
+}
+
+async function submitEditStudent() {
+    const id = document.getElementById('edit_student_id').value;
+    const btn = document.getElementById('editSubmitBtn');
+    
+    const payload = {
+        gender: document.getElementById('edit_gender').value,
+        course_of_study: document.getElementById('edit_course_of_study').value,
+        institution_id: document.getElementById('edit_institution_id').value,
+        skill_id: document.getElementById('edit_skill_id').value,
+        period_of_attachment: document.getElementById('edit_period_of_attachment').value
+    };
+    
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+    
+    try {
+        const response = await fetch('/api/students/' + id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('Student updated successfully!', 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            showNotification(result.message || 'Update failed', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Save Changes';
+        }
+    } catch (err) {
+        showNotification('Network error.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
+    }
+}
+
+async function deleteStudent(id) {
+    if(!confirm('Are you sure you want to delete this student? This action cannot be undone.')) return;
+    try {
+        const response = await fetch('/api/students/' + id, { method: 'DELETE' });
+        const result = await response.json();
+        if(result.success) {
+            showNotification('Student deleted', 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            showNotification(result.message || 'Failed to delete', 'error');
+        }
+    } catch(err) {
+        showNotification('Network error', 'error');
     }
 }
 
@@ -497,17 +841,24 @@ function editStudent(studentId) {
 }
 
 // Search
-document.getElementById('student-search').addEventListener('input', function(e) {
-    const term = e.target.value.toLowerCase();
+function applyTableFilters() {
+    const term = document.getElementById('student-search').value.toLowerCase();
+    let visibleCount = 0;
     document.querySelectorAll('.student-row').forEach(row => {
         const name = row.querySelector('.student-name')?.textContent.toLowerCase() || '';
         const cells = row.cells;
         const course = cells[4]?.textContent.toLowerCase() || '';
         const school = cells[5]?.textContent.toLowerCase() || '';
         const skill = row.querySelector('.skill-text')?.textContent.toLowerCase() || '';
-        row.style.display = (name.includes(term) || course.includes(term) || school.includes(term) || skill.includes(term)) ? '' : 'none';
+        const isMatch = (name.includes(term) || course.includes(term) || school.includes(term) || skill.includes(term));
+        row.style.display = isMatch ? '' : 'none';
+        if(isMatch) visibleCount++;
     });
-});
+    const info = document.getElementById('table-showing-info');
+    if(info) info.textContent = `Showing ${visibleCount} results`;
+}
+
+document.getElementById('student-search').addEventListener('input', applyTableFilters);
 
 // Image preview
 document.getElementById('passport_image').addEventListener('change', function(e) {
@@ -539,3 +890,7 @@ window.openRegroupModal = openRegroupModal;
 window.closeRegroupModal = closeRegroupModal;
 window.saveRegroup = saveRegroup;
 </script>
+
+<!-- Export Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>

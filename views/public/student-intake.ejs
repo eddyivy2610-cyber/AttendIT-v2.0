@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
     <title>Student Register Form</title>
     <style>
         :root {
@@ -16,45 +18,101 @@
             --danger: #ef4444;
             --border: rgba(148, 163, 184, 0.18);
         }
-        * { box-sizing: border-box; }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'DM Sans', Arial, sans-serif;
             background: radial-gradient(circle at top, #1e293b 0%, #0f172a 48%, #020617 100%);
             color: var(--text);
             min-height: 100vh;
         }
+
         .wrap {
             max-width: 960px;
             margin: 0 auto;
             padding: 32px 16px 48px;
         }
-        .hero, .card {
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--accent-2);
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .hero,
+        .card {
             background: rgba(15, 23, 42, 0.82);
             border: 1px solid var(--border);
             backdrop-filter: blur(10px);
             border-radius: 18px;
             box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
         }
+
         .hero {
             padding: 28px;
             margin-bottom: 18px;
         }
-        h1 { margin: 0 0 8px; font-size: 2rem; }
-        p { color: var(--muted); line-height: 1.6; }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 2rem;
+            font-family: 'Sora', sans-serif;
+        }
+
+        p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
         .status {
             margin: 18px 0 0;
             padding: 12px 14px;
             border-radius: 12px;
             font-weight: 600;
         }
-        .success { background: rgba(34, 197, 94, 0.12); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .error { background: rgba(239, 68, 68, 0.12); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .card { padding: 24px; }
-        .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-        .field { display: flex; flex-direction: column; gap: 6px; }
-        label { font-weight: 600; font-size: 0.95rem; }
-        input, select {
+
+        .success {
+            background: rgba(34, 197, 94, 0.12);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .card {
+            padding: 24px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input,
+        select {
             width: 100%;
             border: 1px solid var(--border);
             background: var(--panel-2);
@@ -63,14 +121,23 @@
             padding: 12px 14px;
             outline: none;
         }
-        input:focus, select:focus { border-color: rgba(37, 99, 235, 0.7); }
-        .full { grid-column: 1 / -1; }
+
+        input:focus,
+        select:focus {
+            border-color: rgba(37, 99, 235, 0.7);
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
         .actions {
             display: flex;
             gap: 12px;
             margin-top: 18px;
             align-items: center;
         }
+
         button {
             border: 0;
             border-radius: 10px;
@@ -78,10 +145,27 @@
             font-weight: 700;
             cursor: pointer;
         }
-        .primary { background: var(--accent-2); color: white; }
-        .ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-        small { color: var(--muted); }
-        .note { margin-top: 14px; font-size: 0.95rem; }
+
+        .primary {
+            background: var(--accent-2);
+            color: white;
+        }
+
+        .ghost {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        small {
+            color: var(--muted);
+        }
+
+        .note {
+            margin-top: 14px;
+            font-size: 0.95rem;
+        }
+
         .day-pill {
             padding: 8px 14px;
             border-radius: 999px;
@@ -93,42 +177,59 @@
             transition: all 0.2s;
             user-select: none;
         }
+
         .day-pill.active {
             background: var(--accent-2);
             color: white;
             border-color: var(--accent-2);
         }
+
         .pill-group {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-top: 4px;
         }
+
         @media (max-width: 720px) {
-            .grid { grid-template-columns: 1fr; }
-            h1 { font-size: 1.6rem; }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="wrap">
         <div class="hero">
             <h1>Student Register Form</h1>
-            <p>Submit a student directly from the QR link. The record is created as pending and will appear in the main app for approval.</p>
+            <p>Submit a student directly from the QR link. The record is created as pending and will appear in the main
+                app for approval.</p>
             <% if (success) { %>
-                <div class="status success">Submission received. An admin will review and approve it in the main app.</div>
-            <% } %>
-            <% if (error) { %>
-                <div class="status error"><%= error %></div>
-            <% } %>
+                <div class="status success">Submission received. An admin will review and approve it in the main app.
+                </div>
+                <% } %>
+                    <% if (error) { %>
+                        <div class="status error">
+                            <%= error %>
+                        </div>
+                        <% } %>
         </div>
 
         <div class="card">
+            <div class="logo-container">
+                <img src="/assets/images/logo.png" alt="AttendIT Logo" style="max-height: 60px; width: auto;">
+            </div>
             <form method="POST" action="<%= publicFormAction %>">
                 <div class="grid">
                     <div class="field">
                         <label for="student_name">Full Name *</label>
-                        <input id="student_name" name="student_name" type="text" required value="<%= formData.student_name || '' %>">
+                        <input id="student_name" name="student_name" type="text" required
+                            value="<%= formData.student_name || '' %>">
                     </div>
                     <div class="field">
                         <label for="email">Email *</label>
@@ -142,47 +243,51 @@
                         <label for="gender">Gender *</label>
                         <select id="gender" name="gender" required>
                             <option value="">Select gender</option>
-                            <option value="Male" <%= formData.gender === 'Male' ? 'selected' : '' %>>Male</option>
-                            <option value="Female" <%= formData.gender === 'Female' ? 'selected' : '' %>>Female</option>
-                            <option value="Other" <%= formData.gender === 'Other' ? 'selected' : '' %>>Other</option>
+                            <option value="Male" <%=formData.gender==='Male' ? 'selected' : '' %>>Male</option>
+                            <option value="Female" <%=formData.gender==='Female' ? 'selected' : '' %>>Female</option>
+                            <option value="Other" <%=formData.gender==='Other' ? 'selected' : '' %>>Other</option>
                         </select>
                     </div>
                     <div class="field full">
-                        <label for="institution_name">Institution *</label>
-                        <input list="institutions" id="institution_name" name="institution_name" required value="<%= formData.institution_name || '' %>" placeholder="Type or select a university">
-                        <datalist id="institutions">
-                            <option value="University of Ibadan">
-                            <option value="University of Lagos">
-                            <option value="Obafemi Awolowo University">
-                            <option value="Ahmadu Bello University">
-                            <option value="University of Ilorin">
-                            <option value="Covenant University">
-                            <option value="University of Nigeria, Nsukka">
-                            <option value="Federal University of Technology, Minna">
-                            <option value="University of Benin">
-                            <option value="University of Abuja">
-                            <option value="Lagos State University">
-                            <option value="Babcock University">
-                            <option value="Nnamdi Azikiwe University">
-                            <option value="Bayero University Kano">
-                            <option value="Federal University of Technology, Akure">
-                        </datalist>
+                        <label for="institution_id">Institution *</label>
+                        <select id="institution_id" name="institution_id" required>
+                            <option value="">Select your institution</option>
+                            <% if (institutions && institutions.length> 0) { %>
+                                <% institutions.forEach(inst=> { %>
+                                    <option value="<%= inst._id %>" <%=formData.institution_id===inst._id.toString()
+                                        ? 'selected' : '' %>><%= inst.institution_name %>
+                                    </option>
+                                    <% }) %>
+                                        <% } %>
+                        </select>
                     </div>
                     <div class="field full">
                         <label for="course_of_study">Course of Study *</label>
-                        <input id="course_of_study" name="course_of_study" type="text" required value="<%= formData.course_of_study || '' %>">
+                        <input id="course_of_study" name="course_of_study" type="text" required
+                            value="<%= formData.course_of_study || '' %>">
                     </div>
                     <div class="field">
                         <label for="period_of_attachment">Period of Attachment</label>
-                        <input id="period_of_attachment" name="period_of_attachment" type="number" min="1" max="24" value="<%= formData.period_of_attachment || 6 %>">
+                        <input id="period_of_attachment" name="period_of_attachment" type="number" min="1" max="24"
+                            value="<%= formData.period_of_attachment || 6 %>">
                     </div>
                     <div class="field">
-                        <label for="skill_of_interest">Skill Interest</label>
-                        <input id="skill_of_interest" name="skill_of_interest" type="text" value="<%= formData.skill_of_interest || '' %>">
+                        <label for="skill_id">Skill Interest *</label>
+                        <select id="skill_id" name="skill_id" required>
+                            <option value="">Select a skill</option>
+                            <% if (skills && skills.length> 0) { %>
+                                <% skills.forEach(sk=> { %>
+                                    <option value="<%= sk._id %>" <%=formData.skill_id===sk._id.toString() ? 'selected'
+                                        : '' %>><%= sk.skill_name %>
+                                    </option>
+                                    <% }) %>
+                                        <% } %>
+                        </select>
                     </div>
                     <div class="field full">
                         <label>Days of Week Batch</label>
-                        <input type="hidden" id="days_of_week_batch" name="days_of_week_batch" value="<%= formData.days_of_week_batch || '' %>">
+                        <input type="hidden" id="days_of_week_batch" name="days_of_week_batch"
+                            value="<%= formData.days_of_week_batch || '' %>">
                         <div class="pill-group" id="days-pills">
                             <div class="day-pill" data-day="Monday">Monday</div>
                             <div class="day-pill" data-day="Tuesday">Tuesday</div>
@@ -198,7 +303,8 @@
                     <button type="submit" class="primary">Submit Student</button>
                     <button type="reset" class="ghost">Reset</button>
                 </div>
-                <p class="note"><small>Entries are not activated automatically. An admin must approve them in the main app.</small></p>
+                <p class="note"><small>Entries are not activated automatically. An admin must approve them in the main
+                        app.</small></p>
             </form>
         </div>
     </div>
@@ -206,7 +312,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const pills = document.querySelectorAll('.day-pill');
             const hiddenInput = document.getElementById('days_of_week_batch');
-            
+
             let selectedDays = hiddenInput.value ? hiddenInput.value.split(',').map(d => d.trim()).filter(d => d) : [];
             pills.forEach(pill => {
                 if (selectedDays.includes(pill.dataset.day)) {
@@ -224,14 +330,15 @@
                         selectedDays.push(day);
                         pill.classList.add('active');
                     }
-                    
+
                     const allDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
                     selectedDays.sort((a, b) => allDays.indexOf(a) - allDays.indexOf(b));
-                    
+
                     hiddenInput.value = selectedDays.join(', ');
                 });
             });
         });
     </script>
 </body>
+
 </html>

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeOverlay = document.getElementById('themeOverlay');
     const themeText = document.getElementById('themeText');
     const collapseText = document.getElementById('collapseText');
-    const collapseIcon = collapseToggle.querySelector('.collapse-icon');
+    const collapseIcon = collapseToggle ? collapseToggle.querySelector('.collapse-icon') : null;
     
     // Navigation elements
     const desktopNavItems = document.querySelectorAll('.nav-bar li a');
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebarTooltip = document.getElementById('sidebar-tooltip');
     
     let isThemeTransitioning = false;
-    let isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    let isSidebarCollapsed = false;
     let isDarkTheme = localStorage.getItem('darkTheme') === 'true';
     let isMobile = window.innerWidth <= 1024;
     
@@ -35,11 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function applySavedStates() {
-        
-        if (isSidebarCollapsed && !isMobile) {
-            sidebar.classList.add('collapsed');
+        if (collapseToggle) {
+            updateCollapseButton();
         }
-        updateCollapseButton();
         
         if (isDarkTheme) {
             enableDarkTheme();
@@ -51,7 +49,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function syncActiveNavigation() {
-        const currentPage = document.querySelector('.page-title').textContent.toLowerCase();
+        const titleElement = document.querySelector('.page-title') || document.querySelector('.header-title');
+        if (!titleElement) return;
+        
+        const currentPage = titleElement.textContent.toLowerCase();
         const pageMap = {
             'dashboard': 0,
             'students': 1,
@@ -91,8 +92,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         isThemeTransitioning = true;
         
-        
-        themeOverlay.classList.add('active');
+        if (themeOverlay) {
+            themeOverlay.classList.add('active');
+        }
        
         const themeIcon = themeToggle.querySelector('ion-icon');
         themeIcon.style.transform = 'rotate(180deg) scale(1.3)';
@@ -109,9 +111,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             
             setTimeout(() => {
-                themeOverlay.classList.remove('active');
+                if (themeOverlay) {
+                    themeOverlay.classList.remove('active');
+                }
                 isThemeTransitioning = false;
-            }, 500);
+            }, 300);
         }, 150);
     }
     
@@ -120,13 +124,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateCollapseButton() {
         if (!isMobile) {
             if (isSidebarCollapsed) {
-                collapseIcon.setAttribute('name', 'chevron-forward-outline');
-                collapseText.textContent = 'Expand';
-                collapseIcon.style.transform = 'rotate(0)';
+                if (collapseIcon) {
+                    collapseIcon.setAttribute('name', 'chevron-forward-outline');
+                    collapseIcon.style.transform = 'rotate(0)';
+                }
+                if (collapseText) collapseText.textContent = 'Expand';
             } else {
-                collapseIcon.setAttribute('name', 'chevron-back-outline');
-                collapseText.textContent = 'Collapse';
-                collapseIcon.style.transform = 'rotate(0)';
+                if (collapseIcon) {
+                    collapseIcon.setAttribute('name', 'chevron-back-outline');
+                    collapseIcon.style.transform = 'rotate(0)';
+                }
+                if (collapseText) collapseText.textContent = 'Collapse';
             }
         }
     }
@@ -244,15 +252,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (isMobile) {
             
-            sidebar.classList.remove('collapsed');
-            collapseIcon.setAttribute('name', 'chevron-back-outline');
-            collapseText.textContent = 'Collapse';
+            if (sidebar) sidebar.classList.remove('collapsed');
+            if (collapseIcon) collapseIcon.setAttribute('name', 'chevron-back-outline');
+            if (collapseText) collapseText.textContent = 'Collapse';
         } else {
            
             if (isSidebarCollapsed) {
-                sidebar.classList.add('collapsed');
+                if (sidebar) sidebar.classList.add('collapsed');
             } else {
-                sidebar.classList.remove('collapsed');
+                if (sidebar) sidebar.classList.remove('collapsed');
             }
         }
     }
@@ -261,10 +269,12 @@ document.addEventListener('DOMContentLoaded', function() {
         updateResponsiveState();
         
         
-        if (!isMobile && topNav.classList.contains('active')) {
+        if (!isMobile && topNav && topNav.classList.contains('active')) {
             topNav.classList.remove('active');
-            topNavToggle.querySelector('ion-icon').setAttribute('name', 'menu-outline');
-            topNavToggle.style.transform = 'rotate(0) scale(1)';
+            if (topNavToggle) {
+                topNavToggle.querySelector('ion-icon').setAttribute('name', 'menu-outline');
+                topNavToggle.style.transform = 'rotate(0) scale(1)';
+            }
         }
         
         
@@ -281,24 +291,17 @@ document.addEventListener('DOMContentLoaded', function() {
             mobileThemeToggle.addEventListener('click', toggleTheme);
         }
         
-       
-        collapseToggle.addEventListener('click', toggleSidebar);
+        if (collapseToggle) {
+            collapseToggle.addEventListener('click', toggleSidebar);
+        }
         
-      
-        topNavToggle.addEventListener('click', toggleTopNav);
+        if (topNavToggle) {
+            topNavToggle.addEventListener('click', toggleTopNav);
+        }
         
       
         desktopNavItems.forEach((item, index) => {
             item.addEventListener('click', function(e) {
-               
-                if (!isMobile && isSidebarCollapsed) {
-                    sidebar.classList.remove('collapsed');
-                    setTimeout(() => {
-                        if (isSidebarCollapsed) {
-                            sidebar.classList.add('collapsed');
-                        }
-                    }, 1500);
-                }
                 setActiveNavItem(index, 'desktop');
             });
         });
@@ -316,9 +319,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('click', function(event) {
         
             if (isMobile && 
+                topNav &&
                 topNav.classList.contains('active') && 
                 !topNav.contains(event.target) && 
-                !topNavToggle.contains(event.target)) {
+                (!topNavToggle || !topNavToggle.contains(event.target))) {
                 toggleTopNav();
             }
             
@@ -352,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
            
             if (e.key === 'Escape') {
-                if (isMobile && topNav.classList.contains('active')) {
+                if (isMobile && topNav && topNav.classList.contains('active')) {
                     toggleTopNav();
                 }
                 if (isMobile && sidebar.classList.contains('active')) {

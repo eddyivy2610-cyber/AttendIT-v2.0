@@ -5,11 +5,12 @@ const { requireAuth } = require('../middleware/auth');
 const Student = require('../models/Student');
 const Attendance = require('../models/Attendance');
 const Institution = require('../models/Institution');
+const Skill = require('../models/Skill');
 const Project = require('../models/Project');
 const Performance = require('../models/Performance');
 const { buildPublicQrAssets } = require('../utils/public-qr');
 
-const ALLOWED_PAGES = ['dashboard', 'students', 'attendance', 'reports', 'settings', 'projects'];
+const ALLOWED_PAGES = ['dashboard', 'students', 'history', 'attendance', 'reports', 'institutions', 'settings', 'projects'];
 
 // GET /api/dashboard-data — returns JSON for real-time dashboard updates
 router.get('/api/dashboard-data', requireAuth, async (req, res) => {
@@ -104,23 +105,52 @@ router.get('/', requireAuth, async (req, res) => {
 
         // ---- STUDENTS DATA ----
         if (page === 'students') {
-            const [students, institutions, pendingStudents] = await Promise.all([
-                Student.find().populate('institution', 'institution_name').sort({ student_name: 1 }),
+            const StudentGroup = require('../models/StudentGroup');
+            const todayDate = new Date();
+            todayDate.setHours(0, 0, 0, 0);
+
+            const [students, institutions, skills, pendingStudents, groups] = await Promise.all([
+                Student.find({
+                    approval_status: 'approved',
+                    $or: [
+                        { end_date: { $eq: null } },
+                        { end_date: { $gte: todayDate } }
+                    ]
+                }).populate('institution', 'institution_name').populate('skill_of_interest', 'skill_name').populate('student_group').sort({ student_name: 1 }),
                 Institution.find({}, 'institution_name').sort({ institution_name: 1 }),
+                Skill.find({}, 'skill_name').sort({ skill_name: 1 }),
                 Student.find({ approval_status: 'pending' })
                     .populate('institution', 'institution_name')
-                    .sort({ created_at: -1 })
+                    .populate('skill_of_interest', 'skill_name')
+                    .populate('student_group')
+                    .sort({ created_at: -1 }),
+                StudentGroup.find().sort({ year: -1, name: 1 })
             ]);
-            viewData = { students, institutions, pendingStudents };
+            viewData = { students, institutions, skills, pendingStudents, groups };
+        }
+
+        // ---- HISTORY DATA ----
+        if (page === 'history') {
+            const todayDate = new Date();
+            todayDate.setHours(0, 0, 0, 0);
+
+            const historyStudents = await Student.find({
+                approval_status: 'approved',
+                end_date: { $lt: todayDate, $ne: null }
+            }).populate('institution', 'institution_name').populate('skill_of_interest', 'skill_name').populate('student_group').sort({ end_date: -1 });
+
+            viewData = { students: historyStudents };
         }
 
         // ---- ATTENDANCE DATA ----
         if (page === 'attendance') {
             const today = new Date().toISOString().split('T')[0];
-            const [students, todayAttendance, summary] = await Promise.all([
-                Student.find({ status: 'Active' }, 'student_name photo_url gender period_of_attachment').populate('institution', 'institution_name').sort({ student_name: 1 }),
+            const StudentGroup = require('../models/StudentGroup');
+            const [students, todayAttendance, summary, activeGroups] = await Promise.all([
+                Student.find({ status: 'Active' }).populate('institution', 'institution_name').populate('student_group').sort({ student_name: 1 }),
                 Attendance.find({ date: today }).populate('student', 'student_name photo_url'),
-                _getTodaySummary(today)
+                _getTodaySummary(today),
+                StudentGroup.find({ status: 'Active' }).sort({ name: 1 })
             ]);
 
             // Map attendance by student ID for quick lookup in the view
@@ -129,7 +159,7 @@ router.get('/', requireAuth, async (req, res) => {
                 if (a.student) attendanceMap[a.student._id.toString()] = a;
             });
 
-            viewData = { students, attendanceMap, today, summary };
+            viewData = { students, attendanceMap, today, summary, activeGroups };
         }
 
         // ---- REPORTS DATA ----
@@ -196,10 +226,17 @@ router.get('/', requireAuth, async (req, res) => {
             };
         }
 
+        // ---- INSTITUTIONS DATA ----
+        if (page === 'institutions') {
+            const institutions = await Institution.find().sort({ institution_name: 1 });
+            viewData = { institutions };
+        }
+
         // ---- SETTINGS DATA ----
         if (page === 'settings') {
-            const [institutions, totalStudents, totalUsers] = await Promise.all([
+            const [institutions, skills, totalStudents, totalUsers] = await Promise.all([
                 Institution.find().sort({ institution_name: 1 }),
+                Skill.find().sort({ skill_name: 1 }),
                 Student.countDocuments(),
                 // We don't expose user list to the view for security, just count
                 Student.countDocuments({ status: 'Active' })
@@ -208,6 +245,7 @@ router.get('/', requireAuth, async (req, res) => {
             const { registerUrl, registerQrDataUrl, publicAttendanceLinks } = await buildPublicQrAssets(publicBaseUrl);
             viewData = {
                 institutions,
+                skills,
                 totalStudents,
                 activeStudents: totalUsers,
                 publicRegisterUrl: registerUrl,

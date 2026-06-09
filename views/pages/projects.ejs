@@ -1,171 +1,165 @@
-<div id="projects-page" class="page-content">
-    <div class="projects-container">
-        <div class="projects-header">
-            <div class="projects-actions">
-                <div class="search-box">
-                    <ion-icon name="search-outline" class="search-icon-projects"></ion-icon>
-                    <input type="text" id="projectSearch" placeholder="Search projects...">
+<div id="projects-page" class="page-content" style="padding: 24px; display: flex; flex-direction: column; height: 100%;">
+    <div class="projects-container" style="max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; height: 100%;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: #111827;">Projects Overview</h2>
+            
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="search-box-new" style="display: flex; align-items: center; gap: 8px; background-color: #ffffff; border: 1px solid #EAECF0; border-radius: 8px; padding: 8px 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);">
+                    <ion-icon name="search-outline" style="color: #9BA7B0; font-size: 16px;"></ion-icon>
+                    <input type="text" placeholder="Search projects..." id="projectSearch" style="border: none; outline: none; font-size: 13px; width: 200px; font-family: 'DM Sans', sans-serif;">
                 </div>
-                <button class="btn btn-primary" onclick="showAddProjectModal()">
-                    <ion-icon name="add-outline"></ion-icon> Add Project
+                <button class="btn-primary" style="background-color: #0052FF; border-radius: 8px; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: none; color: white; cursor: pointer; font-size: 13px; font-weight: 500; transition: all 0.2s;" onclick="showAddProjectModal()">
+                    <ion-icon name="add-outline" style="font-size: 16px;"></ion-icon> Add Project
                 </button>
             </div>
         </div>
 
-        <div class="table-container">
-            <table class="projects-table">
-                <thead>
-                    <tr>
-                        <th>Project Title</th>
-                        <th>Student(s)</th>
-                        <th>Supervised By</th>
-                        <th>Date Started</th>
-                        <th>Due Date</th>
-                        <th>Tech Stack</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="projects-tbody">
-                    <% if (projects && projects.length > 0) { %>
-                        <% projects.forEach(project => { %>
-                            <% 
-                            const isCompleted = project.status === 'Completed';
-                            const isOverdue = !isCompleted && new Date(project.due_date) < new Date();
-                            %>
-                            <tr class="<%= isCompleted ? 'completed' : '' %>" data-project-id="<%= project._id %>">
-                                <td>
-                                    <div class="project-title"><%= project.project_name %></div>
-                                    <div class="project-mobile-info">
-                                        <div class="mobile-stack"><%= project.technology_stack %></div>
-                                        <div class="mobile-dates">
-                                            <span>Start: <%= new Date(project.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
-                                            <span>Due: <%= new Date(project.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="student-cell"><%= project.students %></td>
-                                <td class="supervisor-cell"><%= project.supervisor %></td>
-                                <td class="start-date-cell"><%= new Date(project.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></td>
-                                <td class="due-date-cell">
-                                    <div class="due-date <%= isCompleted ? 'completed' : (isOverdue ? 'overdue' : '') %>">
-                                        <%= new Date(project.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %>
-                                    </div>
-                                </td>
-                                <td class="tech-stack-cell">
-                                    <div class="tech-stack"><%= project.technology_stack %></div>
-                                </td>
-                                <td class="status-cell">
-                                    <span class="status-badge status-<%= project.status.toLowerCase().replace(' ', '-') %>">
-                                        <%= project.status %>
-                                    </span>
-                                </td>
-                                <td class="actions-cell">
-                                    <div class="action-buttons">
-                                        <% if (project.repository_url) { %>
-                                            <a href="<%= project.repository_url %>" target="_blank" class="btn-icon view-source" title="View Source">
-                                                <ion-icon name="code-slash-outline"></ion-icon>
-                                            </a>
+        <div class="projects-table-card" style="background-color: #ffffff; border: 1px solid rgba(234, 236, 240, 0.8); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02); display: flex; flex-direction: column; flex: 1;">
+            <div style="overflow-x: auto; flex: 1;">
+                <table class="projects-table" style="width: 100%; border-collapse: collapse; text-align: left;" id="projects-tbody">
+                    <thead style="background-color: #F8FAFC; border-bottom: 1px solid #EAECF0; position: sticky; top: 0; z-index: 10;">
+                        <tr>
+                            <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Project Title</th>
+                            <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Student(s)</th>
+                            <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Supervised By</th>
+                            <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Tech Stack</th>
+                            <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Dates</th>
+                            <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px;">Status</th>
+                            <th style="font-weight: 600; color: #6E7C87; font-size: 13px; padding: 12px 16px; text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (projects && projects.length > 0) { %>
+                            <% projects.forEach(project => { %>
+                                <% 
+                                const isCompleted = project.status === 'Completed';
+                                const isOverdue = !isCompleted && new Date(project.due_date) < new Date();
+                                %>
+                                <tr data-project-id="<%= project._id %>" style="border-bottom: 1px solid #EAECF0; transition: background-color 0.2s; <%= isCompleted ? 'background-color: #F8FAFC;' : 'hover:bg-[#F8FAFC]/50' %>">
+                                    <td style="padding: 12px 16px;">
+                                        <div style="font-weight: 600; color: #111827; font-size: 14px;" class="project-title"><%= project.project_name %></div>
+                                        <% if(project.description) { %>
+                                            <div style="font-size: 12px; color: #64748B; margin-top: 4px; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<%= project.description %>"><%= project.description %></div>
+                                        <% } %>
+                                    </td>
+                                    <td class="student-cell" style="padding: 12px 16px; font-size: 13px; color: #4A5568;"><%= project.students %></td>
+                                    <td class="supervisor-cell" style="padding: 12px 16px; font-size: 13px; color: #64748B;"><%= project.supervisor %></td>
+                                    <td style="padding: 12px 16px;">
+                                        <span class="tech-stack" style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background-color: #F1F5F9; color: #475569; border: 1px solid #E2E8F0;"><%= project.technology_stack %></span>
+                                    </td>
+                                    <td style="padding: 12px 16px; font-size: 12px;">
+                                        <div style="color: #64748B;">Start: <%= new Date(project.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></div>
+                                        <div style="color: <%= isOverdue ? '#EF4444' : '#111827' %>; font-weight: 500; margin-top: 2px;">Due: <%= new Date(project.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></div>
+                                    </td>
+                                    <td style="padding: 12px 16px;">
+                                        <% if(isCompleted) { %>
+                                            <span style="display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; background-color: #DCFCE7; color: #166534;">Completed</span>
+                                        <% } else if(isOverdue) { %>
+                                            <span style="display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; background-color: #FEE2E2; color: #991B1B;">Overdue</span>
                                         <% } else { %>
-                                            <button class="btn-icon view-source" disabled title="No repository URL">
-                                                <ion-icon name="code-slash-outline"></ion-icon>
-                                            </button>
+                                            <span style="display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; background-color: #FEF3C7; color: #92400E;">In Progress</span>
                                         <% } %>
-                                        
-                                        <% if (!isCompleted) { %>
-                                            <button class="btn-icon complete" onclick="markComplete('<%= project._id %>')" title="Mark Complete">
-                                                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                                    </td>
+                                    <td style="padding: 12px 16px; text-align: center;">
+                                        <div style="display: flex; gap: 8px; justify-content: center;">
+                                            <% if (project.repository_url) { %>
+                                                <a href="<%= project.repository_url %>" target="_blank" title="View Source" style="color: #64748B; font-size: 18px; transition: color 0.2s;" onmouseover="this.style.color='#111827'" onmouseout="this.style.color='#64748B'">
+                                                    <ion-icon name="logo-github"></ion-icon>
+                                                </a>
+                                            <% } %>
+                                            <% if (!isCompleted) { %>
+                                                <button onclick="markComplete('<%= project._id %>')" title="Mark Complete" style="background: none; border: none; cursor: pointer; color: #10B981; font-size: 18px; transition: color 0.2s;" onmouseover="this.style.color='#059669'" onmouseout="this.style.color='#10B981'">
+                                                    <ion-icon name="checkmark-circle-outline"></ion-icon>
+                                                </button>
+                                            <% } %>
+                                            <button onclick="editProject('<%= project._id %>')" title="Edit" style="background: none; border: none; cursor: pointer; color: #6366F1; font-size: 18px; transition: color 0.2s;" onmouseover="this.style.color='#4F46E5'" onmouseout="this.style.color='#6366F1'">
+                                                <ion-icon name="create-outline"></ion-icon>
                                             </button>
-                                        <% } %>
-                                        
-                                        <button class="btn-icon edit" onclick="editProject('<%= project._id %>')" title="Edit">
-                                            <ion-icon name="create-outline"></ion-icon>
-                                        </button>
-                                        
-                                        <button class="btn-icon delete" onclick="deleteProject('<%= project._id %>')" title="Delete">
-                                            <ion-icon name="trash-outline"></ion-icon>
-                                        </button>
+                                            <button onclick="deleteProject('<%= project._id %>')" title="Delete" style="background: none; border: none; cursor: pointer; color: #EF4444; font-size: 18px; transition: color 0.2s;" onmouseover="this.style.color='#DC2626'" onmouseout="this.style.color='#EF4444'">
+                                                <ion-icon name="trash-outline"></ion-icon>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 48px 16px;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; color: #94A3B8;">
+                                        <ion-icon name="folder-open-outline" style="font-size: 48px; opacity: 0.5; margin-bottom: 16px;"></ion-icon>
+                                        <h3 style="margin: 0 0 4px 0; font-size: 16px; color: #475569;">No projects yet</h3>
+                                        <p style="margin: 0; font-size: 14px;">Projects assigned to students will appear here.</p>
                                     </div>
                                 </td>
                             </tr>
-                        <% }) %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="8" style="text-align: center; padding: 2rem;">
-                                <div class="projects-empty" style="text-align:center; color:#aaa;">
-                                    <i class="fas fa-folder-open" style="font-size:3rem; margin-bottom:1rem; opacity:0.4;"></i>
-                                    <h3>No projects yet</h3>
-                                    <p>Projects assigned to interns will appear here.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Add/Edit Project Modal -->
-<div id="projectModal" class="modal" style="display:none;">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="modalTitle">Add New Project</h3>
-            <span class="close" onclick="closeProjectModal()">&times;</span>
+<div id="projectModal" class="modal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(17, 24, 39, 0.5); backdrop-filter: blur(4px);">
+    <div class="modal-content" style="background-color: #ffffff; margin: 5% auto; padding: 0; border: 1px solid #EAECF0; border-radius: 16px; width: 90%; max-width: 600px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); overflow: hidden;">
+        <div class="modal-header" style="padding: 24px 24px 16px 24px; border-bottom: 1px solid #EAECF0; display: flex; justify-content: space-between; align-items: center; background-color: #F8FAFC;">
+            <h3 id="modalTitle" style="margin: 0; font-size: 18px; font-weight: 600; color: #111827;">Add New Project</h3>
+            <span class="close" onclick="closeProjectModal()" style="color: #64748B; font-size: 24px; font-weight: bold; cursor: pointer; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='#111827'" onmouseout="this.style.color='#64748B'">&times;</span>
         </div>
-        <form id="projectForm" class="modal-body">
+        <form id="projectForm" class="modal-body" style="padding: 24px;">
             <input type="hidden" id="project_id" name="project_id">
             
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Project Title *</label>
-                    <input type="text" id="project_name" name="project_name" required>
+            <div class="form-row" style="margin-bottom: 16px;">
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 13px; font-weight: 500; color: #475569;">Project Title <span style="color: #EF4444;">*</span></label>
+                    <input type="text" id="project_name" name="project_name" required style="padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif;" onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#CBD5E1'">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Student(s) *</label>
-                    <input type="text" id="students" name="students" placeholder="Sarah Chen, Mike Johnson" required>
+            <div class="form-row" style="margin-bottom: 16px;">
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 13px; font-weight: 500; color: #475569;">Student(s) <span style="color: #EF4444;">*</span></label>
+                    <input type="text" id="students" name="students" placeholder="Sarah Chen, Mike Johnson" required style="padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif;" onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#CBD5E1'">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Supervisor *</label>
-                    <input type="text" id="supervisor" name="supervisor" required>
+            <div class="form-row" style="margin-bottom: 16px;">
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 13px; font-weight: 500; color: #475569;">Supervisor <span style="color: #EF4444;">*</span></label>
+                    <input type="text" id="supervisor" name="supervisor" required style="padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif;" onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#CBD5E1'">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Start Date *</label>
-                    <input type="date" id="start_date" name="start_date" required>
+            <div class="form-row" style="margin-bottom: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 13px; font-weight: 500; color: #475569;">Start Date <span style="color: #EF4444;">*</span></label>
+                    <input type="date" id="start_date" name="start_date" required style="padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif; color: #111827;" onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#CBD5E1'">
                 </div>
-                <div class="form-group">
-                    <label>Due Date *</label>
-                    <input type="date" id="due_date" name="due_date" required>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Technology Stack *</label>
-                    <input type="text" id="technology_stack" name="technology_stack" placeholder="React, Node.js, MongoDB" required>
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 13px; font-weight: 500; color: #475569;">Due Date <span style="color: #EF4444;">*</span></label>
+                    <input type="date" id="due_date" name="due_date" required style="padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif; color: #111827;" onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#CBD5E1'">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Repository URL</label>
-                    <input type="url" id="repository_url" name="repository_url" placeholder="https://github.com/username/repo">
+            <div class="form-row" style="margin-bottom: 16px;">
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 13px; font-weight: 500; color: #475569;">Technology Stack <span style="color: #EF4444;">*</span></label>
+                    <input type="text" id="technology_stack" name="technology_stack" placeholder="React, Node.js, MongoDB" required style="padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif;" onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#CBD5E1'">
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Project Description</label>
-                    <textarea id="description" name="description" rows="3" placeholder="Brief description of the project..."></textarea>
+            <div class="form-row" style="margin-bottom: 16px;">
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 13px; font-weight: 500; color: #475569;">Repository URL</label>
+                    <input type="url" id="repository_url" name="repository_url" placeholder="https://github.com/username/repo" style="padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif;" onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#CBD5E1'">
+                </div>
+            </div>
+            <div class="form-row" style="margin-bottom: 0;">
+                <div class="form-group" style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 13px; font-weight: 500; color: #475569;">Project Description</label>
+                    <textarea id="description" name="description" rows="3" placeholder="Brief description of the project..." style="padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: 'DM Sans', sans-serif; resize: vertical;" onfocus="this.style.borderColor='#3B82F6'" onblur="this.style.borderColor='#CBD5E1'"></textarea>
                 </div>
             </div>
         </form>
-        <div class="modal-footer">
-            <button class="btn-secondary" onclick="closeProjectModal()">Cancel</button>
-            <button type="button" class="btn-primary" id="saveProjectBtn" onclick="saveProject()">Save Project</button>
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #EAECF0; display: flex; justify-content: flex-end; gap: 12px; background-color: #F8FAFC;">
+            <button class="btn-secondary" onclick="closeProjectModal()" style="padding: 8px 16px; border: 1px solid #CBD5E1; background-color: #ffffff; color: #475569; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;" onmouseover="this.style.backgroundColor='#F1F5F9'" onmouseout="this.style.backgroundColor='#ffffff'">Cancel</button>
+            <button type="button" class="btn-primary" id="saveProjectBtn" onclick="saveProject()" style="padding: 8px 16px; border: none; background-color: #0052FF; color: #ffffff; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif;" onmouseover="this.style.backgroundColor='#0043D1'" onmouseout="this.style.backgroundColor='#0052FF'">Save Project</button>
         </div>
     </div>
 </div>

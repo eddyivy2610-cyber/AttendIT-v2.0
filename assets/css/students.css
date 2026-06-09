@@ -11,7 +11,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-.container.dark .filter-section {
+.dark-theme .filter-section {
     background: var(--dark);
     border: 2px solid #444040;
     border-bottom: none;
@@ -25,12 +25,12 @@
     justify-content: space-between;
 }
 
-.container.dark .search-box input {
+.dark-theme .search-box input {
     background: #444040;
     color: var(--bg-blue);
 }
 
-.container.dark .search-box input:focus {
+.dark-theme .search-box input:focus {
     border: 1px solid white;
 }
 
@@ -46,7 +46,7 @@
     margin-bottom: 8px;
 }
 
-.container.dark .students-table-container {
+.dark-theme .students-table-container {
     background: var(--dark);
     border: 2px solid #444040;
 }
@@ -67,7 +67,7 @@
     white-space: nowrap;
 }
 
-.container.dark .students-table th {
+.dark-theme .students-table th {
     background: var(--dark);
     color: var(--bg-blue);
 }
@@ -79,7 +79,7 @@
     vertical-align: middle;
 }
 
-.container.dark .students-table td {
+.dark-theme .students-table td {
     color: var(--white);
 }
 
@@ -91,7 +91,7 @@
     background: var(--hover-color);
 }
 
-.container.dark .students-table tr:hover {
+.dark-theme .students-table tr:hover {
     background: rgba(105, 104, 104, 0.582);
 }
 
@@ -117,7 +117,7 @@
     border: 1px solid var(--primary);
 }
 
-.container.dark .skill-text {
+.dark-theme .skill-text {
     background: var(--light-blue) !important;
     color: var(--blue2) !important;
 }
@@ -342,7 +342,7 @@
     transition: background-color 0.3s;
 }
 
-.container.dark .export-btn {
+.dark-theme .export-btn {
     background: var(--bg-blue) !important;
     color: var(--blue);
 }
@@ -351,7 +351,7 @@
     background-color: var(--hover-blue) !important;
 }
 
-.container.dark .export-btn:hover {
+.dark-theme .export-btn:hover {
     background-color: var(--blue) !important;
     color: var(--white);
 }
@@ -390,13 +390,13 @@
     font-size: 0.8rem;
 }
 
-.container.dark .year-btn {
+.dark-theme .year-btn {
     background: var(--bg-blue);
     border: 1px solid var(--dark-blue2);
     color: var(--blue);
 }
 
-.container.dark .year-btn.active {
+.dark-theme .year-btn.active {
     background-color: var(--hover-blue);
     color: var(--bg-blue);
 }
@@ -413,7 +413,7 @@
     border-color: var(--blue);
 }
 
-.container.dark .year-btn:hover {
+.dark-theme .year-btn:hover {
     background-color: var(--blue);
     color: var(--white);
     border-color: var(--blue);
@@ -428,7 +428,7 @@
     padding: 6px 8px;
 }
 
-.container.dark .table-pagination {
+.dark-theme .table-pagination {
     background: var(--dark);
     border: 2px solid #444040;
 }
@@ -461,12 +461,12 @@
     border: 1px solid;
 }
 
-.container.dark .pagination-btn {
+.dark-theme .pagination-btn {
     color: var(--blue);
     background-color: var(--bg-blue);
 }
 
-.container.dark .pagination-btn:hover {
+.dark-theme .pagination-btn:hover {
     background-color: var(--blue);
     color: var(--white);
 }
@@ -483,7 +483,7 @@
     border-color: var(--blue);
 }
 
-.container.dark .pagination-btn.active {
+.dark-theme .pagination-btn.active {
     background-color: var(--blue);
     color: var(--white);
     border-color: var(--blue);

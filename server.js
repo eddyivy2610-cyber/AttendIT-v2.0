@@ -52,6 +52,8 @@ const attendanceApiRoutes = require('./src/routes/api/attendance');
 const institutionApiRoutes = require('./src/routes/api/institutions');
 const settingsApiRoutes = require('./src/routes/api/settings');
 const projectApiRoutes = require('./src/routes/api/projects');
+const groupApiRoutes = require('./src/routes/api/groups');
+const skillApiRoutes = require('./src/routes/api/skills');
 
 app.use('/', authRoutes);
 app.use('/', publicIntakeRoutes);
@@ -63,6 +65,8 @@ app.use('/api/attendance', attendanceApiRoutes);
 app.use('/api/institutions', institutionApiRoutes);
 app.use('/api/settings', settingsApiRoutes);
 app.use('/api/projects', projectApiRoutes);
+app.use('/api/groups', groupApiRoutes);
+app.use('/api/skills', skillApiRoutes);
 
 // ─── 404 Handler ─────────────────────────────────────────────────────────────
 app.use((req, res) => {

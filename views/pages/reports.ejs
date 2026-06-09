@@ -1,368 +1,326 @@
-<div id="reports-page" class="page-content" data-student-id="<%= studentData ? studentData._id : '' %>">
-    <div class="reports-layout">
-        <!-- Main Content Area -->
-        <div class="reports-main">
+<div id="reports-page" class="page-content" data-student-id="<%= studentData ? studentData._id : '' %>" style="padding: 24px; position: relative; min-height: calc(100vh - 80px);">
+    
+    <!-- Main Content Area -->
+    <div style="width: 100%; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
             <% if (studentData) { %>
-                <!-- Student Header -->
-                <div class="reports-student-header">
-                    <div class="reports-student-basic">
+                
+                <!-- Student Header Card -->
+                <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
+                    <div style="display: flex; gap: 20px; align-items: center;">
                         <img src="<%= studentData.photo_url ? '/' + studentData.photo_url : 'https://picsum.photos/seed/' + studentData._id + '/80/80.jpg' %>" 
-                             alt="<%= studentData.student_name %>" class="reports-student-avatar">
-                        <div class="reports-student-info-compact">
-                            <h2><%= studentData.student_name %></h2>
-                            <div class="reports-student-meta">
-                                <span class="reports-status-badge reports-status-<%= (studentData.status || 'inactive').toLowerCase() %>">
+                             alt="<%= studentData.student_name %>" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 4px solid #F8FAFC;">
+                        <div>
+                            <h2 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #111827;"><%= studentData.student_name %></h2>
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; color: #6E7C87;">
+                                <span class="reports-status-badge <%= studentData.status === 'Active' ? 'active' : 'inactive' %>">
                                     <%= studentData.status || 'Inactive' %>
                                 </span>
-                                <span class="reports-course">
-                                    <ion-icon name="book-outline"></ion-icon>
-                                    <%= studentData.course_of_study || 'No Course' %>
-                                </span>
-                                <span class="reports-institution">
-                                    <ion-icon name="school-outline"></ion-icon>
-                                    <%= studentData.institution ? studentData.institution.institution_name : 'N/A' %>
-                                </span>
-                            </div>
-                            <div class="reports-student-mobile-info">
-                                <span><ion-icon name="mail-outline"></ion-icon> <%= studentData.email || 'N/A' %></span>
-                                <span><ion-icon name="call-outline"></ion-icon> <%= studentData.phone || 'N/A' %></span>
+                                <span style="display: flex; align-items: center; gap: 4px;"><ion-icon name="book-outline"></ion-icon> <%= studentData.course_of_study || 'No Course' %></span>
+                                <span style="display: flex; align-items: center; gap: 4px;"><ion-icon name="school-outline"></ion-icon> <%= studentData.institution ? studentData.institution.institution_name : 'N/A' %></span>
+                                <span style="display: flex; align-items: center; gap: 4px;"><ion-icon name="mail-outline"></ion-icon> <%= studentData.email || 'N/A' %></span>
                             </div>
                         </div>
                     </div>
-                    <div class="reports-student-actions">
-                        <button class="reports-btn-outline" onclick="exportReport()">
-                            <ion-icon name="download-outline"></ion-icon> <span class="reports-btn-text">Export</span>
+                    <div style="display: flex; gap: 12px;">
+                        <button onclick="exportReport()" style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: white; border: 1px solid #EAECF0; border-radius: 8px; color: #4A5568; font-size: 14px; font-weight: 500; cursor: pointer;">
+                            <ion-icon name="download-outline"></ion-icon> Export
                         </button>
-                        <button class="reports-btn-primary" onclick="sendReport()">
-                            <ion-icon name="paper-plane-outline"></ion-icon> <span class="reports-btn-text">Send</span>
+                        <button onclick="sendReport()" style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: #6366F1; border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: 500; cursor: pointer;">
+                            <ion-icon name="paper-plane-outline"></ion-icon> Send
                         </button>
                     </div>
                 </div>
 
-                <!-- Stats Overview -->
-                <div class="reports-stats-overview">
-                    <div class="reports-stat-card">
-                        <div class="reports-stat-icon">
+                <!-- Stats Overview Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+                    <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 16px;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: #EFF6FF; color: #3B82F6; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                             <ion-icon name="calendar-outline"></ion-icon>
                         </div>
-                        <div class="reports-stat-content">
-                            <div class="reports-stat-value"><%= studentAttendance.attendance_rate %>%</div>
-                            <div class="reports-stat-label">Attendance</div>
+                        <div>
+                            <div style="font-size: 20px; font-weight: 700; color: #111827;"><%= studentAttendance.attendance_rate %>%</div>
+                            <div style="font-size: 12px; color: #6E7C87;">Attendance</div>
                         </div>
                     </div>
-                    <div class="reports-stat-card">
-                        <div class="reports-stat-icon">
+                    <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 16px;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: #DCFCE7; color: #10B981; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                             <ion-icon name="checkmark-circle-outline"></ion-icon>
                         </div>
-                        <div class="reports-stat-content">
-                            <div class="reports-stat-value"><%= studentAttendance.present_days %></div>
-                            <div class="reports-stat-label">Present</div>
+                        <div>
+                            <div style="font-size: 20px; font-weight: 700; color: #111827;"><%= studentAttendance.present_days %></div>
+                            <div style="font-size: 12px; color: #6E7C87;">Present Days</div>
                         </div>
                     </div>
-                    <div class="reports-stat-card">
-                        <div class="reports-stat-icon">
+                    <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 16px;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: #FEF3C7; color: #D97706; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                             <ion-icon name="time-outline"></ion-icon>
                         </div>
-                        <div class="reports-stat-content">
-                            <div class="reports-stat-value"><%= studentAttendance.late_days || 0 %></div>
-                            <div class="reports-stat-label">Late Days</div>
+                        <div>
+                            <div style="font-size: 20px; font-weight: 700; color: #111827;"><%= studentAttendance.late_days || 0 %></div>
+                            <div style="font-size: 12px; color: #6E7C87;">Late Days</div>
                         </div>
                     </div>
-                    <div class="reports-stat-card">
-                        <div class="reports-stat-icon">
+                    <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 16px;">
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: #FEE2E2; color: #EF4444; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                             <ion-icon name="close-circle-outline"></ion-icon>
                         </div>
-                        <div class="reports-stat-content">
-                            <div class="reports-stat-value"><%= studentAttendance.absent_days || 0 %></div>
-                            <div class="reports-stat-label">Absent Days</div>
-                        </div>
-                    </div>
-                    <div class="reports-stat-card">
-                        <div class="reports-stat-icon">
-                            <ion-icon name="trending-up-outline"></ion-icon>
-                        </div>
-                        <div class="reports-stat-content">
-                            <div class="reports-stat-value"><%= performanceData ? performanceData.overall_rating : 0 %>%</div>
-                            <div class="reports-stat-label">Performance</div>
-                        </div>
-                    </div>
-                    <div class="reports-stat-card">
-                        <div class="reports-stat-icon">
-                            <ion-icon name="folder-outline"></ion-icon>
-                        </div>
-                        <div class="reports-stat-content">
-                            <div class="reports-stat-value"><%= projectCount %></div>
-                            <div class="reports-stat-label">Projects</div>
+                        <div>
+                            <div style="font-size: 20px; font-weight: 700; color: #111827;"><%= studentAttendance.absent_days || 0 %></div>
+                            <div style="font-size: 12px; color: #6E7C87;">Absent Days</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Student Information Grid -->
-                <div class="reports-section">
-                    <div class="reports-section-header">
-                        <h3>Student Information</h3>
-                    </div>
-                    <div class="reports-info-grid">
-                        <div class="reports-info-item">
-                            <div class="reports-info-icon">
-                                <ion-icon name="mail-outline"></ion-icon>
-                            </div>
-                            <div class="reports-info-details">
-                                <label>Email</label>
-                                <span><%= studentData.email || 'N/A' %></span>
-                            </div>
-                        </div>
-                        <div class="reports-info-item">
-                            <div class="reports-info-icon">
-                                <ion-icon name="call-outline"></ion-icon>
-                            </div>
-                            <div class="reports-info-details">
-                                <label>Phone</label>
-                                <span><%= studentData.phone || 'N/A' %></span>
-                            </div>
-                        </div>
-                        <div class="reports-info-item">
-                            <div class="reports-info-icon">
-                                <ion-icon name="person-outline"></ion-icon>
-                            </div>
-                            <div class="reports-info-details">
-                                <label>Gender</label>
-                                <span><%= studentData.gender || 'N/A' %></span>
-                            </div>
-                        </div>
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+                    <!-- Information & History Col -->
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
                         
-                        <div class="reports-info-item">
-                            <div class="reports-info-icon">
-                                <ion-icon name="school-outline"></ion-icon>
-                            </div>
-                            <div class="reports-info-details">
-                                <label>Course</label>
-                                <span><%= studentData.course_of_study || 'N/A' %></span>
+                        <!-- Student Information Grid -->
+                        <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #111827; border-bottom: 1px solid #EAECF0; padding-bottom: 12px;">Student Information</h3>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                                <div>
+                                    <label style="font-size: 12px; color: #8E9CAE; display: block; margin-bottom: 4px;">Phone</label>
+                                    <div style="font-size: 14px; color: #1E293B; font-weight: 500;"><%= studentData.phone || 'N/A' %></div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; color: #8E9CAE; display: block; margin-bottom: 4px;">Gender</label>
+                                    <div style="font-size: 14px; color: #1E293B; font-weight: 500;"><%= studentData.gender || 'N/A' %></div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; color: #8E9CAE; display: block; margin-bottom: 4px;">Skills Interest</label>
+                                    <div style="font-size: 14px; color: #1E293B; font-weight: 500;"><%= studentData.skill_of_interest || 'N/A' %></div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; color: #8E9CAE; display: block; margin-bottom: 4px;">Program Period</label>
+                                    <div style="font-size: 14px; color: #1E293B; font-weight: 500;"><%= studentData.period_of_attachment ? studentData.period_of_attachment + ' months' : 'N/A' %></div>
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; color: #8E9CAE; display: block; margin-bottom: 4px;">Commencement Date</label>
+                                    <div style="font-size: 14px; color: #1E293B; font-weight: 500;"><%= studentData.join_date ? new Date(studentData.join_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A' %></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="reports-info-item">
-                            <div class="reports-info-icon">
-                                <ion-icon name="business-outline"></ion-icon>
+
+                        <!-- Attendance History Table -->
+                        <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden;">
+                            <div style="padding: 20px; border-bottom: 1px solid #EAECF0;">
+                                <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #111827;">Attendance History</h3>
                             </div>
-                            <div class="reports-info-details">
-                                <label>Institution</label>
-                                <span><%= studentData.institution ? studentData.institution.institution_name : 'N/A' %></span>
-                            </div>
+                            <% if (attendanceData && attendanceData.length > 0) { %>
+                                <div style="overflow-x: auto;">
+                                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                                        <thead>
+                                            <tr style="background-color: #F8FAFC; border-bottom: 1px solid #EAECF0;">
+                                                <th style="padding: 12px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Date</th>
+                                                <th style="padding: 12px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Status</th>
+                                                <th style="padding: 12px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Arrival</th>
+                                                <th style="padding: 12px 20px; font-size: 13px; font-weight: 600; color: #6E7C87;">Departure</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% attendanceData.forEach(record => { %>
+                                                <tr style="border-bottom: 1px solid #EAECF0;">
+                                                    <td style="padding: 12px 20px; font-size: 14px; color: #1E293B;"><%= record.date %></td>
+                                                    <td style="padding: 12px 20px;">
+                                                        <% if (record.status === 'Present') { %>
+                                                            <span style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background-color: #DCFCE7; color: #166534;">Present</span>
+                                                        <% } else if (record.status === 'Late') { %>
+                                                            <span style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background-color: #FEE2E2; color: #991B1B;">Late</span>
+                                                        <% } else { %>
+                                                            <span style="display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; background-color: #F1F5F9; color: #475569;">Absent</span>
+                                                        <% } %>
+                                                    </td>
+                                                    <td style="padding: 12px 20px; font-size: 14px; color: #64748B;"><%= record.arrival_time ? new Date(record.arrival_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--' %></td>
+                                                    <td style="padding: 12px 20px; font-size: 14px; color: #64748B;"><%= record.departure_time ? new Date(record.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--' %></td>
+                                                </tr>
+                                            <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <% } else { %>
+                                <div style="padding: 40px; text-align: center; color: #8E9CAE;">
+                                    <ion-icon name="calendar-outline" style="font-size: 32px; margin-bottom: 8px; color: #CBD5E1;"></ion-icon>
+                                    <p style="margin: 0; font-size: 14px;">No attendance history found.</p>
+                                </div>
+                            <% } %>
                         </div>
-                        <div class="reports-info-item">
-                            <div class="reports-info-icon">
-                                <ion-icon name="ribbon-outline"></ion-icon>
-                            </div>
-                            <div class="reports-info-details">
-                                <label>Skills Interest</label>
-                                <span><%= studentData.skill_of_interest || 'N/A' %></span>
-                            </div>
-                        </div>
+                    </div>
+
+                    <!-- Performance Col -->
+                    <div style="display: flex; flex-direction: column; gap: 24px;">
                         
-                        <div class="reports-info-item">
-                            <div class="reports-info-icon">
-                                <ion-icon name="calendar-outline"></ion-icon>
-                            </div>
-                            <div class="reports-info-details">
-                                <label>Commencement Date</label>
-                                <span><%= studentData.join_date ? new Date(studentData.join_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A' %></span>
-                            </div>
-                        </div>
-                        <div class="reports-info-item">
-                            <div class="reports-info-icon">
-                                <ion-icon name="flag-outline"></ion-icon>
-                            </div>
-                            <div class="reports-info-details">
-                                <label>Completion Date</label>
-                                <span><%= studentData.end_date ? new Date(studentData.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A' %></span>
-                            </div>
-                        </div>
-                        <div class="reports-info-item">
-                            <div class="reports-info-icon">
-                                <ion-icon name="time-outline"></ion-icon>
-                            </div>
-                            <div class="reports-info-details">
-                                <label>Program Period</label>
-                                <span><%= studentData.period_of_attachment ? studentData.period_of_attachment + ' months' : 'N/A' %></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Performance Section -->
-                <div class="reports-section">
-                    <div class="reports-section-header">
-                        <h3>Performance Metrics</h3>
-                        <% if (performanceData) { %>
-                            <span class="reports-last-evaluated">Last: <%= new Date(performanceData.evaluation_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
-                        <% } %>
-                    </div>
-                    
-                    <% if (performanceData) { %>
-                        <div class="reports-performance-grid">
-                            <div class="reports-performance-metric">
-                                <div class="reports-metric-header">
-                                    <span class="reports-metric-label">Technical Skills</span>
-                                    <span class="reports-metric-value"><%= performanceData.technical_skill %>%</span>
-                                </div>
-                                <div class="reports-progress-bar">
-                                    <div class="reports-progress-fill" data-width="<%= performanceData.technical_skill %>"></div>
-                                </div>
-                            </div>
-                            <div class="reports-performance-metric">
-                                <div class="reports-metric-header">
-                                    <span class="reports-metric-label">Learning Activity</span>
-                                    <span class="reports-metric-value"><%= performanceData.learning_activity %>%</span>
-                                </div>
-                                <div class="reports-progress-bar">
-                                    <div class="reports-progress-fill" data-width="<%= performanceData.learning_activity %>"></div>
-                                </div>
-                            </div>
-                            <div class="reports-performance-metric">
-                                <div class="reports-metric-header">
-                                    <span class="reports-metric-label">Active Contribution</span>
-                                    <span class="reports-metric-value"><%= performanceData.active_contribution %>%</span>
-                                </div>
-                                <div class="reports-progress-bar">
-                                    <div class="reports-progress-fill" data-width="<%= performanceData.active_contribution %>"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <% if (performanceData.comments) { %>
-                            <div class="reports-performance-comments">
-                                <strong>Supervisor Comments:</strong>
-                                <p><%= performanceData.comments %></p>
-                            </div>
-                        <% } %>
-                    <% } else { %>
-                        <div class="reports-no-data">
-                            <ion-icon name="stats-chart-outline"></ion-icon>
-                            <p>No performance data available yet.</p>
-                        </div>
-                    <% } %>
-                </div>
-
-                <!-- Attendance History -->
-                <div class="reports-section">
-                    <div class="reports-section-header">
-                        <h3>Attendance History</h3>
-                    </div>
-                    <% if (attendanceData && attendanceData.length > 0) { %>
-                        <div style="overflow-x:auto;">
-                            <table class="students-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Arrival</th>
-                                        <th>Departure</th>
-                                        <th>Notes</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% attendanceData.forEach(record => { %>
-                                        <tr>
-                                            <td><%= record.date %></td>
-                                            <td><%= record.status %></td>
-                                            <td><%= record.arrival_time ? new Date(record.arrival_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--' %></td>
-                                            <td><%= record.departure_time ? new Date(record.departure_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--' %></td>
-                                            <td><%= record.notes || '--' %></td>
-                                        </tr>
-                                    <% }) %>
-                                </tbody>
-                            </table>
-                        </div>
-                    <% } else { %>
-                        <div class="reports-no-data">
-                            <ion-icon name="calendar-outline"></ion-icon>
-                            <p>No attendance history found for this student.</p>
-                        </div>
-                    <% } %>
-                </div>
-
-                <!-- Compact Evaluation Input -->
-                <div class="reports-section reports-compact-form">
-                    <div class="reports-section-header">
-                        <h3>Quick Evaluation</h3>
-                    </div>
-                    <form id="reports-performanceForm" class="reports-performance-form-compact" onsubmit="submitEvaluation(event)">
-                        <div class="reports-evaluation-grid">
-                            <div class="reports-eval-item">
-                                <label class="reports-eval-label">Technical</label>
-                                <input type="range" class="reports-eval-range" id="reports-technical_skill" name="technical_skill" min="0" max="100" value="75" oninput="updateRangeLabel(this)">
-                                <span class="reports-eval-value" id="reports-technical_skill_value">75%</span>
+                        <!-- Performance Metrics -->
+                        <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #EAECF0; padding-bottom: 12px; margin-bottom: 20px;">
+                                <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #111827;">Performance Metrics</h3>
+                                <% if (performanceData) { %>
+                                    <span style="font-size: 12px; color: #94A3B8;">Last: <%= new Date(performanceData.evaluation_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+                                <% } %>
                             </div>
                             
-                            <div class="reports-eval-item">
-                                <label class="reports-eval-label">Learning</label>
-                                <input type="range" class="reports-eval-range" id="reports-learning_activity" name="learning_activity" min="0" max="100" value="75" oninput="updateRangeLabel(this)">
-                                <span class="reports-eval-value" id="reports-learning_activity_value">75%</span>
-                            </div>
-                            
-                            <div class="reports-eval-item">
-                                <label class="reports-eval-label">Contribution</label>
-                                <input type="range" class="reports-eval-range" id="reports-active_contribution" name="active_contribution" min="0" max="100" value="75" oninput="updateRangeLabel(this)">
-                                <span class="reports-eval-value" id="reports-active_contribution_value">75%</span>
-                            </div>
+                            <% if (performanceData) { %>
+                                <div style="display: flex; flex-direction: column; gap: 16px;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: #475569;">
+                                            <span>Technical Skills</span>
+                                            <span><%= performanceData.technical_skill %>%</span>
+                                        </div>
+                                        <div style="width: 100%; height: 6px; background-color: #F1F5F9; border-radius: 3px; overflow: hidden;">
+                                            <div id="tech-bar" style="height: 100%; background-color: #3B82F6; width: 0%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: #475569;">
+                                            <span>Learning Activity</span>
+                                            <span><%= performanceData.learning_activity %>%</span>
+                                        </div>
+                                        <div style="width: 100%; height: 6px; background-color: #F1F5F9; border-radius: 3px; overflow: hidden;">
+                                            <div id="learn-bar" style="height: 100%; background-color: #10B981; width: 0%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; font-weight: 500; color: #475569;">
+                                            <span>Active Contribution</span>
+                                            <span><%= performanceData.active_contribution %>%</span>
+                                        </div>
+                                        <div style="width: 100%; height: 6px; background-color: #F1F5F9; border-radius: 3px; overflow: hidden;">
+                                            <div id="contrib-bar" style="height: 100%; background-color: #8B5CF6; width: 0%;"></div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        document.getElementById('tech-bar').style.width = "<%= performanceData.technical_skill %>%";
+                                        document.getElementById('learn-bar').style.width = "<%= performanceData.learning_activity %>%";
+                                        document.getElementById('contrib-bar').style.width = "<%= performanceData.active_contribution %>%";
+                                    </script>
+                                </div>
+                                <% if (performanceData.comments) { %>
+                                    <div style="margin-top: 20px; padding: 12px; background: #F8FAFC; border-radius: 8px; font-size: 13px; color: #475569;">
+                                        <strong>Comments:</strong><br>
+                                        <%= performanceData.comments %>
+                                    </div>
+                                <% } %>
+                            <% } else { %>
+                                <div style="text-align: center; color: #8E9CAE; padding: 20px 0;">
+                                    <ion-icon name="stats-chart-outline" style="font-size: 32px; color: #CBD5E1; margin-bottom: 8px;"></ion-icon>
+                                    <p style="margin: 0; font-size: 14px;">No performance data available.</p>
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <!-- Quick Evaluation Form -->
+                        <div style="background: white; border: 1px solid #EAECF0; border-radius: 12px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                            <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #111827; border-bottom: 1px solid #EAECF0; padding-bottom: 12px;">Quick Evaluation</h3>
+                            <form id="reports-performanceForm" onsubmit="submitEvaluation(event)" style="display: flex; flex-direction: column; gap: 16px;">
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: #475569; margin-bottom: 8px;">
+                                        <label>Technical</label>
+                                        <span id="reports-technical_skill_value">75%</span>
+                                    </div>
+                                    <input type="range" id="reports-technical_skill" name="technical_skill" min="0" max="100" value="75" oninput="updateRangeLabel(this)" style="width: 100%; accent-color: #3B82F6;">
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: #475569; margin-bottom: 8px;">
+                                        <label>Learning</label>
+                                        <span id="reports-learning_activity_value">75%</span>
+                                    </div>
+                                    <input type="range" id="reports-learning_activity" name="learning_activity" min="0" max="100" value="75" oninput="updateRangeLabel(this)" style="width: 100%; accent-color: #10B981;">
+                                </div>
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: #475569; margin-bottom: 8px;">
+                                        <label>Contribution</label>
+                                        <span id="reports-active_contribution_value">75%</span>
+                                    </div>
+                                    <input type="range" id="reports-active_contribution" name="active_contribution" min="0" max="100" value="75" oninput="updateRangeLabel(this)" style="width: 100%; accent-color: #8B5CF6;">
+                                </div>
+                                <textarea id="reports-comments" name="comments" placeholder="Add comments (optional)" rows="2" style="width: 100%; padding: 10px; border: 1px solid #EAECF0; border-radius: 8px; font-size: 13px; color: #1E293B; resize: vertical; outline: none;"></textarea>
+                                <button type="submit" style="padding: 10px; background: #111827; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <ion-icon name="save-outline"></ion-icon> Save Evaluation
+                                </button>
+                            </form>
                         </div>
                         
-                        <div class="reports-eval-comments">
-                            <textarea class="reports-form-textarea-small" id="reports-comments" name="comments" placeholder="Add comments (optional)" rows="2"></textarea>
-                            <button type="submit" class="reports-btn-primary reports-btn-compact">
-                                <ion-icon name="save-outline"></ion-icon> <span class="reports-btn-text">Save</span>
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
+
             <% } else { %>
-                <!-- No Student Selected -->
-                <div class="reports-no-student-selected">
-                    <div class="reports-empty-state">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #8E9CAE;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: white; border: 1px solid #EAECF0; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #CBD5E1; margin-bottom: 16px;">
                         <ion-icon name="document-text-outline"></ion-icon>
-                        <h3>No Student Selected</h3>
-                        <p>Select a student from the list to view their reports and performance metrics.</p>
                     </div>
+                    <h3 style="margin: 0 0 8px 0; color: #111827; font-size: 18px; font-weight: 600;">No Student Selected</h3>
+                    <p style="margin: 0; font-size: 14px;">Click the floating queue button in the bottom right to select a student.</p>
                 </div>
             <% } %>
         </div>
+    </div>
 
-        <!-- Students Sidebar -->
-        <div class="reports-students-sidebar">
-            <div class="reports-sidebar-header">
-                <h3>Students</h3>
-                <div class="reports-search-box">
-                    <ion-icon name="search-outline"></ion-icon>
-                    <input type="text" id="reports-studentSearch" placeholder="Search students...">
-                </div>
+    <!-- Floating Action Button -->
+    <button onclick="toggleStudentQueue()" style="position: fixed; bottom: 32px; right: 32px; width: 60px; height: 60px; border-radius: 50%; background: #6366F1; color: white; border: none; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <ion-icon name="people-outline" style="font-size: 28px;"></ion-icon>
+    </button>
+
+    <!-- Overlay -->
+    <div id="studentQueueOverlay" onclick="toggleStudentQueue()" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(17, 24, 39, 0.4); z-index: 1001; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;"></div>
+
+    <!-- Floating Sidebar (Drawer) -->
+    <div id="studentQueueSidebar" style="position: fixed; top: 0; right: -400px; width: 340px; height: 100vh; background: white; box-shadow: -4px 0 25px rgba(0,0,0,0.1); z-index: 1002; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 1px solid #EAECF0;">
+        <div style="padding: 24px 20px; border-bottom: 1px solid #EAECF0; background: #F8FAFC; display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #111827; display: flex; align-items: center; gap: 8px;">
+                    <ion-icon name="list-outline" style="color: #6366F1;"></ion-icon> Students Queue
+                </h3>
+                <button onclick="toggleStudentQueue()" style="background: #F1F5F9; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; color: #64748B; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" onmouseover="this.style.background='#E2E8F0'" onmouseout="this.style.background='#F1F5F9'">
+                    <ion-icon name="close-outline" style="font-size: 20px;"></ion-icon>
+                </button>
             </div>
-            
-            <div class="reports-students-list" id="reports-studentsList">
-                <% if (allStudents && allStudents.length > 0) { %>
-                    <% allStudents.forEach(student => { %>
-                        <div class="reports-student-item <%= studentId == student._id.toString() ? 'reports-active' : '' %>" 
-                             onclick="window.location.href='?page=reports&student_id=<%= student._id %>'">
-                            <img src="<%= student.photo_url ? '/' + student.photo_url : 'https://picsum.photos/seed/' + student._id + '/40/40.jpg' %>" 
-                                 alt="<%= student.student_name %>" class="reports-student-avatar-small">
-                            <div class="reports-student-info-small">
-                                <div class="reports-student-name"><%= student.student_name %></div>
-                                <div class="reports-student-course"><%= student.course_of_study || 'No Course' %></div>
-                            </div>
-                            <span class="reports-status-indicator reports-status-<%= (student.status || 'inactive').toLowerCase() %>"></span>
+            <div style="position: relative;">
+                <ion-icon name="search-outline" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #8E9CAE; font-size: 16px;"></ion-icon>
+                <input type="text" id="reports-studentSearch" placeholder="Search students..." style="width: 100%; padding: 12px 12px 12px 36px; border: 1px solid #EAECF0; border-radius: 8px; font-size: 14px; color: #111827; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#6366F1'" onblur="this.style.borderColor='#EAECF0'">
+            </div>
+        </div>
+        <div id="reports-studentsList" style="flex: 1; overflow-y: auto;">
+            <% if (allStudents && allStudents.length > 0) { %>
+                <% allStudents.forEach(student => { %>
+                    <div class="reports-student-item <%= studentData && studentData._id.toString() === student._id.toString() ? 'active' : '' %>" 
+                         onclick="window.location.href='?page=reports&student_id=<%= student._id %>'"
+                         style="padding: 16px 20px; border-bottom: 1px solid #F1F5F9; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s;">
+                        <img src="<%= student.photo_url ? '/' + student.photo_url : 'https://picsum.photos/seed/' + student._id + '/40/40.jpg' %>" 
+                             alt="<%= student.student_name %>" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <div style="flex: 1; min-width: 0;">
+                            <div class="reports-student-name" style="font-size: 14px; font-weight: 600; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= student.student_name %></div>
+                            <div class="reports-student-course" style="font-size: 12px; color: #64748B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;"><%= student.course_of_study || 'No Course' %></div>
                         </div>
-                    <% }) %>
-                <% } else { %>
-                    <div class="reports-no-students">
-                        <ion-icon name="people-outline"></ion-icon>
-                        <p>No students found</p>
+                        <div class="student-status-dot <%= student.status === 'Active' ? 'active' : 'inactive' %>"></div>
                     </div>
-                <% } %>
-            </div>
+                <% }) %>
+            <% } else { %>
+                <div style="padding: 40px; text-align: center; color: #8E9CAE;">
+                    <ion-icon name="people-outline" style="font-size: 48px; margin-bottom: 12px; color: #E2E8F0;"></ion-icon>
+                    <p style="margin: 0; font-size: 14px; color: #64748B;">No students found</p>
+                </div>
+            <% } %>
         </div>
     </div>
 </div>
 
 <script>
+function toggleStudentQueue() {
+    const sidebar = document.getElementById('studentQueueSidebar');
+    const overlay = document.getElementById('studentQueueOverlay');
+    if (sidebar.style.right === '0px') {
+        sidebar.style.right = '-400px';
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+        document.body.style.overflow = 'auto';
+    } else {
+        sidebar.style.right = '0px';
+        overlay.style.opacity = '1';
+        overlay.style.pointerEvents = 'auto';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
 function updateRangeLabel(input) {
     const valueSpan = document.getElementById(input.id + '_value');
     if (valueSpan) {
@@ -410,11 +368,6 @@ function sendReport() {
     showNotification('Sending report to student and institutions...', 'info');
 }
 
-document.querySelectorAll('.reports-progress-fill[data-width]').forEach(bar => {
-    const width = bar.dataset.width || '0';
-    bar.style.width = `${width}%`;
-});
-
 // Search
 document.getElementById('reports-studentSearch')?.addEventListener('input', function(e) {
     const term = e.target.value.toLowerCase();
@@ -429,4 +382,28 @@ window.submitEvaluation = submitEvaluation;
 window.exportReport = exportReport;
 window.sendReport = sendReport;
 window.updateRangeLabel = updateRangeLabel;
+window.toggleStudentQueue = toggleStudentQueue;
 </script>
+
+<style>
+.reports-status-badge {
+    display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; font-weight: 500;
+}
+.reports-status-badge.active { background-color: #DCFCE7; color: #166534; }
+.reports-status-badge.inactive { background-color: #F1F5F9; color: #475569; }
+
+.student-status-dot {
+    width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 2px white;
+}
+.student-status-dot.active { background-color: #10B981; }
+.student-status-dot.inactive { background-color: #CBD5E1; }
+
+.reports-student-item:hover {
+    background-color: #F8FAFC !important;
+}
+.reports-student-item.active {
+    background-color: #EFF6FF !important;
+    border-left: 3px solid #3B82F6;
+    padding-left: 17px !important;
+}
+</style>

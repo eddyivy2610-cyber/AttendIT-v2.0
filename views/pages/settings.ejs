@@ -1,73 +1,303 @@
-<div id="settings-page" class="page-content">
+<div id="settings-page" class="page-content" style="padding: 0;">
+    <style>
+        /* Modern Settings Overrides */
+        .settings-container {
+            max-width: 1100px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .settings-sidebar {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid rgba(234, 236, 240, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            padding: 24px;
+            position: sticky;
+            top: 24px;
+        }
+        .sidebar-section h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94A3B8;
+            margin: 0 0 12px 0;
+            font-weight: 600;
+        }
+        .horizontal-nav {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #EAECF0;
+        }
+        /* Hide scrollbar for clean look */
+        .horizontal-nav::-webkit-scrollbar {
+            height: 4px;
+        }
+        .horizontal-nav::-webkit-scrollbar-thumb {
+            background-color: #CBD5E1;
+            border-radius: 4px;
+        }
+        .horizontal-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            color: #64748B;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .horizontal-nav .nav-item:hover {
+            background-color: #F8FAFC;
+            color: #111827;
+        }
+        .horizontal-nav .nav-item.active {
+            background-color: #EEF2FF;
+            color: #4F46E5;
+        }
+        .horizontal-nav .nav-item ion-icon {
+            font-size: 18px;
+        }
+        .settings-tab {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid rgba(234, 236, 240, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        .tab-header h2 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+        }
+        .tab-header p {
+            margin: 0 0 24px 0;
+            font-size: 14px;
+            color: #64748B;
+        }
+        .form-section {
+            border-bottom: 1px solid #EAECF0;
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+        }
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .form-section h3 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .institution-item {
+            padding: 16px 20px !important;
+            background: #ffffff !important;
+            border-radius: 12px !important;
+            border: 1px solid #EAECF0 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+            transition: all 0.2s !important;
+        }
+        .institution-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+            border-color: #CBD5E1 !important;
+        }
+        .settings-header-new {
+            margin-bottom: 24px;
+        }
+        .settings-header-new h2 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #111827;
+        }
+        .settings-header-new p {
+            margin: 0;
+            color: #64748B;
+            font-size: 14px;
+        }
+        .form-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #3B82F6;
+        }
+        .info-card {
+            background: #ffffff;
+            border: 1px solid #EAECF0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            display: flex;
+            gap: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+        }
+        .info-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #F1F5F9;
+            color: #3B82F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .info-content h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+        .action-card {
+            background: #ffffff;
+            border: 1px solid #EAECF0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .action-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: #EEF2FF;
+            color: #4F46E5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+        .action-content h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+        }
+        .action-content p {
+            margin: 0 0 16px 0;
+            font-size: 14px;
+            color: #64748B;
+        }
+        .team-member {
+            background: #ffffff;
+            border: 1px solid #EAECF0;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .member-avatar img {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #E2E8F0;
+        }
+        .member-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+        .member-role {
+            margin: 0 0 12px 0;
+            font-size: 13px;
+            color: #3B82F6;
+            font-weight: 500;
+        }
+        .contribution-tag {
+            background: #F1F5F9;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            border: 1px solid #E2E8F0;
+        }
+    </style>
+
     <div class="settings-container">
-        <div class="settings-header">
-            <h2>System Settings</h2>
-            <p class="subtitle">Manage institutions, public portals, user profile, preferences, and system stats.</p>
-        </div>
 
-        <div class="settings-layout">
-            <!-- Sidebar Navigation -->
-            <aside class="settings-sidebar">
-                <div class="sidebar-section">
-                    <h3>Configuration</h3>
-                    <nav class="sidebar-nav">
-                        <a href="#" class="nav-item active" data-tab="portals-tab">
-                            <ion-icon name="qr-code-outline"></ion-icon>
-                            <span>Public Portals & QR</span>
-                        </a>
-                        <a href="#" class="nav-item" data-tab="institutions-tab">
-                            <ion-icon name="business-outline"></ion-icon>
-                            <span>Institutions</span>
-                        </a>
-                    </nav>
-                </div>
 
-                <div class="sidebar-section">
-                    <h3>User Settings</h3>
-                    <nav class="sidebar-nav">
-                        <a href="#" class="nav-item" data-tab="profile-tab">
-                            <ion-icon name="person-outline"></ion-icon>
-                            <span>Profile Information</span>
-                        </a>
-                        <a href="#" class="nav-item" data-tab="security-tab">
-                            <ion-icon name="lock-closed-outline"></ion-icon>
-                            <span>Security & Password</span>
-                        </a>
-                        <a href="#" class="nav-item" data-tab="notifications-tab">
-                            <ion-icon name="notifications-outline"></ion-icon>
-                            <span>Notifications</span>
-                        </a>
-                    </nav>
-                </div>
-
-                <div class="sidebar-section">
-                    <h3>System Settings</h3>
-                    <nav class="sidebar-nav">
-                        <a href="#" class="nav-item" data-tab="preferences-tab">
-                            <ion-icon name="settings-outline"></ion-icon>
-                            <span>App Preferences</span>
-                        </a>
-                        <a href="#" class="nav-item" data-tab="system-info-tab">
-                            <ion-icon name="information-circle-outline"></ion-icon>
-                            <span>System Information</span>
-                        </a>
-                        <a href="#" class="nav-item" data-tab="backup-tab">
-                            <ion-icon name="cloud-download-outline"></ion-icon>
-                            <span>Backup & Export</span>
-                        </a>
-                    </nav>
-                </div>
-
-                <div class="sidebar-section">
-                    <h3>About</h3>
-                    <nav class="sidebar-nav">
-                        <a href="#" class="nav-item" data-tab="credits-tab">
-                            <ion-icon name="heart-outline"></ion-icon>
-                            <span>Project Credits</span>
-                        </a>
-                    </nav>
-                </div>
-            </aside>
+        <div style="display: block;">
+            <!-- Horizontal Navigation -->
+            <nav class="horizontal-nav">
+                <a href="#" class="nav-item active" data-tab="portals-tab">
+                    <ion-icon name="qr-code-outline"></ion-icon>
+                    <span>Portals & QR</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="skills-tab">
+                    <ion-icon name="star-outline"></ion-icon>
+                    <span>Skills</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="profile-tab">
+                    <ion-icon name="person-outline"></ion-icon>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="security-tab">
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                    <span>Security</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="notifications-tab">
+                    <ion-icon name="notifications-outline"></ion-icon>
+                    <span>Notifications</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="preferences-tab">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    <span>Preferences</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="system-info-tab">
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    <span>System Info</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="backup-tab">
+                    <ion-icon name="cloud-download-outline"></ion-icon>
+                    <span>Backup</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="credits-tab">
+                    <ion-icon name="heart-outline"></ion-icon>
+                    <span>Credits</span>
+                </a>
+            </nav>
 
             <!-- Main Content Area -->
             <main class="settings-content">
@@ -125,34 +355,34 @@
                     </div>
                 </div>
 
-                <!-- Tab 2: Institutions -->
-                <div id="institutions-tab" class="settings-tab">
+                <!-- Tab 2.5: Skills -->
+                <div id="skills-tab" class="settings-tab">
                     <div class="tab-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
                         <div>
-                            <h2>Institutions Directory</h2>
-                            <p>Manage the list of affiliated schools and colleges.</p>
+                            <h2>Skills Directory</h2>
+                            <p>Manage the list of predefined student skills.</p>
                         </div>
-                        <button class="btn btn-primary" onclick="showAddInstitutionModal()">
-                            <i class="fas fa-plus"></i> Add Institution
+                        <button class="btn btn-primary" onclick="showAddSkillModal()">
+                            <i class="fas fa-plus"></i> Add Skill
                         </button>
                     </div>
 
                     <div class="form-section">
-                        <div class="institutions-list" style="display: grid; gap: 12px; margin-top:10px;">
-                            <% if (institutions && institutions.length > 0) { %>
-                                <% institutions.forEach(inst => { %>
-                                    <div class="institution-item" id="inst-<%= inst._id %>" style="display:flex; justify-content:space-between; align-items:center; padding: 15px 20px; background:var(--gray); border-radius:10px; border:1px solid var(--hover-color);">
-                                        <div class="institution-info">
-                                            <h4 style="margin:0 0 4px 0; font-size:1.05rem;"><%= inst.institution_name %></h4>
-                                            <span style="font-size:0.85rem; color:var(--black2);"><%= inst.contact_email || 'No email set' %></span>
+                        <div class="skills-list" style="display: grid; gap: 12px; margin-top:10px;">
+                            <% if (typeof skills !== 'undefined' && skills && skills.length > 0) { %>
+                                <% skills.forEach(sk => { %>
+                                    <div class="skill-item" id="skill-<%= sk._id %>" style="display:flex; justify-content:space-between; align-items:center; padding: 15px 20px; background:var(--gray); border-radius:10px; border:1px solid var(--hover-color);">
+                                        <div class="skill-info">
+                                            <h4 style="margin:0 0 4px 0; font-size:1.05rem;"><%= sk.skill_name %></h4>
+                                            <span style="font-size:0.85rem; color:var(--black2);"><%= sk.description || 'No description' %></span>
                                         </div>
-                                        <button class="btn btn-outline danger" style="padding: 6px 12px; border-radius:6px; border: 1px solid rgba(231,76,60,0.4);" onclick="deleteInstitution('<%= inst._id %>', '<%= inst.institution_name %>')">
+                                        <button class="btn btn-outline danger" style="padding: 6px 12px; border-radius:6px; border: 1px solid rgba(231,76,60,0.4);" onclick="deleteSkill('<%= sk._id %>', '<%= sk.skill_name %>')">
                                             <i class="fas fa-trash"></i> Delete
                                         </button>
                                     </div>
                                 <% }) %>
                             <% } else { %>
-                                <p style="color:#aaa; text-align:center; padding: 2rem;">No institutions yet. Add one above.</p>
+                                <p style="color:#aaa; text-align:center; padding: 2rem;">No skills yet. Add one above.</p>
                             <% } %>
                         </div>
                     </div>
@@ -688,26 +918,28 @@
     </div>
 </div>
 
-<!-- Add Institution Modal -->
-<div id="addInstModal" class="modal" style="display:none;">
+</div>
+
+<!-- Add Skill Modal -->
+<div id="addSkillModal" class="modal" style="display:none;">
     <div class="modal-content" style="max-width:500px;">
         <div class="modal-header">
-            <h3>Add Institution</h3>
-            <span class="close" onclick="document.getElementById('addInstModal').style.display='none'">&times;</span>
+            <h3>Add Skill</h3>
+            <span class="close" onclick="document.getElementById('addSkillModal').style.display='none'">&times;</span>
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <label for="inst_name">Institution Name *</label>
-                <input type="text" id="inst_name" placeholder="e.g., Ahmadu Bello University" style="width:100%; padding:8px; margin-top:4px;">
+                <label for="skill_name">Skill Name *</label>
+                <input type="text" id="skill_name" placeholder="e.g., Web Development" style="width:100%; padding:8px; margin-top:4px;">
             </div>
             <div class="form-group" style="margin-top:12px;">
-                <label for="inst_email">Contact Email</label>
-                <input type="email" id="inst_email" placeholder="contact@university.edu" style="width:100%; padding:8px; margin-top:4px;">
+                <label for="skill_description">Description</label>
+                <textarea id="skill_description" placeholder="Optional brief description" style="width:100%; padding:8px; margin-top:4px; height:80px; resize:vertical;"></textarea>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn-secondary" onclick="document.getElementById('addInstModal').style.display='none'">Cancel</button>
-            <button class="btn-primary" onclick="saveInstitution()">Add Institution</button>
+            <button class="btn-secondary" onclick="document.getElementById('addSkillModal').style.display='none'">Cancel</button>
+            <button class="btn-primary" onclick="saveSkill()">Add Skill</button>
         </div>
     </div>
 </div>
@@ -821,10 +1053,59 @@ async function updatePassword(event) {
     }
 }
 
-window.showAddInstitutionModal = showAddInstitutionModal;
-window.saveInstitution = saveInstitution;
-window.deleteInstitution = deleteInstitution;
 window.copyPublicRegisterLink = copyPublicRegisterLink;
 window.updateProfile = updateProfile;
 window.updatePassword = updatePassword;
+
+function showAddSkillModal() {
+    document.getElementById('addSkillModal').style.display = 'block';
+}
+
+async function saveSkill() {
+    const name = document.getElementById('skill_name').value.trim();
+    const description = document.getElementById('skill_description').value.trim();
+    if (!name) { showNotification('Skill name is required.', 'error'); return; }
+
+    try {
+        const response = await fetch('/api/skills', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ skill_name: name, description })
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('Skill added successfully!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification(result.message || 'Failed to add skill.', 'error');
+        }
+    } catch (err) {
+        showNotification('Network error. Please try again.', 'error');
+    }
+}
+
+async function deleteSkill(id, name) {
+    if (!confirm(`Are you sure you want to delete ${name}?`)) return;
+    try {
+        const response = await fetch(`/api/skills/${id}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+            const el = document.getElementById(`skill-${id}`);
+            if (el) {
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 300);
+            }
+            showNotification('Skill deleted successfully', 'success');
+        } else {
+            showNotification(result.message || 'Failed to delete skill.', 'error');
+        }
+    } catch (err) {
+        showNotification('Network error. Please try again.', 'error');
+    }
+}
+
+window.showAddSkillModal = showAddSkillModal;
+window.saveSkill = saveSkill;
+window.deleteSkill = deleteSkill;
 </script>

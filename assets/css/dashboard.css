@@ -10,109 +10,130 @@
 }
 
 /* ==============================================
-   DASHBOARD CARDS GRID
+   DASHBOARD CARDS GRID (NEW STYLE)
 ============================================== */
 
-.dashboard-cards {
+.dashboard-cards-new {
+    background-color: var(--white);
+    border: 1px solid rgba(234, 236, 240, 0.8);
+    border-radius: 0.75rem; /* 12px */
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 14px;
-    margin-bottom: 20px;
-    padding: 0 8px;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+    margin-bottom: 24px;
 }
 
-.dashboard-cards .card {
-    background: var(--white);
-    border-radius: var(--border-radius);
-    padding: 16px;
-    box-shadow: var(--shadow);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid transparent;
-    position: relative;
-    overflow: hidden;
-    min-height: 120px;
+.stat-card {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1.5rem;
+    border-right: 1px solid rgba(234, 236, 240, 0.6);
 }
 
-.dark-theme .dashboard-cards .card {
-    background: var(--dark-surface);
-    border-color: var(--dark-border);
+.stat-card:first-child {
+    padding-left: 0;
 }
 
-.dashboard-cards .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    border-color: var(--primary);
+.stat-card:last-child {
+    padding-right: 0;
+    border-right: none;
 }
 
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-}
-
-.card-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--black2);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-
-.dark-theme .card-title {
-    color: var(--dark-text-secondary);
-}
-
-.card-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
-    background: rgba(52, 152, 219, 0.1);
-    color: #3498db;
     flex-shrink: 0;
 }
 
-.dark-theme .card-icon {
-    background: rgba(52, 152, 219, 0.2);
+.stat-icon ion-icon {
+    font-size: 1.375rem; /* 22px */
 }
 
-.card.total-students .card-icon {
-    background: rgba(52, 152, 219, 0.1);
-    color: #3498db;
+/* Colors for specific icons */
+.icon-blue {
+    background-color: #EBF3FF;
+    color: #0052FF;
+    box-shadow: 0 2px 8px rgba(0, 82, 255, 0.05);
 }
 
-.card.attendance-rate .card-icon {
-    background: rgba(46, 204, 113, 0.1);
-    color: #2ecc71;
+.icon-orange {
+    background-color: #FFF4ED;
+    color: #EA580C;
+    box-shadow: 0 2px 8px rgba(234, 88, 12, 0.05);
 }
 
-.card.active-projects .card-icon {
-    background: rgba(155, 89, 182, 0.1);
-    color: #9b59b6;
+.icon-green {
+    background-color: #E8F8F0;
+    color: #10B981;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.05);
 }
 
-.card.active-students .card-icon {
-    background: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
+.icon-cyan {
+    background-color: #E6F7F7;
+    color: #00B4D8;
+    box-shadow: 0 2px 8px rgba(0, 180, 216, 0.05);
 }
 
-.card-value {
-    font-size: 1.6rem;
+.stat-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #8E9CAE;
+    letter-spacing: 0.025em;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.5rem; /* 24px */
     font-weight: 700;
-    color: var(--black1);
-    line-height: 1;
-    margin-bottom: 5px;
+    color: #111827;
+    letter-spacing: -0.025em;
 }
 
-.dark-theme .card-value {
-    color: var(--dark-text);
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .dashboard-cards-new {
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 1.5rem;
+    }
+    
+    .stat-card:nth-child(2) {
+        border-right: none;
+    }
+    
+    .stat-card:nth-child(3) {
+        padding-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-cards-new {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1rem 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(234, 236, 240, 0.6);
+    }
+    
+    .stat-card:last-child {
+        border-bottom: none;
+    }
 }
 
 /* ==============================================

@@ -7,6 +7,7 @@ const { requireAuth } = require('../../middleware/auth');
 
 const Student = require('../../models/Student');
 const Institution = require('../../models/Institution');
+const Skill = require('../../models/Skill');
 const { normalizePhoneNumber } = require('../../utils/phone');
 
 // Multer config for passport photo uploads
@@ -28,6 +29,7 @@ router.get('/', requireAuth, async (req, res) => {
     try {
         const students = await Student.find()
             .populate('institution', 'institution_name')
+            .populate('skill_of_interest', 'skill_name')
             .sort({ student_name: 1 });
 
         res.json({ success: true, data: students });
@@ -40,7 +42,8 @@ router.get('/', requireAuth, async (req, res) => {
 router.get('/:id', requireAuth, async (req, res) => {
     try {
         const student = await Student.findById(req.params.id)
-            .populate('institution', 'institution_name');
+            .populate('institution', 'institution_name')
+            .populate('skill_of_interest', 'skill_name');
         if (!student) return res.status(404).json({ success: false, message: 'Student not found' });
         res.json({ success: true, data: student });
     } catch (err) {
@@ -53,7 +56,7 @@ router.post('/', requireAuth, upload.single('photo'), async (req, res) => {
     try {
         const {
             email, student_name, period_of_attachment, institution_id,
-            birthday, course_of_study, skill_of_interest, gender, days_of_week_batch,
+            birthday, course_of_study, skill_id, gender, student_group,
             join_date, end_date, phone, status
         } = req.body;
 
@@ -64,16 +67,40 @@ router.post('/', requireAuth, upload.single('photo'), async (req, res) => {
             if (inst) institutionRef = inst._id;
         }
 
+        // Find skill by its MongoDB _id
+        let skillRef = null;
+        if (skill_id) {
+            const sk = await Skill.findById(skill_id);
+            if (sk) skillRef = sk._id;
+        }
+
+        const normEmail = email.trim().toLowerCase();
+        const normPhone = phone ? normalizePhoneNumber(phone) : null;
+
+        const $orConditions = [{ email: normEmail }];
+        if (normPhone) $orConditions.push({ phone: normPhone });
+
+        const existingStudent = await Student.findOne({ $or: $orConditions });
+        if (existingStudent) {
+            if (normPhone && existingStudent.phone === normPhone && existingStudent.email === normEmail) {
+                return res.status(400).json({ success: false, message: 'A student with this email and phone number already exists.' });
+            } else if (normPhone && existingStudent.phone === normPhone) {
+                return res.status(400).json({ success: false, message: 'A student with this phone number already exists.' });
+            } else {
+                return res.status(400).json({ success: false, message: 'A student with this email already exists.' });
+            }
+        }
+
         const newStudent = new Student({
-            email: email.trim().toLowerCase(),
+            email: normEmail,
             student_name: student_name.trim(),
             period_of_attachment: period_of_attachment || null,
             institution: institutionRef,
             birthday: birthday || null,
             course_of_study: course_of_study || null,
-            skill_of_interest: skill_of_interest || null,
+            skill_of_interest: skillRef,
             gender: gender || null,
-            days_of_week_batch: days_of_week_batch || null,
+            student_group: student_group || null,
             join_date: join_date || null,
             end_date: end_date || null,
             phone: phone ? normalizePhoneNumber(phone) : null,
@@ -104,7 +131,7 @@ router.post('/:id/approve', requireAuth, async (req, res) => {
                 approved_at: new Date()
             },
             { new: true, runValidators: true }
-        ).populate('institution', 'institution_name');
+        ).populate('institution', 'institution_name').populate('skill_of_interest', 'skill_name');
 
         if (!student) return res.status(404).json({ success: false, message: 'Student not found' });
 
@@ -126,14 +153,46 @@ router.put('/:id', requireAuth, upload.single('photo'), async (req, res) => {
             delete updates.institution_id;
         }
 
+        // Resolve skill reference
+        if (updates.skill_id !== undefined) {
+            if (updates.skill_id) {
+                const sk = await Skill.findById(updates.skill_id);
+                updates.skill_of_interest = sk ? sk._id : null;
+            } else {
+                updates.skill_of_interest = null;
+            }
+            delete updates.skill_id;
+        }
+
         // If a new photo was uploaded
         if (req.file) {
             updates.photo_url = `uploads/passports/${req.file.filename}`;
         }
 
-        // Normalize email
+        // Normalize email and phone
         if (updates.email) updates.email = updates.email.trim().toLowerCase();
         if (updates.phone) updates.phone = normalizePhoneNumber(updates.phone);
+
+        // Check for duplicates
+        const $orConditions = [];
+        if (updates.email) $orConditions.push({ email: updates.email });
+        if (updates.phone) $orConditions.push({ phone: updates.phone });
+
+        if ($orConditions.length > 0) {
+            const existingStudent = await Student.findOne({ 
+                _id: { $ne: req.params.id },
+                $or: $orConditions 
+            });
+            if (existingStudent) {
+                if (updates.phone && existingStudent.phone === updates.phone && updates.email && existingStudent.email === updates.email) {
+                    return res.status(400).json({ success: false, message: 'Another student with this email and phone number already exists.' });
+                } else if (updates.phone && existingStudent.phone === updates.phone) {
+                    return res.status(400).json({ success: false, message: 'Another student with this phone number already exists.' });
+                } else {
+                    return res.status(400).json({ success: false, message: 'Another student with this email already exists.' });
+                }
+            }
+        }
 
         const student = await Student.findByIdAndUpdate(req.params.id, updates, {
             new: true, runValidators: true

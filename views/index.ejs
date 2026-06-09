@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="/assets/css/reports.css">
     <link rel="stylesheet" href="/assets/css/settings.css">
     <link rel="stylesheet" href="/assets/css/projects.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -65,89 +68,101 @@
 
     <div class="container">
         <!-- Sidebar Navigation -->
-        <div class="navigation" id="sidebar">
+        <aside class="navigation new-sidebar" id="sidebar">
             <div class="sidebar-content">
-                <div class="nav-header">
-                    <a href="/?page=dashboard" class="logo">
-                        <img src="/1761425618541.png" alt="Attendit Logo">
-                        <span class="logo-text">Attendit</span>
-                    </a>
+                <!-- Brand Logo Header -->
+                <div class="nav-brand" style="justify-content: center; align-items: center; gap: 12px; padding: 16px 0; display: flex;">
+                    <img src="/assets/images/logo.png" alt="AttendIT Logo" style="max-height: 40px; width: auto;">
+                    <span class="brand-text" style="margin: 0; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.25rem;">
+                        AttendIT<span class="brand-dot" style="color: var(--primary);">.</span>
+                    </span>
                 </div>
 
-                <ul class="nav-bar">
-                    <li class="<%= page === 'dashboard' ? 'active' : '' %>">
-                        <a href="/?page=dashboard" data-tooltip="Dashboard" data-page="dashboard">
-                            <ion-icon name="grid-outline"></ion-icon>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="<%= page === 'students' ? 'active' : '' %>">
-                        <a href="/?page=students" data-tooltip="Students" data-page="students">
-                            <ion-icon name="people-outline"></ion-icon>
-                            <span>Students</span>
-                        </a>
-                    </li>
-                    <li class="<%= page === 'attendance' ? 'active' : '' %>">
-                        <a href="/?page=attendance" data-tooltip="Attendance" data-page="attendance">
-                            <ion-icon name="calendar-outline"></ion-icon>
-                            <span>Attendance</span>
-                        </a>
-                    </li>
-                    <li class="<%= page === 'projects' ? 'active' : '' %>">
-                        <a href="/?page=projects" data-tooltip="Projects" data-page="projects">
-                            <ion-icon name="folder-open-outline"></ion-icon>
-                            <span>Projects</span>
-                        </a>
-                    </li>
-                    <li class="<%= page === 'reports' ? 'active' : '' %>">
-                        <a href="/?page=reports" data-tooltip="Reports" data-page="reports">
-                            <ion-icon name="bar-chart-outline"></ion-icon>
-                            <span>Reports</span>
-                        </a>
-                    </li>
-                </ul>
+                <!-- Main Navigation List -->
+                <nav class="main-nav">
+                    <a href="/?page=dashboard" class="nav-link <%= page === 'dashboard' ? 'active' : '' %>" data-page="dashboard">
+                        <ion-icon name="grid-outline"></ion-icon>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/?page=students" class="nav-link <%= page === 'students' ? 'active' : '' %>" data-page="students">
+                        <ion-icon name="people-outline"></ion-icon>
+                        <span>Students</span>
+                    </a>
+                    <a href="/?page=attendance" class="nav-link <%= page === 'attendance' ? 'active' : '' %>" data-page="attendance">
+                        <ion-icon name="calendar-outline"></ion-icon>
+                        <span>Attendance</span>
+                    </a>
+                    <a href="/?page=reports" class="nav-link <%= page === 'reports' ? 'active' : '' %>" data-page="reports">
+                        <ion-icon name="bar-chart-outline"></ion-icon>
+                        <span>Reports</span>
+                    </a>
+                    <a href="/?page=projects" class="nav-link <%= page === 'projects' ? 'active' : '' %>" data-page="projects">
+                        <ion-icon name="folder-open-outline"></ion-icon>
+                        <span>Projects</span>
+                    </a>
+                    <a href="/?page=institutions" class="nav-link <%= page === 'institutions' ? 'active' : '' %>" data-page="institutions">
+                        <ion-icon name="business-outline"></ion-icon>
+                        <span>Institutions</span>
+                    </a>
+                    <a href="/?page=history" class="nav-link <%= page === 'history' ? 'active' : '' %>" data-page="history">
+                        <ion-icon name="time-outline"></ion-icon>
+                        <span>History</span>
+                    </a>
+                </nav>
             </div>
 
-            <div class="nav-footer">
-                <div class="user-profile">
-                    <div class="user-avatar">
-                        <img src="/cropped-Latest-LOGO-NCAT-.1.png" alt="User Avatar">
-                    </div>
-                    <div class="user-info">
-                        <div class="user-name"><%= currentUser.username %></div>
-                        <div class="user-role"><%= currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1) %></div>
-                    </div>
-                </div>
-
-                <div class="sidebar-controls">
-                    <button class="sidebar-btn theme-toggle" id="themeToggle">
-                        <ion-icon name="contrast-outline"></ion-icon>
-                        <span id="themeText">Dark UI</span>
-                    </button>
-
-                    <button class="sidebar-btn collapse-toggle" id="collapseToggle">
-                        <ion-icon name="chevron-back-outline" class="collapse-icon"></ion-icon>
-                        <span id="collapseText">Collapse</span>
-                    </button>
-
-                    <a href="/?page=settings" class="sidebar-btn settings-btn <%= page === 'settings' ? 'active' : '' %>">
-                        <ion-icon name="settings-outline"></ion-icon>
-                        <span>Settings</span>
-                    </a>
-
-                    <a href="/logout" class="sidebar-btn logout-btn">
-                        <ion-icon name="log-out-outline"></ion-icon>
-                        <span>Log Out</span>
-                    </a>
-                </div>
+            <!-- Footer Navigation -->
+            <div class="nav-footer-new">
+                <a href="/?page=settings" class="nav-link <%= page === 'settings' ? 'active' : '' %>">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    <span>Settings</span>
+                </a>
+                <!--<button class="nav-link theme-toggle" id="themeToggle">
+                    <ion-icon name="contrast-outline"></ion-icon>
+                    <span id="themeText">Dark UI</span>
+                </button>-->
+                <a href="/logout" class="nav-link logout-link">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                    <span>Log Out</span>
+                </a>
             </div>
-        </div>
+        </aside>
 
         <main class="main-content" id="mainContent">
-            <div class="page-header">
-                <h1 class="page-title"><%= page.charAt(0).toUpperCase() + page.slice(1) %></h1>
-                <span id="currentDate" class="date"><%= currentDate %></span>
-            </div>
+            <header class="new-page-header">
+                <div class="header-title-container">
+                    <p class="header-subtitle">
+                        <% if (page === 'dashboard') { %> Access your student identification and details <% } 
+                           else if (page === 'students') { %> Manage university students <% }
+                           else if (page === 'history') { %> View archived alumni records <% }
+                           else if (page === 'attendance') { %> Track student attendance <% }
+                           else if (page === 'projects') { %> Manage student projects <% }
+                           else if (page === 'institutions') { %> Manage affiliated institutions <% }
+                           else if (page === 'reports') { %> View and generate reports <% }
+                           else if (page === 'settings') { %> Configure application preferences <% }
+                           else { %> Manage your university portal <% } %>
+                    </p>
+                    <h1 class="header-title">
+                        <% if (page === 'dashboard') { %>
+                            Hello, <span class="highlight"><%= currentUser.username.split(" ")[0] || "User" %></span>
+                        <% } else if (page === 'students') { %>
+                            Students
+                        <% } else { %>
+                            <%= page.charAt(0).toUpperCase() + page.slice(1) %>
+                        <% } %>
+                    </h1>
+                </div>
+
+                <div class="header-actions">
+                    <a href="#" class="notification-bell">
+                        <ion-icon name="notifications-outline"></ion-icon>
+                    </a>
+
+                    <div class="profile-avatar">
+                        <span class="avatar-text"><%= currentUser.username ? currentUser.username.charAt(0).toUpperCase() : "U" %></span>
+                    </div>
+                </div>
+            </header>
 
             <div id="loading-spinner" class="loading-spinner" style="display: none;">
                 <div class="spinner"></div>
