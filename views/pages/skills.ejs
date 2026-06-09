@@ -1,0 +1,125 @@
+<div id="skills-page" class="page-content" style="padding: 24px; max-width: 1200px; margin: 0 auto;">
+    <div class="settings-tab" style="display: block; padding: 0; background: none; border: none; box-shadow: none;">
+        <div class="tab-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; margin-bottom: 24px; background: var(--white); padding: 24px; border-radius: 16px; border: 1px solid #EAECF0;">
+            <div>
+                <h2 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: var(--black1);">Skills Directory</h2>
+                <p style="margin: 0; font-size: 14px; color: var(--black2);">Manage the list of skill areas students can be assigned to.</p>
+            </div>
+            <button class="btn btn-primary" onclick="showAddSkillModal()" style="background-color: #0052FF; border-radius: 8px; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 8px; padding: 10px 20px; border: none; color: white; cursor: pointer; font-size: 14px; font-weight: 500;">
+                <ion-icon name="add-outline" style="font-size: 18px;"></ion-icon> Add Skill
+            </button>
+        </div>
+
+        <div class="form-section">
+            <div id="skills-list" class="skills-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+                <% if (typeof skills !== 'undefined' && skills && skills.length > 0) { %>
+                    <% skills.forEach(sk => { %>
+                        <div class="skill-item" id="skill-<%= sk._id %>" style="display:flex; flex-direction: column; justify-content:space-between; padding: 20px; background: var(--white); border-radius:12px; border:1px solid #EAECF0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s;">
+                            <div class="skill-info" style="margin-bottom: 16px;">
+                                <div style="width: 48px; height: 48px; border-radius: 12px; background: #EFF4FF; color: #0052FF; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px;">
+                                    <ion-icon name="code-slash-outline"></ion-icon>
+                                </div>
+                                <h4 style="margin:0 0 6px 0; font-size:16px; font-weight: 600; color: var(--black1);"><%= sk.skill_name %></h4>
+                                <% if (sk.description) { %>
+                                    <p style="margin: 0; font-size: 13px; color: var(--black2);"><%= sk.description %></p>
+                                <% } %>
+                            </div>
+                            <div style="border-top: 1px solid #EAECF0; padding-top: 16px; display: flex; justify-content: flex-end;">
+                                <button onclick="deleteSkill('<%= sk._id %>', '<%= sk.skill_name %>')" style="background: var(--white); border: 1px solid rgba(231,76,60,0.4); padding: 8px 16px; border-radius: 8px; color: #e74c3c; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; transition: all 0.2s;" onmouseover="this.style.background='#FEF2F2'" onmouseout="this.style.background='var(--white)'">
+                                    <ion-icon name="trash-outline" style="font-size: 16px;"></ion-icon> Delete
+                                </button>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div style="grid-column: 1 / -1; background: var(--white); padding: 40px; border-radius: 12px; border: 1px dashed #CBD5E1; text-align: center;">
+                        <div style="width: 64px; height: 64px; border-radius: 50%; background: #F8FAFC; color: #94A3B8; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px auto;">
+                            <ion-icon name="code-slash-outline"></ion-icon>
+                        </div>
+                        <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: var(--black1);">No skills found</h3>
+                        <p style="margin: 0 0 24px 0; font-size: 14px; color: var(--black2);">Add skill areas that interns can be assigned to.</p>
+                        <button class="btn btn-primary" onclick="showAddSkillModal()" style="background-color: #0052FF; border-radius: 8px; padding: 8px 16px; border: none; color: white; cursor: pointer; font-size: 14px; font-weight: 500;">
+                            Add Skill
+                        </button>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Skill Modal -->
+<div id="addSkillModal" class="modal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div class="modal-content" style="background-color: var(--white); margin: 10% auto; padding: 24px; border: 1px solid #888; width: 90%; max-width: 480px; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.1);">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #EAECF0;">
+            <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--black1);">Add Skill</h3>
+            <span class="close" onclick="document.getElementById('addSkillModal').style.display='none'" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="skill_name_input" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--black2);">Skill Name *</label>
+                <input type="text" id="skill_name_input" placeholder="e.g., Web Development" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 14px; box-sizing: border-box; background: var(--white); color: var(--black1);">
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label for="skill_desc_input" style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--black2);">Description (optional)</label>
+                <input type="text" id="skill_desc_input" placeholder="Brief description of this skill area" style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #CBD5E1; font-family: inherit; font-size: 14px; box-sizing: border-box; background: var(--white); color: var(--black1);">
+            </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 12px;">
+            <button onclick="document.getElementById('addSkillModal').style.display='none'" style="padding: 10px 16px; background: var(--white); border: 1px solid #CBD5E1; border-radius: 8px; color: var(--black2); font-weight: 500; cursor: pointer; font-size: 14px;">Cancel</button>
+            <button onclick="saveSkill()" style="padding: 10px 16px; background: #0052FF; border: none; border-radius: 8px; color: white; font-weight: 500; cursor: pointer; font-size: 14px;">Add Skill</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function showAddSkillModal() {
+    document.getElementById('skill_name_input').value = '';
+    document.getElementById('skill_desc_input').value = '';
+    document.getElementById('addSkillModal').style.display = 'block';
+}
+
+async function saveSkill() {
+    const name = document.getElementById('skill_name_input').value.trim();
+    const desc = document.getElementById('skill_desc_input').value.trim();
+    if (!name) { showNotification('Skill name is required.', 'error'); return; }
+
+    try {
+        const response = await fetch('/api/skills', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ skill_name: name, description: desc })
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            showNotification('Skill added successfully!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification(result.message || 'Failed to add skill.', 'error');
+        }
+    } catch (err) {
+        showNotification('Network error. Please try again.', 'error');
+    }
+}
+
+async function deleteSkill(id, name) {
+    if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+    try {
+        const response = await fetch(`/api/skills/${id}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+            const el = document.getElementById(`skill-${id}`);
+            if (el) {
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 300);
+            }
+            showNotification('Skill deleted successfully', 'success');
+        } else {
+            showNotification(result.message || 'Failed to delete skill.', 'error');
+        }
+    } catch (err) {
+        showNotification('Network error. Please try again.', 'error');
+    }
+}
+</script>

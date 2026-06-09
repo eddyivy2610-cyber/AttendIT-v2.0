@@ -10,7 +10,7 @@ const Project = require('../models/Project');
 const Performance = require('../models/Performance');
 const { buildPublicQrAssets } = require('../utils/public-qr');
 
-const ALLOWED_PAGES = ['dashboard', 'students', 'history', 'attendance', 'reports', 'institutions', 'settings', 'projects'];
+const ALLOWED_PAGES = ['dashboard', 'students', 'history', 'attendance', 'reports', 'institutions', 'skills', 'settings', 'projects'];
 
 // GET /api/dashboard-data — returns JSON for real-time dashboard updates
 router.get('/api/dashboard-data', requireAuth, async (req, res) => {
@@ -230,6 +230,12 @@ router.get('/', requireAuth, async (req, res) => {
         if (page === 'institutions') {
             const institutions = await Institution.find().sort({ institution_name: 1 });
             viewData = { institutions };
+        }
+
+        // ---- SKILLS DATA ----
+        if (page === 'skills') {
+            const skills = await Skill.find().sort({ skill_name: 1 });
+            viewData = { skills };
         }
 
         // ---- SETTINGS DATA ----
