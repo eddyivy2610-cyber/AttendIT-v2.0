@@ -178,6 +178,11 @@
                                         </td>
                                         <td style="padding: 12px 16px; text-align: center;">
                                             <div style="display: flex; gap: 8px; justify-content: center;">
+                                                <% if (student.approval_status === 'pending') { %>
+                                                <button onclick="event.stopPropagation(); approveStudent('<%= student._id %>')" style="background: none; border: none; color: #16A34A; cursor: pointer; padding: 4px;" title="Approve Student">
+                                                    <ion-icon name="checkmark-circle-outline" style="font-size: 18px;"></ion-icon>
+                                                </button>
+                                                <% } %>
                                                 <button onclick="event.stopPropagation(); openEditStudentModal('<%= student._id %>')" style="background: none; border: none; color: #0052FF; cursor: pointer; padding: 4px;" title="Edit">
                                                     <ion-icon name="create-outline" style="font-size: 18px;"></ion-icon>
                                                 </button>
@@ -858,7 +863,8 @@ function applyTableFilters() {
     if(info) info.textContent = `Showing ${visibleCount} results`;
 }
 
-document.getElementById('student-search').addEventListener('input', applyTableFilters);
+const studentSearchEl = document.getElementById('student-search-input');
+if (studentSearchEl) studentSearchEl.addEventListener('input', applyTableFilters);
 
 // Image preview
 document.getElementById('passport_image').addEventListener('change', function(e) {
